@@ -1,14 +1,16 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column
-from sqlalchemy.dialects.mysql import INTEGER, DATETIME, TEXT, TINYINT
+from sqlalchemy.dialects.mysql import INTEGER, DATETIME, TEXT, TINYINT, VARCHAR
 from sqlalchemy.schema import ForeignKey
 from common.db.db_config import Base
+from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
+from common.entity.triggle_cond import TriggleCond
 
 '''
 CREATE TABLE `tb_stage` (
 `id` int(11) NOT NULL,
 `import_table_id` int(11) NULL COMMENT '导入表id',
-`import_type` tinyint(1) NULL COMMENT '导入类型，0(full)或者1(incremental)'
+`import_type` varchar(2) NULL COMMENT '导入类型，"full"或者"incremental"'
 `stage_id` int(11) NULL COMMENT '每个stage对导入表产生一个stage_id,每次加1',
 `inserted_num` int(11) NULL COMMENT '增加的记录数',
 `updated_num` int(11) NULL COMMENT '更新的记录数',
@@ -30,9 +32,8 @@ class Stage(Base):
     __tablename__ = "tb_stage"
 
     id = Column('id', INTEGER(11), primary_key=True)
-    # import_table_id = Column('import_table_id', INTEGER(11), ForeignKey("tb_import_tables.import_table_id"))
-    import_table_id = Column('import_table_id', INTEGER(11))
-    import_type = Column('import_type', TINYINT(1))
+    import_table_id = Column('import_table_id', INTEGER(11), ForeignKey("tb_import_tables.import_table_id"))
+    import_type = Column('import_type', VARCHAR(20))
     stage_id = Column('stage_id', INTEGER(11))
     inserted_num = Column('inserted_num', INTEGER(11))
     updated_num = Column('updated_num', INTEGER(11))
@@ -45,5 +46,6 @@ class Stage(Base):
     end_time = Column('end_time', DATETIME())
     process_status = Column('process_status', TINYINT(1))
 
-    def __eq__(self, other):
-        return self.id == other.id
+    @hybrid_property
+    def triggle_cond(self):
+        return TriggleCond(self.import_table_id, self.import_type)

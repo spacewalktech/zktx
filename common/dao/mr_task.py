@@ -2,6 +2,9 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column
 from sqlalchemy.dialects.mysql import TINYINT, INTEGER, LONGTEXT, VARCHAR, DATETIME, TEXT
 from common.db.db_config import Base
+from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
+from common.entity.stage_to_process import StageToProcess
+from common.util import util
 
 '''
 CREATE TABLE `tb_mr_task` (
@@ -48,5 +51,28 @@ class MRTask(Base):
     create_time = Column('create_time', DATETIME())
     update_time = Column('update_time', DATETIME())
 
+    @hybrid_property
+    def triggle_cond_list(self):
+        # unmarsh the triggle_tables into python object
+        # return TriggleCond list
+        return util.decode_triggle_conds(self.triggle_tables)
+
+    @hybrid_property
+    def table_stage_list(self):
+        # unmarsh the table_stage_info into python object
+        # return StageToProcess list
+        return util.decode_table_stage_info(self.table_stage_info)
+
     def __eq__(self, other):
-        return self.id == other.id
+        return self.id == other.id and \
+                self.name == other.name and \
+                self.information == other.information and \
+                self.bin_file_uri == other.bin_file_uri and \
+                self.type == other.type
+
+    def __hash__(self):
+        return hash((self.id, self.name, self.information, self.bin_file_uri, self.type))
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+

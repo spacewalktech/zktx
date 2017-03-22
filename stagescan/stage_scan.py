@@ -1,10 +1,12 @@
-from common.db.db_config import session as sess
-from common.dao.stage import Stage
-from common.dao.mr_task import MRTask
-from common.dao.task_queue import TaskQueue
 from sqlalchemy import desc
-from stagescan import util
-import datetime
+
+from common.dao.mr_task import MRTask
+from common.dao.stage import Stage
+from common.dao.task_queue import TaskQueue
+from common.db.db_config import session as sess
+from common.util import util
+from common.entity.active_task import ActiveTask
+
 
 class StageScan(object):
 
@@ -20,47 +22,79 @@ class StageScan(object):
         # Get normal ordered stages
         return reversed(stages)
 
-    # Get all mr_tasks registered by user, reverse indexed by triggle table_id
     def _get_mr_tasks(self):
-        mr_task_map = {} # {table_id: tasks}
-        mr_task_list = [] # tasks list map to the tb_mr_task table
+        mr_task_list = []  # MRTask list
         sq = sess.query(MRTask)
         for s in sq:
             mr_task_list.append(s)
-            triggle_list = util.decode_triggle_tables(s.triggle_tables)
-            s.triggle_list = triggle_list
-            for ts in triggle_list:
-                if not ts.table_id in mr_task_map:
-                    task_set = set()
-                    task_set.add(s)
-                    mr_task_map[ts.table_id] = task_set
+
+    def _get_rindex_task_map(self, mr_task_list):
+        # Get map {TriggleCond: (mr_task set)}
+        cond_task_map = {}
+        for task in mr_task_list:
+            for cond in task.triggle_cond_list:
+                if cond not in cond_task_map:
+                    cond_task_map[cond] = set()
+                    cond_task_map[cond].add(ActiveTask(task))
                 else:
-                    mr_task_map[ts.table_id].add(s)
-        return mr_task_map, mr_task_list
+                    cond_task_map[cond].add(ActiveTask(task))
+        return cond_task_map
+
 
     # Get triggled tasks
-    def scan_stage(self):
-        # [task_queue1, task_queue2...]
-        triggled_tasks = []
+    def _get_updated_active_tasks(self):
         stages = self._get_lastest_stages()
-        mr_task_map = self._get_mr_tasks()
+        mr_tasks = self._get_mr_tasks()
+        cond_task_map = self._get_rindex_task_map(mr_tasks) # {TriggleCond: [mr_active_tasks]}
+        active_tasks = []
         # For latest stages
         for stage in stages:
-            # task_map indexed by import_table_id
-            if stage.import_table_id in mr_task_map:
-                tasks = mr_task_map[stage.import_table_id]
-                # For current table in stage mapped tasks
-                for task in tasks:
-                    # Get triggle list for the task
-                    for triggle_cond in task.triggle_list:
-                        # If we should triggle the task, If any condition matched in the list, we should triggle the task
-                        if (stage.import_table_id == triggle_cond.table_id) and (stage.import_type == triggle_cond.import_type):
-                            tq = TaskQueue()
-                            tq.mr_task_id = task.id
-                            tq.table_id = stage.import_table_id
-                            tq.stage_id = stage.stage_id
-                            triggled_tasks.append(tq)
-        return triggled_tasks
+            if stage.triggle_cond in cond_task_map:
+                triggled_tasks = cond_task_map[stage.triggle_cond] # active task list
+                length = len(triggled_tasks)
+                for idx in range(length):
+                    self._update_atask_for_stage(triggled_tasks[idx]) # Update the task_list
+                active_tasks.extend(triggled_tasks)
+        return active_tasks
+
+    def _merge_tasks_base_id(self, active_tasks):
+        pass
+
+
+
+
+    def _update_atask_for_stage(self, atask, stage):
+        # From begin stage table_stage_list is empty for atask
+        length = len(atask.table_stage_list)
+        already_in = False
+        for idx in range(length):
+            if atask.table_stage_list[idx].table_id == stage.import_table_id:
+                already_in = True
+                if atask.table_stage_list[idx].stage_begin > stage.stage_id:
+                    atask.table_stage_list[idx].stage_begin = stage.stage_id
+                elif atask.table_stage_list[idx].stage_end < stage.stage_id:
+                    atask.table_stage_list[idx].stage_end = stage.stage_id
+                break # For specific task one stage can only lead one table's  stage attributes chaged
+        if not already_in:
+            stp = StageToProcess(stage.import_table_id, stage.stage_id, stage.stage_id)
+            atask.table_stage_list.append(stp)
+
+
+    def _update_task_dict(self, task_stage_dict, task, stage):
+        # stage triggle the task
+        if task not in task_stage_dict:
+            stp = StageToProcess()
+            task_stage_dict[task] = stp
+            stp.table_id = stage.import_table_id
+            stp.stage_begin = stage.stage_id
+            stp.stage_end = stage.stage_id
+        else:
+            for idx in range(task_stage_dict[task]):
+                if task_stage_dict[task][idx].stage_begin > stage.stage_id:
+                    task_stage_dict[task][idx].stage_begin = stage.stage_id
+                elif task_stage_dict[task][idx].stage_end < stage.stage_id:
+                    task_stage_dict[task][idx].stage_end = stage.stage_id
+
 
     # task_queue_list item is [<table_id, stage_id, task_id>]
     # we want to get {task_id: {table_id: [stage_id_begin, stage_id_end], ...}, ...}
@@ -105,6 +139,12 @@ class TriggleCond(object):
 
     def __eq__(self, other):
         return self.table_id == other.table_id and self.import_type == other.import_type
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash((self.table_id, self.import_type))
 
 class StageToProcess(object):
     def __init__(self, table_id, stage_begin, stage_end):
