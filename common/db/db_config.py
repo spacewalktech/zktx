@@ -12,7 +12,7 @@ import common.config.config as config
 Base = declarative_base()
 
 # 初始化数据库连接:
-url = 'mysql+{0}://{1}:{2}@{3}:{4}/{5}'.format(
+url = 'mysql+{0}://{1}:{2}@{3}:{4}/{5}?charset=utf8'.format(
     config.mysql_db.get("driver"),
     config.mysql_db.get("user"),
     config.mysql_db.get("password"),
@@ -21,7 +21,7 @@ url = 'mysql+{0}://{1}:{2}@{3}:{4}/{5}'.format(
     config.mysql_db.get("db"),
 
 )
-engine = create_engine(url, encoding='utf8', echo=True)
+engine = create_engine(url, echo=False)
 
 # 创建DBSession类型:
 DBSession = sessionmaker(bind=engine)

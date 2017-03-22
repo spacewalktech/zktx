@@ -8,11 +8,11 @@ import common.db.db_config as db
 # 定义tb_tables_schema对象:
 class TableSchema(db.Base):
     # 表名：
-    __tablename__ = "db_table_schema"
+    __tablename__ = "tb_table_schema"
 
     # 表结构
     id = Column(Integer, primary_key=True, nullable=True)
-    table_id = Column(Integer, ForeignKey("db_import_tables.id"))
+    table_id = Column(Integer, ForeignKey("tb_import_tables.id"))
     version = Column(Integer)
     schema = Column(TEXT)
     create_time = Column(DateTime)

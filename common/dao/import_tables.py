@@ -8,7 +8,7 @@ import common.db.db_config as db
 # 定义db_import_tables对象:
 class ImportTable(db.Base):
     # 表名：
-    __tablename__ = "db_import_tables"
+    __tablename__ = "tb_import_tables"
 
     # 表结构
     id = Column(Integer, primary_key=True, nullable=True)
