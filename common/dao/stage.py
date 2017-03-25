@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-：
+
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column
 from sqlalchemy.dialects.mysql import INTEGER, DATETIME, TEXT, TINYINT, VARCHAR
@@ -40,6 +42,7 @@ class Stage(Base):
     deleted_num = Column('deleted_num', INTEGER(11))
     record_num = Column('record_num', INTEGER(11))
     status = Column('status', TINYINT(1))
+    fail_info = Column("fail_info" , TEXT)
     create_time = Column('create_time', DATETIME())
     update_time = Column('update_time', DATETIME())
     begin_time = Column('begin_time', DATETIME())
