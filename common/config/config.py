@@ -9,3 +9,6 @@ mysql_db = {
     "db": "test2",
     "driver": "pymysql"
 }
+
+LOGGING_DIR = "../logs"
+LOGGING_STDOUT = True

@@ -2,10 +2,10 @@
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column
-from sqlalchemy.dialects.mysql import INTEGER, DATETIME, TEXT, TINYINT, VARCHAR
+from sqlalchemy.dialects.mysql import INTEGER, DATETIME, TEXT, TINYINT
 from sqlalchemy.schema import ForeignKey
 from common.db.db_config import Base
-from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
+from sqlalchemy.ext.hybrid import hybrid_property
 from common.entity.triggle_cond import TriggleCond
 
 '''
@@ -32,10 +32,11 @@ CONSTRAINT `fk_db_stage` FOREIGN KEY (`import_table_id`) REFERENCES `tb_import_t
 # tb_task_queue table
 class Stage(Base):
     __tablename__ = "tb_stage"
+    __table_args__ = {'extend_existing': True}
 
     id = Column('id', INTEGER(11), primary_key=True)
-    import_table_id = Column('import_table_id', INTEGER(11), ForeignKey("tb_import_tables.import_table_id"))
-    import_type = Column('import_type', VARCHAR(20))
+    import_table_id = Column('import_table_id', INTEGER(11), ForeignKey("tb_import_tables.id"))
+    import_type = Column('import_type', TINYINT(1))
     stage_id = Column('stage_id', INTEGER(11))
     inserted_num = Column('inserted_num', INTEGER(11))
     updated_num = Column('updated_num', INTEGER(11))

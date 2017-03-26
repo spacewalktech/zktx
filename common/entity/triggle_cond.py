@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-：
 class TriggleCond(object):
-    def __init__(self, table_id, import_type):
+    def __init__(self, table_id = -1, import_type = -1):
         self.table_id = table_id
         self.import_type = import_type
 
@@ -11,3 +12,6 @@ class TriggleCond(object):
 
     def __hash__(self):
         return hash((self.table_id, self.import_type))
+
+    def __str__(self):
+        return "TriggleCond(table_id=%s, import_type=%s)" % (self.table_id, self.import_type)
