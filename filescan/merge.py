@@ -28,7 +28,11 @@ def get_time_format():
 
 
 # 更新parquet文件
-def merge(data_path, data_type, src_db, src_table, schema_str, stage_id):
+def merge(data_path, data_type, src_db, src_table, keys_array ,schema_str, stage_id):
+
+    # 多个键位的联合主键
+    union_key = "concat(" + ",_,".join(keys_array) + ") as union_key ,"
+
     # 用来记录更新的数据信息
     count_info = {}
 
@@ -75,7 +79,10 @@ def merge(data_path, data_type, src_db, src_table, schema_str, stage_id):
         org_parquet_df = spark.read.load(parquet_path + src_db + "/" + src_table + ".parquet")
 
         # 创建表
-        # org_parquet_df.createOrReplaceTempView(src_db + "_" + src_table)
+        org_parquet_df.createOrReplaceTempView(src_db + "_" + src_table)
+
+        # 创建带有唯一列的dataframe
+        org_parquet_df = spark.sql(" select " + union_key + schema_string + " from " + src_db + "_" + src_table)
 
         # 修改和添加的 dataframe
         update_df = None
@@ -105,20 +112,28 @@ def merge(data_path, data_type, src_db, src_table, schema_str, stage_id):
             # 总的数量
             update_insert_count = update_df.count()
 
+            # 创建表
+            update_df. createOrReplaceTempView(src_db + "_" + src_table + "_insert_update")
+
+            # 创建带有唯一列的dataframe
+            update_df = spark.sql(" select " + union_key + schema_str + " from " + src_db + "_" + src_table + "_insert_update")
+
             # 构造逗号分割的主键串
-            ids = update_df.select("id").collect()
+            ids = update_df.select("union_key").collect()
             for delete_id in ids:
-                id_arry.append(delete_id.id)
+                id_arry.append(delete_id.union_key)
             update_ids = ",".join(id_arry)
 
             # 查询在源数据里面的数据个数
-            update_count = org_parquet_df.filter("id in (" + update_ids + ")").count()
+            update_count = org_parquet_df.filter("union_key in (" + update_ids + ")").count()
 
             # 减去得到添加的数据个数
             insert_count = update_insert_count - update_count
 
             # 构建带有隐藏列的df
             update_df = update_df.crossJoin(hidden_df)
+
+            update_df.show()
 
         # 删除的 dataframe
         delete_df = None
@@ -136,13 +151,19 @@ def merge(data_path, data_type, src_db, src_table, schema_str, stage_id):
             # 加载文件
             delete_df = spark.read.load(data_path + "/data_deleted.csv", format="csv", encoding="gbk", schema=schema_df)
 
+            # 构建多个unique的列
+            delete_df.createOrReplaceTempView(src_db + "_" + src_table + "_delete")
+
+            # 创建带有唯一列的dataframe
+            delete_df = spark.sql(" select " + union_key + schema_str + " from " + src_db + "_" + src_table + "_delete")
+
             # 删除的数据数量
             delete_count = delete_df.count()
 
             # 将id主键放入变化数据数组
-            ids = delete_df.select("id").collect()
+            ids = delete_df.select("union_key").collect()
             for delete_id in ids:
-                id_arry.append(delete_id.id)
+                id_arry.append(delete_id.union_key)
 
             # 构建带有隐藏列的df
             delete_df = delete_df.crossJoin(hidden_df)
@@ -151,7 +172,13 @@ def merge(data_path, data_type, src_db, src_table, schema_str, stage_id):
         clean_org_df = org_parquet_df.filter(" id not in (" + ",".join(id_arry) + ")")
 
         # 将修改的和删除的dataframe append到源数据dataframe上去
-        end_df = clean_org_df.union(update_df).union(delete_df)
+        end_df = clean_org_df
+
+        if update_df is not None:
+            end_df = end_df.union(update_df)
+
+        if delete_df is not None:
+            end_df = end_df.union(delete_df)
 
         # 写入到指定的文件位置
         end_df.createOrReplaceTempView(src_db + "_" + src_table + "_temp")

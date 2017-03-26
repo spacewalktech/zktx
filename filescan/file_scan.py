@@ -157,6 +157,13 @@ for table in db.session.query(tb_import_tables.ImportTable).all():
     # 主键，可能是多个，按分号分割的
     src_keys = table.src_keys
 
+    # 需要去掉字段结尾的分号
+    if src_keys.endswith(";"):
+        src_keys = str[0:(len(src_keys) - 1)]
+
+    # 主键列,可能是多个列合并成主键列
+    keys_array = src_keys.split(";")
+
     # 获取表路径
     path = prefix + table.src_db + "/" + table.src_table
 
@@ -171,6 +178,7 @@ for table in db.session.query(tb_import_tables.ImportTable).all():
         full_path = path + "/full/" + full_file_name
 
         if pattern.match(full_file_name) and upload_completed(full_path):
+
             # peocessing路径
             processing_path = path + "/processing/" + full_file_name
 
@@ -187,7 +195,7 @@ for table in db.session.query(tb_import_tables.ImportTable).all():
             stageid = create_stage(table.id, "full")
 
             # 全量更新
-            count_info = merge.merge(processing_path, "full", table.src_db, table.src_table, schema_str, stageid)
+            count_info = merge.merge(processing_path, "full", table.src_db, table.src_table, keys_array, schema_str, stageid)
 
             # 更新此次录入的数据信息,只插入count的信息就行了
             do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), record_num=count_info.get("record_num"))
@@ -225,7 +233,7 @@ for table in db.session.query(tb_import_tables.ImportTable).all():
                 break
 
             # 增量更新
-            count_info = merge.merge(processing_path, "incremental", table.src_db, table.src_table, flag, stageid)
+            count_info = merge.merge(processing_path, "incremental", table.src_db, table.src_table, keys_array,flag, stageid)
 
             # 更新此次录入的数据信息,只插入count的信息就行了
             do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), updated_num=count_info.get("updated_num"), deleted_num=count_info.get("deleted_num"), record_num=count_info.get("record_num"))
