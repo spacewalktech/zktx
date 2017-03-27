@@ -9,6 +9,7 @@ import common.db.db_config as db
 class TableSchema(db.Base):
     # 表名：
     __tablename__ = "tb_table_schema"
+    __table_args__ = {'extend_existing': True}
 
     # 表结构
     id = Column(Integer, primary_key=True, nullable=True)

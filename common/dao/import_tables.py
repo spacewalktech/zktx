@@ -1,4 +1,3 @@
-#!/usr/local/bin/python2.7
 # -*- coding: utf-8 -*-：
 
 from sqlalchemy import Column, Integer, TEXT, String, DateTime
@@ -9,6 +8,7 @@ import common.db.db_config as db
 class ImportTable(db.Base):
     # 表名：
     __tablename__ = "tb_import_tables"
+    __table_args__ = {'extend_existing': True}
 
     # 表结构
     id = Column(Integer, primary_key=True, nullable=True)
