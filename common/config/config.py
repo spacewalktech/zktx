@@ -2,11 +2,11 @@
 # 配置信息
 
 mysql_db = {
-    "host": '192.168.56.101',
+    "host": '192.168.1.50',
     "port": 3306,
-    "user": "test",
-    "password": "test",
-    "db": "test2",
+    "user": "root",
+    "password": "passwd",
+    "db": "zktx_data_platform",
     "driver": "pymysql"
 }
 

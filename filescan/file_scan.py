@@ -115,7 +115,7 @@ def do_stage(stage_id, table_id, import_type="full", inserted_num=0, updated_num
 def create_stage(table_id, import_type):
     # 查询出最新一条stage信息
     StagePoJo = stage.Stage
-    table_stage = db.session.query(StagePoJo).filter_by(import_table_id=table.id).order_by(desc(StagePoJo.id)).first()
+    table_stage = db.session.query(StagePoJo).filter_by(import_table_id=table_id).order_by(desc(StagePoJo.id)).first()
 
     # 添加stage判断为空和上一次的stage_id
     new_stage = StagePoJo()
@@ -257,6 +257,5 @@ def load():
 
                 # 将 processing 目录下面的东西移动到 processed目录下
                 shutil.move(processing_path, processed_path)
-        break
 
 load()

@@ -143,8 +143,6 @@ def merge(data_path, data_type, src_db, src_table, keys_array ,schema_str, stage
             # 构建带有隐藏列的df
             update_df = update_df.crossJoin(hidden_df)
 
-            update_df.show()
-
         # 删除的 dataframe
         delete_df = None
 
