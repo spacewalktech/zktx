@@ -2,11 +2,11 @@
 # 配置信息
 
 mysql_db = {
-    "host": '192.168.1.50',
+    "host": '192.168.56.101',
     "port": 3306,
-    "user": "root",
-    "password": "passwd",
-    "db": "zktx_data_platform",
+    "user": "test",
+    "password": "test",
+    "db": "test2",
     "driver": "pymysql"
 }
 
@@ -33,3 +33,5 @@ pro_path = {
     # warehouse的位置
     "spark_warehouse": "hdfs://spacewalk/spacewalk/hdfs/ware_house"
 }
+LOGGING_DIR = "../logs"
+LOGGING_STDOUT = True
