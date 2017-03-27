@@ -5,12 +5,22 @@ import os
 import time
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
+import common.config.config as config, common.util.util as util
+
+setting = None
+
+env = util.get_param("env")
+
+if env == "pro":
+    setting = config.pro_path
+else:
+    setting = config.dev_path
 
 # master 的地址
-spark_master_ip = "spark://127.0.0.1:7077"
+spark_master_ip = setting.get("spark_master_ip")
 
 # warehouse的位置
-spark_warehouse = "/Users/lzf/data/warehouse"
+spark_warehouse = setting.get("spark_warehouse")
 
 # parquet文件的隐藏列
 hidden_colum = "resvd_stage_id,resvd_flag,resvd_create_time,resvd_latest_update_time"
@@ -19,7 +29,7 @@ hidden_colum = "resvd_stage_id,resvd_flag,resvd_create_time,resvd_latest_update_
 hidden_colum_array = ["resvd_stage_id", "resvd_flag", "resvd_create_time", "resvd_latest_update_time"]
 
 # 存放parquet文件的地址
-parquet_path = "/Users/lzf/data/zktx_data/"
+parquet_path = setting.get("parquet_path")
 
 
 # 获取当前的时间

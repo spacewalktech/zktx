@@ -1,8 +1,22 @@
 # -*- coding: utf-8 -*-：
+# 工具类
+
+import sys
 import json
 from common.entity.triggle_cond import TriggleCond
 from common.entity.stage_to_process import StageToProcess
 
+def get_param(param_name=None):
+    if (param_name == None):
+        return None
+    param_name = str.strip(param_name)
+    argv = sys.argv
+
+    for index, item in enumerate(argv):
+        item = str.strip(item)
+        if (param_name == item):
+            return argv[index + 1]
+          
 def decode_triggle_conds(triggle_cond_in_text):
     triggle_list = [] # [<table_id, import_type>, ...]
     triggles = json.loads(triggle_cond_in_text)
@@ -35,4 +49,3 @@ def object_list_to_str(object_list):
         ret_str = "%s, %s" % (ret_str, obj)
     ret_str += "]"
     return ret_str
-

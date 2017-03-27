@@ -6,14 +6,23 @@ import common.dao.table_schema as tb_table_schema
 import common.db.db_config as db
 import common.dao.stage as stage
 import os, re, shutil, json, time
-import merge
+import merge , common.config.config as config, common.util.util as util
 from sqlalchemy import desc
 
+setting = None
+
+env = util.get_param("env")
+
+if env == "pro":
+    setting = config.pro_path
+else:
+    setting = config.dev_path
+
 # 系统配置的前缀
-prefix = "/Users/lzf/data/"
+prefix = setting.get("prefix")
 
 # 存放parquet文件的地址
-parquet_path = "/Users/lzf/data/zktx_data/"
+parquet_path = setting.get("parquet_path")
 
 pattern = re.compile(r'^\d{8}_\d{2}_\d{2}_\d{2}$')
 
@@ -151,99 +160,103 @@ def do_check_schema(data_path, table_id, stage_id):
     return get_schema_str(schema_str)
 
 
-# 获取数据库中存储的表的信息
-for table in db.session.query(tb_import_tables.ImportTable).all():
+def load():
 
-    # 主键，可能是多个，按分号分割的
-    src_keys = table.src_keys
+    # 获取数据库中存储的表的信息
+    for table in db.session.query(tb_import_tables.ImportTable).all():
 
-    # 需要去掉字段结尾的分号
-    if src_keys.endswith(";"):
-        src_keys = str[0:(len(src_keys) - 1)]
+        # 主键，可能是多个，按分号分割的
+        src_keys = table.src_keys
 
-    # 主键列,可能是多个列合并成主键列
-    keys_array = src_keys.split(";")
+        # 需要去掉字段结尾的分号
+        if src_keys.endswith(";"):
+            src_keys = str[0:(len(src_keys) - 1)]
 
-    # 获取表路径
-    path = prefix + table.src_db + "/" + table.src_table
+        # 主键列,可能是多个列合并成主键列
+        keys_array = src_keys.split(";")
 
-    # -----------------------------------------------------全量-----------------------------------------------------
+        # 获取表路径
+        path = prefix + table.src_db + "/" + table.src_table
 
-    #  获取full下面文件名
-    full_files = os.listdir(path + "/full")
+        # -----------------------------------------------------全量-----------------------------------------------------
 
-    # 遍历每个文件夹
-    for full_file_name in full_files:
+        #  获取full下面文件名
+        full_files = os.listdir(path + "/full")
 
-        full_path = path + "/full/" + full_file_name
+        # 遍历每个文件夹
+        for full_file_name in full_files:
 
-        if pattern.match(full_file_name) and upload_completed(full_path):
+            full_path = path + "/full/" + full_file_name
 
-            # peocessing路径
-            processing_path = path + "/processing/" + full_file_name
+            if pattern.match(full_file_name) and upload_completed(full_path):
 
-            # processed路径
-            processed_path = path + "/processed/" + full_file_name
+                # peocessing路径
+                processing_path = path + "/processing/" + full_file_name
 
-            # 转移文件
-            shutil.move(full_path, processing_path)
+                # processed路径
+                processed_path = path + "/processed/" + full_file_name
 
-            # 更新schema文件
-            schema_str = do_schema(processing_path, table.id)
+                # 转移文件
+                shutil.move(full_path, processing_path)
 
-            # 先创建stage_id
-            stageid = create_stage(table.id, "full")
+                # 更新schema文件
+                schema_str = do_schema(processing_path, table.id)
 
-            # 全量更新
-            count_info = merge.merge(processing_path, "full", table.src_db, table.src_table, keys_array, schema_str, stageid)
+                # 先创建stage_id
+                stageid = create_stage(table.id, "full")
 
-            # 更新此次录入的数据信息,只插入count的信息就行了
-            do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), record_num=count_info.get("record_num"))
+                # 全量更新
+                count_info = merge.merge(processing_path, "full", table.src_db, table.src_table, keys_array, schema_str, stageid)
 
-            # 将 processing 目录下面的东西移动到 processed目录下
-            shutil.move(processing_path, processed_path)
+                # 更新此次录入的数据信息,只插入count的信息就行了
+                do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), record_num=count_info.get("record_num"))
 
-    # -----------------------------------------------------增量-----------------------------------------------------
+                # 将 processing 目录下面的东西移动到 processed目录下
+                shutil.move(processing_path, processed_path)
 
-    # 获取incremental下面的文件名称
-    full_files = os.listdir(path + "/incremental")
+        # -----------------------------------------------------增量-----------------------------------------------------
 
-    # 遍历文件家
-    for full_file_name in full_files:
+        # 获取incremental下面的文件名称
+        full_files = os.listdir(path + "/incremental")
 
-        full_path = path + "/incremental/" + full_file_name
+        # 遍历文件家
+        for full_file_name in full_files:
 
-        if pattern.match(full_file_name) and upload_completed(full_path):
+            full_path = path + "/incremental/" + full_file_name
 
-            # processing路径
-            processing_path = path + "/processing/" + full_file_name
+            if pattern.match(full_file_name) and upload_completed(full_path):
 
-            # processed路径
-            processed_path = path + "/processed/" + full_file_name
+                # processing路径
+                processing_path = path + "/processing/" + full_file_name
 
-            # 转移文件
-            shutil.move(full_path, processing_path)
+                # processed路径
+                processed_path = path + "/processed/" + full_file_name
 
-            # 先创建stage_id
-            stageid = create_stage(table.id, "incremental")
+                # 转移文件
+                shutil.move(full_path, processing_path)
 
-            # 检查schema文件是否一致
-            flag = do_check_schema(processing_path, table.id, stageid)
-            if flag == False:
-                break
+                # 先创建stage_id
+                stageid = create_stage(table.id, "incremental")
 
-            # 增量更新
-            count_info = merge.merge(processing_path, "incremental", table.src_db, table.src_table, keys_array,flag, stageid)
+                # 检查schema文件是否一致
+                flag = do_check_schema(processing_path, table.id, stageid)
+                if flag == False:
+                    break
 
-            # 更新此次录入的数据信息,只插入count的信息就行了
-            do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), updated_num=count_info.get("updated_num"), deleted_num=count_info.get("deleted_num"), record_num=count_info.get("record_num"))
+                # 增量更新
+                count_info = merge.merge(processing_path, "incremental", table.src_db, table.src_table, keys_array,flag, stageid)
 
-            # 将旧文件移除
-            shutil.rmtree(parquet_path + table.src_db + "/" + table.src_table + ".parquet")
+                # 更新此次录入的数据信息,只插入count的信息就行了
+                do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), updated_num=count_info.get("updated_num"), deleted_num=count_info.get("deleted_num"), record_num=count_info.get("record_num"))
 
-            # 把新生成的 temp 文件 命名为正式文件
-            os.rename(parquet_path + table.src_db + "/" + table.src_table + "_temp.parquet", parquet_path + table.src_db + "/" + table.src_table + ".parquet")
+                # 将旧文件移除
+                shutil.rmtree(parquet_path + table.src_db + "/" + table.src_table + ".parquet")
 
-            # 将 processing 目录下面的东西移动到 processed目录下
-            shutil.move(processing_path, processed_path)
-    break
+                # 把新生成的 temp 文件 命名为正式文件
+                os.rename(parquet_path + table.src_db + "/" + table.src_table + "_temp.parquet", parquet_path + table.src_db + "/" + table.src_table + ".parquet")
+
+                # 将 processing 目录下面的东西移动到 processed目录下
+                shutil.move(processing_path, processed_path)
+        break
+
+load()
