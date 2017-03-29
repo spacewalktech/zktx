@@ -22,11 +22,10 @@ public class TestController {
 	@Autowired
 	private StageService stageService;
 
-	@RequestMapping
 	@ResponseBody
 	public String test() {
 		
-		List<Stage> list =stageService.queryStageDerByTableType(0);
+		List<Stage> list =stageService.queryStageDerByTableType(0,0,3);
 		System.out.println(list+":");
 		return "this is test !";
 		

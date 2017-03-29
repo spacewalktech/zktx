@@ -1,4 +1,4 @@
-package com.zktx.platform.service.importtable;
+package com.zktx.platform.service.importtable.impl;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.zktx.platform.dao.tb.MrTaskMapper;
 import com.zktx.platform.entity.tb.MrTaskWithBLOBs;
+import com.zktx.platform.service.importtable.MrTaskService;
 @Service("mrTaskService")
 public class MrTaskServiceImple implements MrTaskService {
 

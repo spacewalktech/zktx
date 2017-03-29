@@ -1,4 +1,4 @@
-package com.zktx.platform.service.importtable;
+package com.zktx.platform.service.importtable.impl;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.zktx.platform.dao.tb.TableSchemaMapper;
 import com.zktx.platform.entity.tb.TableSchema;
+import com.zktx.platform.service.importtable.TableSchemaService;
 @Service("tableSchemaService")
 public class TableSchemaServiceImpl implements TableSchemaService {
 
@@ -14,9 +15,9 @@ public class TableSchemaServiceImpl implements TableSchemaService {
 	private TableSchemaMapper mapper;
 	
 	@Override
-	public List<TableSchema> selectByImportTableId(Integer tableId) {
+	public List<TableSchema> selectByImportTableId(Integer tableId,Integer fromRowId,Integer num) {
 		
-		return mapper.selectByImportTableId(tableId);
+		return mapper.selectByImportTableId(tableId,fromRowId,num);
 	}
 
 }

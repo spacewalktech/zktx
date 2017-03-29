@@ -10,12 +10,13 @@
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.zktx.platform.entity.tb.TableSchema">
     <result column="schema" jdbcType="LONGVARCHAR" property="schema" />
+    <result column="spark_schema" jdbcType="LONGVARCHAR" property="spark_schema"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, table_id, version, create_time, update_time
   </sql>
   <sql id="Blob_Column_List">
-    schema
+    `schema`,spark_schema
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
     select 
@@ -25,13 +26,14 @@
     from tb_table_schema
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <select id="selectByImportTableId" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+  <select id="selectByImportTableId" resultMap="BaseResultMap">
   	 select 
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
   	from tb_table_schema 
   	where table_id = #{table_id,jdbcType=INTEGER}
+  	limit #{fromRowId,jdbcType=INTEGER} , #{num,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from tb_table_schema
