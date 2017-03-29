@@ -6,7 +6,7 @@ import common.dao.table_schema as tb_table_schema
 import common.db.db_config as db
 import common.dao.stage as stage
 import os, re, shutil, json, time
-import merge , common.config.config as config, common.util.util as util
+import merge, common.config.config as config, common.util.util as util
 from sqlalchemy import desc
 
 setting = None
@@ -139,7 +139,6 @@ def create_stage(table_id, import_type):
 
 # 更新数据的时候检查表的schema信息是不是一致
 def do_check_schema(data_path, table_id, stage_id):
-
     # 获取上传的目录里面的schame
     schema_str = get_schema(data_path)
 
@@ -161,7 +160,6 @@ def do_check_schema(data_path, table_id, stage_id):
 
 
 def load():
-
     # 获取数据库中存储的表的信息
     for table in db.session.query(tb_import_tables.ImportTable).all():
 
@@ -189,7 +187,6 @@ def load():
             full_path = path + "/full/" + full_file_name
 
             if pattern.match(full_file_name) and upload_completed(full_path):
-
                 # peocessing路径
                 processing_path = path + "/processing/" + full_file_name
 
@@ -244,18 +241,20 @@ def load():
                     break
 
                 # 增量更新
-                count_info = merge.merge(processing_path, "incremental", table.src_db, table.src_table, keys_array,flag, stageid)
+                count_info = merge.merge(processing_path, "incremental", table.src_db, table.src_table, keys_array, flag, stageid)
 
                 # 更新此次录入的数据信息,只插入count的信息就行了
                 do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), updated_num=count_info.get("updated_num"), deleted_num=count_info.get("deleted_num"), record_num=count_info.get("record_num"))
 
                 # 将旧文件移除
-                shutil.rmtree(parquet_path + table.src_db + "/" + table.src_table + ".parquet")
+                if env != 'pro':
+                    shutil.rmtree(parquet_path + table.src_db + "/" + table.src_table + ".parquet")
 
-                # 把新生成的 temp 文件 命名为正式文件
-                os.rename(parquet_path + table.src_db + "/" + table.src_table + "_temp.parquet", parquet_path + table.src_db + "/" + table.src_table + ".parquet")
+                    # 把新生成的 temp 文件 命名为正式文件
+                    os.rename(parquet_path + table.src_db + "/" + table.src_table + "_temp.parquet", parquet_path + table.src_db + "/" + table.src_table + ".parquet")
 
                 # 将 processing 目录下面的东西移动到 processed目录下
                 shutil.move(processing_path, processed_path)
+
 
 load()

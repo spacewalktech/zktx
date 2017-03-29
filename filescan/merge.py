@@ -3,18 +3,19 @@
 
 import os
 import time
+import common.config.config as common_config, common.util.util as common_util
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
-import common.config.config as config, common.util.util as util
+from hdfs import *
 
 setting = None
 
-env = util.get_param("env")
+env = common_util.get_param("env")
 
 if env == "pro":
-    setting = config.pro_path
+    setting = common_config.pro_path
 else:
-    setting = config.dev_path
+    setting = common_config.dev_path
 
 # master 的地址
 spark_master_ip = setting.get("spark_master_ip")
@@ -38,8 +39,7 @@ def get_time_format():
 
 
 # 更新parquet文件
-def merge(data_path, data_type, src_db, src_table, keys_array ,schema_str, stage_id):
-
+def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage_id):
     # 多个键位的联合主键
     union_key = "concat(" + ",_,".join(keys_array) + ") as union_key ,"
 
@@ -47,7 +47,7 @@ def merge(data_path, data_type, src_db, src_table, keys_array ,schema_str, stage
     count_info = {}
 
     # 启动spark任务
-    spark = SparkSession.builder.appName(" python update table [ " + src_db + "_" + src_table + " ]").config("spark.master", spark_master_ip).config("spark.sql.warehouse.dir", spark_warehouse).getOrCreate()
+    spark = SparkSession.builder.appName(" python update table [ " + src_db + "_" + src_table + " ]").config("spark.master", spark_master_ip).config("spark.sql.warehouse.dir", "/opt/spacewalk/data").getOrCreate()
 
     # 表的schema
     schema_string = schema_str + "," + hidden_colum
@@ -56,11 +56,25 @@ def merge(data_path, data_type, src_db, src_table, keys_array ,schema_str, stage
     fields = [StructField(field_name, StringType(), False) for field_name in schema_str.split(",")]
     schema_df = StructType(fields)
 
+    client = Client('http://hadoop01:50070')
+
     # 全量更新
     if data_type == "full":
 
-        # 读取源文件
-        df = spark.read.load(data_path + "/data_full.csv", format="csv", encoding="gbk", schema=schema_df)
+        # 如果是正式环境需要从hdfs上读取
+        df = None
+
+        if env == "pro":
+            # 将文件加载到hdfs上   /opt/spacewalk/data/orgin_file/test_db/test_table/processing/20170901_12_09_30
+            hdfs_path = '/spacewalk/hdfs/orgin_file/' + src_db + '/' + src_table
+            # 修改path，开始读取
+            client.makedirs(hdfs_path)
+            client.upload(hdfs_path, data_path)
+            # 读取数据
+            df = spark.read.load(hdfs_path + data_path.split('processing')[1] + "/data_full.csv", format="csv", encoding="gbk", schema=schema_df)
+        else:
+            df = spark.read.load(data_path + "/data_full.csv", format="csv", encoding="gbk", schema=schema_df)
+
         count = df.count()
 
         # 创建4个隐藏列
@@ -77,6 +91,10 @@ def merge(data_path, data_type, src_db, src_table, keys_array ,schema_str, stage
         # 写成parquet文件
         new_schema_org_df.write.format("parquet").mode("overwrite").save(parquet_path + src_db + "/" + src_table + ".parquet")
 
+        if env == "pro":
+            # 删除hdfs临时目录
+            client.delete('/spacewalk/hdfs/orgin_file/' + src_db + "/" + src_table, recursive=True)
+
         # 返回统计信息
         count_info["inserted_num"] = count
         count_info["record_num"] = count
@@ -86,7 +104,7 @@ def merge(data_path, data_type, src_db, src_table, keys_array ,schema_str, stage
     else:
 
         # 加载原有parquet文件
-        org_parquet_df = spark.read.load(parquet_path + src_db + "/" + src_table + ".parquet")
+        org_parquet_df = spark.read.load(parquet_path + src_db + "/" + src_table + ".parquet", format='parquet')
 
         # 创建表
         org_parquet_df.createOrReplaceTempView(src_db + "_" + src_table)
@@ -116,14 +134,25 @@ def merge(data_path, data_type, src_db, src_table, keys_array ,schema_str, stage
         # 有 data_insert_updated.csv 文件
         if os.path.exists(data_path + "/data_insert_updated.csv"):
 
-            # 加载文件
-            update_df = spark.read.load(data_path + "/data_insert_updated.csv", format="csv", encoding="gbk", schema=schema_df)
+            if env == "pro":
+                # 将文件加载到hdfs上   /opt/spacewalk/data/orgin_file/test_db/test_table/processing/20170901_12_09_30
+                hdfs_path = '/spacewalk/hdfs/orgin_file/' + src_db + '/' + src_table
+                # 修改path，开始读取
+                try:
+                    client.makedirs(hdfs_path)
+                    client.upload(hdfs_path, data_path)
+                except Exception, e:
+                    client.upload(hdfs_path, data_path, overwrite=True)
+                # 读取数据
+                update_df = spark.read.load(hdfs_path + data_path.split('processing')[1] + "/data_insert_updated.csv", format="csv", encoding="gbk", schema=schema_df)
+            else:
+                update_df = spark.read.load(data_path + "/data_insert_updated.csv", format="csv", encoding="gbk", schema=schema_df)
 
             # 总的数量
             update_insert_count = update_df.count()
 
             # 创建表
-            update_df. createOrReplaceTempView(src_db + "_" + src_table + "_insert_update")
+            update_df.createOrReplaceTempView(src_db + "_" + src_table + "_insert_update")
 
             # 创建带有唯一列的dataframe
             update_df = spark.sql(" select " + union_key + schema_str + " from " + src_db + "_" + src_table + "_insert_update")
@@ -156,8 +185,19 @@ def merge(data_path, data_type, src_db, src_table, keys_array ,schema_str, stage
         # 有 data_deleted.csv 文件
         if os.path.exists(data_path + "/data_deleted.csv"):
 
-            # 加载文件
-            delete_df = spark.read.load(data_path + "/data_deleted.csv", format="csv", encoding="gbk", schema=schema_df)
+            if env == "pro":
+                # 将文件加载到hdfs上   /opt/spacewalk/data/orgin_file/test_db/test_table/processing/20170901_12_09_30
+                hdfs_path = '/spacewalk/hdfs/orgin_file/' + src_db + '/' + src_table
+                # 修改path，开始读取
+                try:
+                    client.makedirs(hdfs_path)
+                    client.upload(hdfs_path, data_path)
+                except Exception, e:
+                    client.upload(hdfs_path, data_path, overwrite=True)
+                # 读取数据
+                delete_df = spark.read.load(hdfs_path + data_path.split('processing')[1] + "/data_deleted.csv", format="csv", encoding="gbk", schema=schema_df)
+            else:
+                delete_df = spark.read.load(data_path + "/data_deleted.csv", format="csv", encoding="gbk", schema=schema_df)
 
             # 构建多个unique的列
             delete_df.createOrReplaceTempView(src_db + "_" + src_table + "_delete")
@@ -191,7 +231,17 @@ def merge(data_path, data_type, src_db, src_table, keys_array ,schema_str, stage
         # 写入到指定的文件位置
         end_df.createOrReplaceTempView(src_db + "_" + src_table + "_temp")
         new_schema_org_df = spark.sql("select " + schema_string + " from " + src_db + "_" + src_table + "_temp")
-        new_schema_org_df.write.format("parquet").mode("overwrite").save(parquet_path + src_db + "/" + src_table + "_temp.parquet")
+
+        if env == 'pro':
+            new_schema_org_df.write.format("parquet").mode("overwrite").save(parquet_path + src_db + "/" + src_table + "_temp.parquet")
+
+            # 删除hdfs上原有数据
+            client.delete('/spacewalk/hdfs/parquet_file/' + src_db + "/" + src_table + ".parquet", recursive=True)
+
+            # 将temp文件改名为正式文件
+            client.rename('/spacewalk/hdfs/parquet_file/' + src_db + "/" + src_table + "_temp.parquet", '/spacewalk/hdfs/parquet_file/' + src_db + "/" + src_table + ".parquet")
+        else:
+            new_schema_org_df.write.format("parquet").mode("overwrite").save(parquet_path + src_db + "/" + src_table + "_temp.parquet")
 
         # 返回统计信息
         count_info["inserted_num"] = insert_count

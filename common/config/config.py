@@ -25,11 +25,11 @@ dev_path = {
 # 正式
 pro_path = {
     # 存储源文件的路径前缀
-    "prefix": "/opt/spacewalk/data/orgin_file",
+    "prefix": "/opt/spacewalk/data/orgin_file/",
     # 存放parquet文件的地址
-    "parquet_path": "hdfs://spacewalk/spacewalk/hdfs/parquet_file",
+    "parquet_path": "hdfs://spacewalk/spacewalk/hdfs/parquet_file/",
     # master 的地址
-    "spark_master_ip": "spark://hadoop01:7077",
+    "spark_master_ip": "yarn",
     # warehouse的位置
     "spark_warehouse": "hdfs://spacewalk/spacewalk/hdfs/ware_house"
 }
