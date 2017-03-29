@@ -1,5 +1,7 @@
 package com.zktx.platform.dao.tb;
 
+import java.util.List;
+
 import com.zktx.platform.entity.tb.TableSchema;
 
 public interface TableSchemaMapper {
@@ -16,4 +18,7 @@ public interface TableSchemaMapper {
     int updateByPrimaryKeyWithBLOBs(TableSchema record);
 
     int updateByPrimaryKey(TableSchema record);
+    
+    List<TableSchema> selectByImportTableId(Integer table_id);
+    
 }

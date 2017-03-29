@@ -35,6 +35,21 @@
     from tb_stage
     where id = #{id,jdbcType=INTEGER}
   </select>
+   <select id="queryStageByTableType" resultMap="ResultMapWithBLOBs">
+  	 select s.id, s.import_table_id, s.stage_id, s.import_type, s.inserted_num, s.updated_num, s.deleted_num, 
+    s.record_num, s.status, s.process_status, s.create_time, s.update_time, s.begin_time, s.end_time,s.fail_info
+    from tb_stage s, tb_import_tables t
+    <where>
+    	s.import_table_id=t.id
+    	
+    	<if test="status !=null">
+    		and s.status =#{status,jdbcType=INTEGER}
+    	</if>
+    	<if test="table_type">
+    		and t.table_type =#{table_type,jdbcType=INTEGER}
+    	</if>
+    </where>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from tb_stage
     where id = #{id,jdbcType=INTEGER}
