@@ -43,6 +43,13 @@
     ,
     <include refid="Blob_Column_List" />
      from tb_mr_task 
+     <where>
+     	flag=0
+     	<if test="latest_running_status != null">
+     		and latest_running_status=#{latest_running_status,jdbcType=INTEGER}
+     	</if>
+     </where>
+     
 	limit #{fromRowId,jdbcType=INTEGER} , #{num,jdbcType=INTEGER}
   </select>
   <select id="findByHasProcessed" resultType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
@@ -53,7 +60,7 @@
     limit #{fromRowId,jdbcType=INTEGER} , #{num,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from tb_mr_task
+    update tb_mr_task set flag=1
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
@@ -72,6 +79,7 @@
       #{table_stage_info,jdbcType=LONGVARCHAR}, #{triggle_tables,jdbcType=LONGVARCHAR}, 
       #{latest_running_info,jdbcType=LONGVARCHAR})
   </insert>
+  
   <insert id="insertSelective" parameterType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
     insert into tb_mr_task
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -181,6 +189,9 @@
       </if>
     </trim>
   </insert>
+  <update id="taskAction" parameterType="java.lang.Integer">
+  	update tb_mr_task set active=1 where id=#{id,jdbcType=INTEGER}
+  </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
     update tb_mr_task
     <set>

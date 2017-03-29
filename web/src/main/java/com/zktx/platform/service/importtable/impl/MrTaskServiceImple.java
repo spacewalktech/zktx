@@ -14,7 +14,7 @@ public class MrTaskServiceImple implements MrTaskService {
 	private	MrTaskMapper mapper;
 	@Override
 	public List<MrTaskWithBLOBs> findByPagination(Integer fromRowId, Integer num) {
-		return mapper.findByPagination(fromRowId, num);
+		return mapper.findByPagination(null,fromRowId, num);
 	}
 	@Override
 	public int insertSelective(MrTaskWithBLOBs record) {
@@ -26,5 +26,29 @@ public class MrTaskServiceImple implements MrTaskService {
 	public List<MrTaskWithBLOBs> findByToRun(Integer fromRowId, Integer num) {
 		return mapper.findByHasProcessed(0, fromRowId, num);
 	}
+	
+	@Override
+	public void deleteByPrimaryKey(Integer id) {
+		mapper.deleteByPrimaryKey(id);
+	}
+	@Override
+	public void updateByPrimaryKeySelective(MrTaskWithBLOBs record) {
+		mapper.updateByPrimaryKeySelective(record);
+		
+	}
+	//任务预警
+	@Override
+	public List<MrTaskWithBLOBs> findByProper(Integer fromRowId, Integer num) {
+		
+		return mapper.findByPagination(0, fromRowId, num);
+	}
+	@Override
+	public void taskAction(Integer id) {
+		mapper.taskAction(id);
+		
+	}
+	
+	
 
+	
 }
