@@ -9,6 +9,13 @@ public interface MrTaskService {
 	
 	List<MrTaskWithBLOBs> findByToRun(Integer fromRowId , Integer num);
 	
+	List<MrTaskWithBLOBs> findByProper(Integer fromRowId , Integer num);
+	
 	 int insertSelective(MrTaskWithBLOBs record);
 	 
+	 void deleteByPrimaryKey(Integer id);
+	 
+	 void updateByPrimaryKeySelective(MrTaskWithBLOBs record);
+	 
+	 public void taskAction(Integer id);
 }

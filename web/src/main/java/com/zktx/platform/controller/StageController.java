@@ -23,17 +23,29 @@ public class StageController {
 	//导入表预警
 	@RequestMapping("/queryStageOri.do")
 	public String queryByTableType(Integer tableType,Integer fromRowId,Integer num){
-		List<Stage> list =stageService.queryStageOriByTableType(0,0,5);
-		String jsString =JSON.toJSONString(list, true);
-		System.out.println(jsString);
+		try {
+			List<Stage> list =stageService.queryStageOriByTableType(0,0,5);
+			String jsString =JSON.toJSONString(list, true);
+			System.out.println(jsString);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "error";
+		}
+		
 		return "result";
 	}
 	//派生表预警
 	@RequestMapping("/queryStageDer.do")
 	public String queryInfoByParams(Integer tableType,Integer fromRowId,Integer num){
-		List<Stage> list  =stageService.queryStageDerByTableType(1,0,5);
-		String jsString =JSON.toJSONString(list, true);
-		System.out.println(jsString);
+		try {
+			List<Stage> list  =stageService.queryStageDerByTableType(1,0,5);
+			String jsString =JSON.toJSONString(list, true);
+			System.out.println(jsString);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "error";
+		}
+		
 		return "result";
 	}
 	

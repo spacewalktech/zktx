@@ -38,7 +38,7 @@ public class ImportTables {
 
     private Integer creator_id;
 
-    private Boolean flag;
+    private Boolean flag=false;
 
     private Date create_time;
 
