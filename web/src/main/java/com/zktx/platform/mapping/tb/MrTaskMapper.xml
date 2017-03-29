@@ -46,12 +46,10 @@
 	limit #{fromRowId,jdbcType=INTEGER} , #{num,jdbcType=INTEGER}
   </select>
   <select id="findByHasProcessed" resultType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
-  	 select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
+  	 select  m.id, m.name, m.information, m.bin_file_uri, m.type, m.export_dir_uri, m.priority, m.active, m.task_schedule, 
+    m.latest_running_time, m.latest_running_status, m.create_time, m.update_time
     from tb_mr_task m,tb_task_queue q
-    where m.id = q.mr_task_id and q.has_processed=#{has_processed,jdbcType=INTEGER}
+    where m.id = q.mr_task_id and m.flag=0 and q.has_processed=#{has_processed,jdbcType=INTEGER}
     limit #{fromRowId,jdbcType=INTEGER} , #{num,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">

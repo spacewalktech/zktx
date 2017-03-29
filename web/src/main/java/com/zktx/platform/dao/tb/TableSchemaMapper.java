@@ -2,6 +2,8 @@ package com.zktx.platform.dao.tb;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.zktx.platform.entity.tb.TableSchema;
 
 public interface TableSchemaMapper {
@@ -19,6 +21,6 @@ public interface TableSchemaMapper {
 
     int updateByPrimaryKey(TableSchema record);
     
-    List<TableSchema> selectByImportTableId(Integer table_id);
+    List<TableSchema> selectByImportTableId(@Param("table_id")Integer table_id,@Param("fromRowId")Integer fromRowId ,@Param("num")Integer num);
     
 }

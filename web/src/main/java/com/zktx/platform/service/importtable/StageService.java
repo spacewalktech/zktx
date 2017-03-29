@@ -12,7 +12,7 @@ public interface StageService {
 
 	    int updateByPrimaryKeySelective(Stage record);
 
-	    public List<Stage> queryStageOriByTableType(Integer tableType);
+	    public List<Stage> queryStageOriByTableType(Integer tableType,Integer fromRowId,Integer num);
 	    
-	    public List<Stage> queryStageDerByTableType(Integer tableType);
+	    public List<Stage> queryStageDerByTableType(Integer tableType,Integer fromRowId,Integer num);
 }

@@ -49,7 +49,7 @@
   <select id="findByPagination" parameterType="java.util.Map" resultType="com.zktx.platform.entity.tb.ImportTablesWithBLOBs">
   	select * from tb_import_tables 
   	<where>
-  		1=1
+  		flag=0
       <if test="src_db != null">
        and src_db= #{src_db,jdbcType=VARCHAR}
       </if>
@@ -76,8 +76,7 @@
   		limit #{fromRowId,jdbcType=INTEGER} , #{num,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from tb_import_tables
-    where id = #{id,jdbcType=INTEGER}
+    update tb_import_tables set flag= 1 where id =#{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.zktx.platform.entity.tb.ImportTablesWithBLOBs">
     insert into tb_import_tables (id, src_db, src_table, 

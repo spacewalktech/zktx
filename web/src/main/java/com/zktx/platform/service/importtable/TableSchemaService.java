@@ -6,5 +6,5 @@ import com.zktx.platform.entity.tb.TableSchema;
 
 public interface TableSchemaService {
 
-	List<TableSchema> selectByImportTableId(Integer tableId);
+	List<TableSchema> selectByImportTableId(Integer tableId,Integer fromRowId,Integer num);
 }

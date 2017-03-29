@@ -1,4 +1,4 @@
-package com.zktx.platform.service.importtable;
+package com.zktx.platform.service.importtable.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +11,7 @@ import com.alibaba.dubbo.common.json.JSONObject;
 import com.zktx.platform.dao.tb.ImportTablesMapper;
 import com.zktx.platform.entity.tb.ImportTablesPo;
 import com.zktx.platform.entity.tb.ImportTablesWithBLOBs;
+import com.zktx.platform.service.importtable.ImportTableService;
 
 @Service("importTableService")
 public class ImportTableServiceImpl implements ImportTableService{

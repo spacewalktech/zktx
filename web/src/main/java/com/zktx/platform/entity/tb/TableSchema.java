@@ -14,6 +14,8 @@ public class TableSchema {
     private Date update_time;
 
     private String schema;
+    
+    private String spark_schema;
 
     public Integer getId() {
         return id;
@@ -62,4 +64,14 @@ public class TableSchema {
     public void setSchema(String schema) {
         this.schema = schema;
     }
+
+	public String getSpark_schema() {
+		return spark_schema;
+	}
+
+	public void setSpark_schema(String spark_schema) {
+		this.spark_schema = spark_schema;
+	}
+    
+    
 }
