@@ -46,6 +46,35 @@
     from tb_import_tables
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="findByPagination" parameterType="java.util.Map" resultType="com.zktx.platform.entity.tb.ImportTablesWithBLOBs">
+  	select * from tb_import_tables 
+  	<where>
+  		1=1
+      <if test="src_db != null">
+       and src_db= #{src_db,jdbcType=VARCHAR}
+      </if>
+      <if test="src_table != null">
+        and src_table=#{src_table,jdbcType=VARCHAR}
+      </if>
+     
+      <if test="src_db_type != null">
+       and src_db_type = #{src_db_type,jdbcType=VARCHAR}
+      </if>
+      <if test="dbname != null">
+       and dbname =  #{dbname,jdbcType=VARCHAR}
+      </if>
+      <if test="table_name != null">
+       and table_name =  #{table_name,jdbcType=VARCHAR}
+      </if>
+      <if test="table_type!=null">
+      	and table_type =#{table_type,jdbcType=INTEGER}
+      </if>
+      <if test="create_time!=null">
+      	and create_time between #{create_time_from,jdbcType=TIMESTAMP} and #{create_time_to,jdbcType=TIMESTAMP}
+      </if>
+  	</where>
+  		limit #{fromRowId,jdbcType=INTEGER} , #{num,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from tb_import_tables
     where id = #{id,jdbcType=INTEGER}

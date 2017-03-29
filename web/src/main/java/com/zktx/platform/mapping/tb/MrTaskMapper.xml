@@ -37,6 +37,23 @@
     from tb_mr_task
     where id = #{id,jdbcType=INTEGER}
   </select>
+   <select id="findByPagination" resultType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
+  	 select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+     from tb_mr_task 
+	limit #{fromRowId,jdbcType=INTEGER} , #{num,jdbcType=INTEGER}
+  </select>
+  <select id="findByHasProcessed" resultType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
+  	 select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tb_mr_task m,tb_task_queue q
+    where m.id = q.mr_task_id and q.has_processed=#{has_processed,jdbcType=INTEGER}
+    limit #{fromRowId,jdbcType=INTEGER} , #{num,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from tb_mr_task
     where id = #{id,jdbcType=INTEGER}
