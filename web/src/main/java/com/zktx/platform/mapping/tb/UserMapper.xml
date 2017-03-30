@@ -13,12 +13,12 @@
   <sql id="Base_Column_List">
     id, name, pwd, emial, phone, salt, status
   </sql>
-  <sellect id="findByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="findByName" parameterType="java.lang.String" resultMap="BaseResultMap">
   	select 
     <include refid="Base_Column_List" />
     from tb_user
     where `name` = #{username,jdbcType=INTEGER}
-  </sellect>
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
