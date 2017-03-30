@@ -11,4 +11,9 @@ public class IndexController {
 		return "/index";
 	}
 	
+	@RequestMapping("mrTaskList")
+	public String mrTaskList() {
+		return "/task/task_list";
+	}
+	
 }
