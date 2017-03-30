@@ -1,8 +1,11 @@
 package com.zktx.platform.controller;
 
+import java.io.PrintWriter;
 import java.sql.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,7 +23,7 @@ public class ImportTablesController {
 	ImportTableService tableService;
 	//条件查询
 	@RequestMapping("/query.do")
-	public String findByPagination(HttpServletRequest request,ImportTablesPo bloBs,ModelMap map){
+	public String findByPagination(HttpServletRequest request,HttpServletResponse response ,ImportTablesPo bloBs){
 		try {
 			String fromRowIdstr =request.getParameter("fromRowId");
 			String numstr =request.getParameter("num");
@@ -28,13 +31,16 @@ public class ImportTablesController {
 			List<ImportTablesWithBLOBs> list =tableService.findByPagination(bloBs, 0, 5);
 			String jsonString =JSON.toJSONString(list, true);
 			System.out.println(jsonString);
-			map.put("msg", jsonString);
+			PrintWriter out =response.getWriter();
+			out.write(jsonString);
+			out.flush();
+			out.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "error";
 		}
 		
-		return "dataManage/inTableQuery";
+		return "dataManage/orgTableList";
 	}
 	//插入
 	@RequestMapping("/insert.do")

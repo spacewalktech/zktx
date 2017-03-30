@@ -158,7 +158,7 @@ select.input-sm {
 				<ul>
 					<li>
 					<li>
-						<a href="import_tables.html">导入表</a>
+						<a href="orgTableList">导入表</a>
 					</li>
 					<li>
 						<a href="logic_tables.html">派生表</a>

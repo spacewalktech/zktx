@@ -16,4 +16,10 @@ public class IndexController {
 		return "/task/task_list";
 	}
 	
+	@RequestMapping("orgTableList")
+	public String orgTableList(){
+		return "/dataManage/orgTableList";
+				
+	}
+	
 }

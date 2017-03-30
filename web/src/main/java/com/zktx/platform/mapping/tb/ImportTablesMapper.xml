@@ -73,7 +73,7 @@
       	and create_time between #{create_time_from,jdbcType=TIMESTAMP} and #{create_time_to,jdbcType=TIMESTAMP}
       </if>
   	</where>
-  		limit #{fromRowId,jdbcType=INTEGER} , #{num,jdbcType=INTEGER}
+  		order by id desc limit #{fromRowId,jdbcType=INTEGER} , #{num,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     update tb_import_tables set flag= 1 where id =#{id,jdbcType=INTEGER}
