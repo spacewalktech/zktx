@@ -54,6 +54,7 @@ public class MrTaskController {
 		
 		return "result";
 	}
+	//插入
 	@RequestMapping("/insertSelective.do")
 	public String insertSelective(MrTaskWithBLOBs record){
 		try {
@@ -95,6 +96,7 @@ public class MrTaskController {
 		
 		return "result";
 	}
+	//任务激活
 	@RequestMapping("/taskAction.do")
 	public String taskAction(Integer id){
 		try {

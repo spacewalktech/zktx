@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.alibaba.fastjson.JSON;
 import com.zktx.platform.entity.tb.ImportTablesPo;
@@ -19,18 +20,21 @@ public class ImportTablesController {
 	ImportTableService tableService;
 	//条件查询
 	@RequestMapping("/query.do")
-	public String findByPagination(HttpServletRequest request,ImportTablesPo bloBs){
+	public String findByPagination(HttpServletRequest request,ImportTablesPo bloBs,ModelMap map){
 		try {
-			bloBs.setSrc_db("test_db");
+			String fromRowIdstr =request.getParameter("fromRowId");
+			String numstr =request.getParameter("num");
+			System.out.println("fromRowIdstr:"+fromRowIdstr+",num:"+numstr+"，bloBs.table_type:"+bloBs.getTable_type());
 			List<ImportTablesWithBLOBs> list =tableService.findByPagination(bloBs, 0, 5);
 			String jsonString =JSON.toJSONString(list, true);
 			System.out.println(jsonString);
+			map.put("msg", jsonString);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "error";
 		}
 		
-		return "result";
+		return "dataManage/inTableQuery";
 	}
 	//插入
 	@RequestMapping("/insert.do")

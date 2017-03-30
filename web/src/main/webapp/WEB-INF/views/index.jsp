@@ -56,144 +56,6 @@
 
 	</head>
 	
-	<!--
-
-	TABLE OF CONTENTS.
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title></title>
-<script type="text/javascript">
-
-	function perSubmit(){
-		 document.getElementById("perForm").submit();
-	}
-	function perinsert(){
-		document.getElementById("perinsert").submit();
-	}
-	function perupdate(){
-		document.getElementById("perupdate").submit();
-	}
-	function perdelete(){
-		document.getElementById("perdelete").submit();
-	}
-	function mrTaskquery(){
-		document.getElementById("mrTaskquery").submit();
-	}
-	function mrTaskfindTaskToRun(){
-		document.getElementById("mrTaskfindTaskToRun").submit();
-	}
-	function queryStageOri(){
-		document.getElementById("queryStageOri").submit();
-	}
-	function tableSchemaquery(){
-		document.getElementById("tableSchemaquery").submit();
-	}
-	function deleteByid(){
-		document.getElementById("deleteByid").submit();
-	}
-	function mrTaskupdate(){
-		document.getElementById("mrTaskupdate").submit();
-	}
-	function mrTaskinsertSelective(){
-		document.getElementById("mrTaskinsertSelective").submit();
-	}
-	function mrTaskfindByProper(){
-		document.getElementById("mrTaskfindByProper").submit();
-	}
-	function mrTasktaskAction(){
-		document.getElementById("mrTasktaskAction").submit();
-	}
-</script>
-</head>
-
-<body>这是首页
-	<form action="importTables/query.do" id="perForm">
-		导入表查询：：<input id="Submit" type="button"  value="导入表查询" onclick="perSubmit()"/>
-	</form>
-	<form action="importTables/insert.do" id="perinsert">
-		导入表插入：<input id="insert" type="button"  value="导入表/插入" onclick="perinsert()"/>
-	</form>
-	<form action="importTables/update.do" id="perupdate">
-		导入表更新：<input id="update" type="button"  value="导入表更新" onclick="perupdate()"/>
-	</form>
-	------
-	<form action="importTables/delete.do" id="perdelete">
-		<input id="id" name="id" value="3">
-		导入表删除：<input id="delete" type="button"  value="导入表删除" onclick="perdelete()"/>
-	</form>
-	
-	--------------------------------------------------
-	<form action="mrTask/query.do" id="mrTaskquery">
-		任务列表查询：<input id="mrTaskquery1" type="button"  value="任务列表查询" onclick="mrTaskquery()"/>
-	</form>
-	<form action="mrTask/deleteByid.do" id="deleteByid">
-		<input id="id3" name="id" value="3">
-		任务列表查询：<input id="deleteByid1" type="button"  value="任务删除" onclick="deleteByid()"/>
-	</form>
-	<form action="mrTask/update.do" id="mrTaskupdate">
-		任务列更新：<input id="mrTaskupdate1" type="button"  value="任务更新" onclick="mrTaskupdate()"/>
-	</form>
-	<form action="mrTask/insertSelective.do" id="mrTaskinsertSelective">
-		任务列插入：<input id="insertSelective" type="button"  value="任务插入" onclick="mrTaskinsertSelective()"/>
-	</form>
-	<form action="mrTask/findTaskToRun.do" id="mrTaskfindTaskToRun">
-		待运行任务列表：<input id="mrTaskfindTaskToRun1" type="button"  value="待运行任务列表" onclick="mrTaskfindTaskToRun()"/>
-	</form>
-	<form action="mrTask/findByProper.do" id="mrTaskfindByProper">
-		任务预警：<input id="mrTaskfindByProper2" type="button"  value="任务预警" onclick="mrTaskfindByProper()"/>
-	</form>
-	<form action="mrTask/taskAction.do" id="mrTasktaskAction">
-		<input id="id1" name="id" value="3">
-		任务预警：<input id="mrTasktaskAction1" type="button"  value="任务激活" onclick="mrTasktaskAction()"/>
-	</form>
-	
-	--------------------------------------------------
-	<form action="stage/queryStageOri.do" id="queryStageOri">
-		导入表预警：<input id="queryStageOri1" type="button"  value="导入表预警" onclick="queryStageOri()"/>
-	</form>
-	
-	Use search to find needed section.
-	
-	===================================================================
-	
-	|  01. #CSS Links                |  all CSS links and file paths  |
-	|  02. #FAVICONS                 |  Favicon links and file paths  |
-	|  03. #GOOGLE FONT              |  Google font link              |
-	|  04. #APP SCREEN / ICONS       |  app icons, screen backdrops   |
-	|  05. #BODY                     |  body tag                      |
-	|  06. #HEADER                   |  header tag                    |
-	|  07. #PROJECTS                 |  project lists                 |
-	|  08. #TOGGLE LAYOUT BUTTONS    |  layout buttons and actions    |
-	|  09. #MOBILE                   |  mobile view dropdown          |
-	|  10. #SEARCH                   |  search field                  |
-	|  11. #NAVIGATION               |  left panel & navigation       |
-	|  12. #RIGHT PANEL              |  right panel userlist          |
-	|  13. #MAIN PANEL               |  main panel                    |
-	|  14. #MAIN CONTENT             |  content holder                |
-	|  15. #PAGE FOOTER              |  page footer                   |
-	|  16. #SHORTCUT AREA            |  dropdown shortcuts area       |
-	|  17. #PLUGINS                  |  all scripts and plugins       |
-	
-	===================================================================
-	
-	-->
-	
-	<!-- #BODY -->
-	<!-- Possible Classes
-
-		* 'smart-style-{SKIN#}'
-		* 'smart-rtl'         - Switch theme mode to RTL
-		* 'menu-on-top'       - Switch to top navigation (no DOM change required)
-		* 'no-menu'			  - Hides the menu completely
-		* 'hidden-menu'       - Hides the main menu but still accessable by hovering over left edge
-		* 'fixed-header'      - Fixes the header
-		* 'fixed-navigation'  - Fixes the main menu
-		* 'fixed-ribbon'      - Fixes breadcrumb
-		* 'fixed-page-footer' - Fixes footer
-		* 'container'         - boxed layout mode (non-responsive: will not work with fixed-navigation & fixed-ribbon)
-	-->
 	<style type="text/css">
 		#titlogo{width: 220px; height: 39px; float: left; font-size: 20px; color: #fff; line-height: 2.5; text-align: center; font-weight: bold;}
 		.indoxnum>div{ background-color: #fff; }
@@ -202,8 +64,6 @@
 		#activity b.badge {top: 9px;}
 		 .ajax-dropdown {left: -152px;}
 		  .bordertop{border-top: 1px solid #ccc!important; }
-		  
-		  
 		  td, th {display: table-cell; vertical-align: inherit;}
 		  .table>thead>tr>th {vertical-align: inherit;}
 		 
@@ -222,6 +82,14 @@
 }
 
 	</style>
+	<script type="text/javascript">
+		function perSubmit(tableType){
+			if('orgTableType'==tableType){
+				$("#content").load("importTables/query.do?table_type=false");
+			}
+			
+		}
+	</script>
 	<body class="desktop-detected pace-done smart-style-2">
 
 		<!-- HEADER -->
@@ -369,10 +237,6 @@
 					<span> <a href="javascript:void(0);" data-action="launchFullscreen" title="Full Screen"><i class="fa fa-arrows-alt"></i></a> </span>
 				</div>
 				<!-- end fullscreen button -->
-				
-				
-			
-
 			</div>
 			<!-- end pulled right: nav area -->
 
@@ -400,36 +264,30 @@
 			<!-- end user info -->
 
 			<!-- NAVIGATION : This navigation is also responsive-->
-			<nav>
-				<ul>
-					<li class="active open">
-						<a><i class="fa fa-lg fa-fw fa-database"></i> <span class="menu-item-parent">数据管理</span></a>
-						<ul style="display: block;">
-							<li>
-							<li><a href="import_tables.html">导入表</a></li>
-							<li><a href="logic_tables.html">派生表</a></li>
-							<li><a href=" import_tables_error.html">导入表预警</a></li>
-							<li><a href="logic_tables_error.html">派生表预警</a></li>
-
-							
-						</ul>	
-					</li>
-					<li  class="top-menu-invisible">
-						<a><i class="fa fa-lg fa-fw fa-desktop"></i> <span class="menu-item-parent">任务管理</span></a>
-						<ul>
-							<li><a href="task_list.html">任务列表</a></li>
-							<li><a href="task_wait.html">待运行任务列表</a></li>
-							<li><a href="task_error.html">任务运行预警</a></li>
-							
-							
-						</ul>	
-					</li>
-					
-					
-			
-				</ul>
-</nav>	
-
+			<form action="" id="ifrom">
+				<nav>
+					<ul>
+						<li class="active open">
+							<a><i class="fa fa-lg fa-fw fa-database"></i> <span class="menu-item-parent">数据管理</span></a>
+							<ul style="display: block;">
+								<li>
+								<li><a href="#" onclick="perSubmit('orgTableType')">导入表</a></li>
+								<li><a href="logic_tables.html">派生表</a></li>
+								<li><a href=" import_tables_error.html">导入表预警</a></li>
+								<li><a href="logic_tables_error.html">派生表预警</a></li>
+							</ul>	
+						</li>
+						<li  class="top-menu-invisible">
+							<a><i class="fa fa-lg fa-fw fa-desktop"></i> <span class="menu-item-parent">任务管理</span></a>
+							<ul>
+								<li><a href="task_list.html">任务列表</a></li>
+								<li><a href="task_wait.html">待运行任务列表</a></li>
+								<li><a href="task_error.html">任务运行预警</a></li>
+							</ul>	
+						</li>
+					</ul>
+				</nav>	
+			</form>
 			<span class="minifyme" data-action="minifyMenu"> 
 				<i class="fa fa-arrow-circle-left hit"></i> 
 			</span>
