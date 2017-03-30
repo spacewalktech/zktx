@@ -20,7 +20,9 @@ public interface MrTaskMapper {
 
     int updateByPrimaryKey(MrTask record);
     
-    List<MrTaskWithBLOBs> findByPagination(@Param("fromRowId") Integer fromRowId,@Param("num") Integer num);
+    void taskAction(Integer id);
+    
+    List<MrTaskWithBLOBs> findByPagination(@Param("latest_running_status") Integer latest_running_status,@Param("fromRowId") Integer fromRowId,@Param("num") Integer num);
     //查询待运行的任务
     List<MrTaskWithBLOBs> findByHasProcessed(@Param("has_processed") Integer has_processed,@Param("fromRowId") Integer fromRowId,@Param("num") Integer num);
     
