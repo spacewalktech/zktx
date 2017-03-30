@@ -15,6 +15,13 @@ public class MrTaskController {
 
 	@Autowired
 	MrTaskService mrTaskService;
+	
+	@RequestMapping("addPage")
+	public String addPage() {
+		return "task/add";
+	}
+	
+	
 	//分页查询
 	@RequestMapping("/query.do")
 	public String findByPagination(Integer fromRowId, Integer num){
