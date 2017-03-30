@@ -15,9 +15,7 @@
 		<ol class="breadcrumb">
 			<li>首页</li>
 		</ol>
-		
 		this is index page
-		
 	</div>
 </body>
 </html>

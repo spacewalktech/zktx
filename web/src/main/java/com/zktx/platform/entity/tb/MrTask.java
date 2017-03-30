@@ -17,7 +17,7 @@ public class MrTask {
 
     private Integer priority;
 
-    private Boolean active;
+    private Boolean active=false;
 
     private String task_schedule;
 
@@ -25,7 +25,7 @@ public class MrTask {
 
     private Boolean latest_running_status;
 
-    private Boolean flag;
+    private Boolean flag =false;
 
     private Date create_time;
 

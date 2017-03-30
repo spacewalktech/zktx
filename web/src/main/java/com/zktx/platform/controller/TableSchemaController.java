@@ -19,9 +19,15 @@ public class TableSchemaController {
 	//查询schema信息
 	@RequestMapping("/query.do")
 	public String queryTableSchemaByTableId(Integer tableId,Integer fromRowId,Integer num){
-		List<TableSchema> list =service.selectByImportTableId(1,0,5);
-		String jsonString =JSON.toJSONString(list, true);
-		System.out.println(jsonString);
+		try {
+			List<TableSchema> list =service.selectByImportTableId(1,0,5);
+			String jsonString =JSON.toJSONString(list, true);
+			System.out.println(jsonString);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "error";
+		}
+		
 		return "result";
 	} 
 }
