@@ -16,6 +16,8 @@
 <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/smartadmin-production.min.css">
 <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/smartadmin-skins.min.css">
 <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/smartadmin-rtl.min.css">
+<link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/bootstrap-datetimepicker.min.css">
+<%-- <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/bootstrap-datepicker.min.css"> --%>
 <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/demo.min.css">
 <link rel="shortcut icon" href="${root}/resources/img/favicon/favicon.ico" type="image/x-icon">
 <link rel="icon" href="${root}/resources/img/favicon/favicon.ico" type="image/x-icon">
@@ -222,11 +224,6 @@ select.input-sm {
 
 	<div id="main" role="main">
 		<div id="ribbon">
-			<span class="ribbon-button-alignment">
-				<span id="refresh" class="btn btn-ribbon" data-action="resetWidgets" data-title="refresh" rel="tooltip" data-placement="bottom" data-original-title="<i class='text-warning fa fa-warning'></i> Warning! This will reset all your widget settings." data-html="true">
-					<i class="fa fa-refresh"></i>
-				</span>
-			</span>
 			<ol class="breadcrumb">
 				<li>首页</li>
 				<li>任务管理</li>
@@ -279,7 +276,7 @@ select.input-sm {
 												<input type='text' placeholder='输入触发表，多个按,号隔开' id="search_triggle_tables">
 											</label>
 										</section>
-										
+
 									</div>
 									<div class="row">
 										<section class="col col-1 text-right">
@@ -298,25 +295,27 @@ select.input-sm {
 										<section class="col col-1 text-right">
 											<label class="text">创建时间</label>
 										</section>
-										<section class="col col-3">
-											<section class="col col-5" style="padding: 0; margin: 0;">
+										<section class="col col-4">
+											<section class="col col-4" style="padding: 0; margin: 0;">
 												<label class="input">
-													<input type="text" placeholder="" id="search_create_time_begin">
+													<i class="icon-append fa fa-calendar"></i>
+													<input type="text" name="search_create_time_begin" id="search_create_time_begin">
 												</label>
 											</section>
-											<section class="col col-1" style="padding: 0; margin: 0;">
+											<section class="col col-1" style="padding: 1; margin: 2;">
 												<label>－</label>
 											</section>
-											<section class="col col-6" style="padding: 0; margin: 0;">
+											<section class="col col-4" style="padding: 0; margin: 0;">
 												<label class="input">
-													<input type="text" placeholder="" id="search_create_time_end">
+													<i class="icon-append fa fa-calendar"></i>
+													<input type="text" name="search_create_time_end" id="search_create_time_end">
 												</label>
 											</section>
 										</section>
 									</div>
 								</fieldset>
 								<footer>
-									<button type="button" class="btn btn-primary" onclick="queryTable()" >查询</button>
+									<button type="button" class="btn btn-primary" onclick="queryTable()">查询</button>
 								</footer>
 							</form>
 						</div>
@@ -324,18 +323,18 @@ select.input-sm {
 				</div>
 				<!-- end widget -->
 			</article>
-			
+
 			<!-- 任务管理主表 -->
 			<div class="panel">
-			<div>
-				<div id="toolbar" class="btn-group">
-					<button id="btn_add" type="button" class="btn btn-primary">
-						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-						新增
-					</button>
+				<div>
+					<div id="toolbar" class="btn-group">
+						<button id="btn_add" type="button" class="btn btn-primary">
+							<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+							新增
+						</button>
+					</div>
 				</div>
-			</div>
-			<table id="task_list"</table>
+				<table id="task_list"</table>
 			</div>
 		</div>
 	</div>
@@ -564,14 +563,18 @@ select.input-sm {
 				    });
 
 			})
-			
-			
-
-			
     </script>
 
-<script src="${root }/resources/js/bootstrap-table/bootstrap-table.js" type="text/javascript"></script>
-<script src="${root }/resources/js/bootstrap-table/bootstrap-table-zh-CN.js" type="text/javascript"></script>
+
+
+	<%-- <script src="${root }/resources/js/moment.js" type="text/javascript"></script> --%>
+	<script src="${root }/resources/js/moment.js" type="text/javascript"></script>
+	<script src="${root }/resources/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+	<%-- <script src="${root }/resources/js/bootstrap-datepicker.zh-CN.js" type="text/javascript"></script> --%>
+	<%-- <script src="${root }/resources/js/bootstrap-datetimepicker.zh-CN.js" type="text/javascript"></script> --%>
+
+	<script src="${root }/resources/js/bootstrap-table/bootstrap-table.js" type="text/javascript"></script>
+	<script src="${root }/resources/js/bootstrap-table/bootstrap-table-zh-CN.js" type="text/javascript"></script>
 	<script>
 	
 	// 新增
@@ -662,7 +665,18 @@ select.input-sm {
 			("00"+ o[k]).substr((""+ o[k]).length));
 			return format;
 		}
-	    
+		
+		
+		$("#search_create_time_begin").datetimepicker({
+		    format: 'YYYY-MM-DD HH:mm:ss',
+		    locale:  'zh-cn'
+		});
+		
+		$("#search_create_time_end").datetimepicker({
+		    format: 'YYYY-MM-DD HH:mm:ss',
+		    locale:  'zh-cn'
+		});
+		
 	})
 	
 	var TableInit = function() {

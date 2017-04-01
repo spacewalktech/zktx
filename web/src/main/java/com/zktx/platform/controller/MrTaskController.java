@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSON;
 import com.zktx.platform.entity.tb.MrTaskWithBLOBs;
 import com.zktx.platform.service.importtable.MrTaskService;
 
@@ -47,7 +46,7 @@ public class MrTaskController {
 	public Map<String, Object> findByPagination(String search_name, String search_type, String search_triggle_tables, String search_active, String search_create_time_begin, String search_create_time_end, Integer offset, Integer limit) {
 		try {
 			List<MrTaskWithBLOBs> list = mrTaskService.findByPagination(null, offset, limit, search_name, search_type, search_triggle_tables, search_active, search_create_time_begin, search_create_time_end);
-			int count = mrTaskService.findCountByPagination(null, offset, limit, search_name, search_type, search_triggle_tables, search_active, search_create_time_begin, search_create_time_end);
+			int count = mrTaskService.findCountByPagination(null, search_name, search_type, search_triggle_tables, search_active, search_create_time_begin, search_create_time_end);
 			Map<String, Object> map = new HashMap<>();
 			map.put("total", count);
 			map.put("rows", list);
@@ -64,8 +63,9 @@ public class MrTaskController {
 	public Map<String, Object> findToRun(Integer offset, Integer limit) {
 		try {
 			List<MrTaskWithBLOBs> list = mrTaskService.findByToRun(offset, limit);
+			int count = mrTaskService.findCountByToRun(offset, limit);
 			Map<String, Object> map = new HashMap<>();
-			map.put("total", 11);
+			map.put("total", count);
 			map.put("rows", list);
 			return map;
 		} catch (Exception e) {
@@ -91,6 +91,18 @@ public class MrTaskController {
 		return false;
 	}
 
+	@RequestMapping("deleteQueueByid")
+	@ResponseBody
+	public boolean deleteQueueByid(Integer id) {
+		try {
+			mrTaskService.deleteQueueByid(id);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	@RequestMapping("/insertSelective.do")
 	public String insertSelective(MrTaskWithBLOBs record) {
 		try {
@@ -122,17 +134,19 @@ public class MrTaskController {
 
 	// 任务预警
 	@RequestMapping("/findByProper.do")
-	public String findByProper() {
+	@ResponseBody
+	public Map<String, Object> findByProper(Integer offset, Integer limit) {
 		try {
-			List<MrTaskWithBLOBs> list = mrTaskService.findByProper(0, 5);
-			String jString = JSON.toJSONString(list, true);
-			System.out.println(jString);
+			List<MrTaskWithBLOBs> list = mrTaskService.findByProper(offset, limit);
+			int count = mrTaskService.findCountByPagination(0, null, null, null, null, null, null);
+			Map<String, Object> map = new HashMap<>();
+			map.put("total", count);
+			map.put("rows", list);
+			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "error";
+			return null;
 		}
-
-		return "result";
 	}
 
 	@RequestMapping("/taskAction.do")

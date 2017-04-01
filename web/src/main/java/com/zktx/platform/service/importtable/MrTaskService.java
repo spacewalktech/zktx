@@ -23,5 +23,11 @@ public interface MrTaskService {
 
 	MrTaskWithBLOBs findById(Integer id);
 
-	int findCountByPagination(Object object, Integer offset, Integer limit, String search_name, String search_type, String search_triggle_tables, String search_active, String search_create_time_begin, String search_create_time_end);
+	int findCountByPagination(Integer last_running_status, String search_name, String search_type, String search_triggle_tables, String search_active, String search_create_time_begin, String search_create_time_end);
+
+	int findCountByToRun(Integer offset, Integer limit);
+
+	void deleteQueueByid(Integer id);
+
+	int findCountByProper();
 }

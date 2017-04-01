@@ -40,8 +40,6 @@ public interface MrTaskMapper {
 
 	int findCountByPagination(
     		@Param("latest_running_status") Integer latest_running_status,
-    		@Param("offset") Integer offset,
-    		@Param("limit") Integer limit,
     		@Param("search_name") String search_name, 
     		@Param("search_type") String search_type, 
     		@Param("search_triggle_tables") String search_triggle_tables, 
@@ -49,5 +47,11 @@ public interface MrTaskMapper {
     		@Param("search_create_time_begin") String search_create_time_begin, 
     		@Param("search_create_time_end") String search_create_time_end
 	);
+
+	int findCountByToRun(@Param("has_processed") Integer has_processed,@Param("offset") Integer offset,@Param("limit") Integer limit);
+
+	void deleteQueueByid(Integer id);
+
+	int findCountByProper();
     
 }
