@@ -16,4 +16,14 @@ public class IndexController {
 		return "/task/task_list";
 	}
 	
+	@RequestMapping("mrTaskWait")
+	public String mrTaskWait() {
+		return "/task/task_wait";
+	}
+	
+	@RequestMapping("mrTaskError")
+	public String mrTaskError() {
+		return "/task/task_error";
+	}
+	
 }
