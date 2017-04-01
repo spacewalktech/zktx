@@ -1,286 +1,342 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zktx.platform.dao.tb.MrTaskMapper">
-  <resultMap id="BaseResultMap" type="com.zktx.platform.entity.tb.MrTask">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="information" jdbcType="VARCHAR" property="information" />
-    <result column="bin_file_uri" jdbcType="VARCHAR" property="bin_file_uri" />
-    <result column="type" jdbcType="BIT" property="type" />
-    <result column="export_dir_uri" jdbcType="VARCHAR" property="export_dir_uri" />
-    <result column="priority" jdbcType="INTEGER" property="priority" />
-    <result column="active" jdbcType="BIT" property="active" />
-    <result column="task_schedule" jdbcType="VARCHAR" property="task_schedule" />
-    <result column="latest_running_time" jdbcType="TIMESTAMP" property="latest_running_time" />
-    <result column="latest_running_status" jdbcType="BIT" property="latest_running_status" />
-    <result column="flag" jdbcType="BIT" property="flag" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="create_time" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="update_time" />
-  </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
-    <result column="table_stage_info" jdbcType="LONGVARCHAR" property="table_stage_info" />
-    <result column="triggle_tables" jdbcType="LONGVARCHAR" property="triggle_tables" />
-    <result column="latest_running_info" jdbcType="LONGVARCHAR" property="latest_running_info" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, name, information, bin_file_uri, type, export_dir_uri, priority, active, task_schedule, 
-    latest_running_time, latest_running_status, flag, create_time, update_time
-  </sql>
-  <sql id="Blob_Column_List">
-    table_stage_info, triggle_tables, latest_running_info
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
-    select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from tb_mr_task
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-   <select id="findByPagination" resultType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
-  	 select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-     from tb_mr_task 
-     <where>
-     	flag=0
-     	<if test="latest_running_status != null">
-     		and latest_running_status=#{latest_running_status,jdbcType=INTEGER}
-     	</if>
-     </where>
-     
-	limit #{fromRowId,jdbcType=INTEGER} , #{num,jdbcType=INTEGER}
-  </select>
-  <select id="findByHasProcessed" resultType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
-  	 select  m.id, m.name, m.information, m.bin_file_uri, m.type, m.export_dir_uri, m.priority, m.active, m.task_schedule, 
-    m.latest_running_time, m.latest_running_status, m.create_time, m.update_time
-    from tb_mr_task m,tb_task_queue q
-    where m.id = q.mr_task_id and m.flag=0 and q.has_processed=#{has_processed,jdbcType=INTEGER}
-    limit #{fromRowId,jdbcType=INTEGER} , #{num,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    update tb_mr_task set flag=1
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
-    insert into tb_mr_task (id, name, information, 
-      bin_file_uri, type, export_dir_uri, 
-      priority, active, task_schedule, 
-      latest_running_time, latest_running_status, 
-      flag, create_time, update_time, 
-      table_stage_info, triggle_tables, 
-      latest_running_info)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{information,jdbcType=VARCHAR}, 
-      #{bin_file_uri,jdbcType=VARCHAR}, #{type,jdbcType=BIT}, #{export_dir_uri,jdbcType=VARCHAR}, 
-      #{priority,jdbcType=INTEGER}, #{active,jdbcType=BIT}, #{task_schedule,jdbcType=VARCHAR}, 
-      #{latest_running_time,jdbcType=TIMESTAMP}, #{latest_running_status,jdbcType=BIT}, 
-      #{flag,jdbcType=BIT}, #{create_time,jdbcType=TIMESTAMP}, #{update_time,jdbcType=TIMESTAMP}, 
-      #{table_stage_info,jdbcType=LONGVARCHAR}, #{triggle_tables,jdbcType=LONGVARCHAR}, 
-      #{latest_running_info,jdbcType=LONGVARCHAR})
-  </insert>
-  
-  <insert id="insertSelective" parameterType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
-    insert into tb_mr_task
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="name != null">
-        name,
-      </if>
-      <if test="information != null">
-        information,
-      </if>
-      <if test="bin_file_uri != null">
-        bin_file_uri,
-      </if>
-      <if test="type != null">
-        type,
-      </if>
-      <if test="export_dir_uri != null">
-        export_dir_uri,
-      </if>
-      <if test="priority != null">
-        priority,
-      </if>
-      <if test="active != null">
-        active,
-      </if>
-      <if test="task_schedule != null">
-        task_schedule,
-      </if>
-      <if test="latest_running_time != null">
-        latest_running_time,
-      </if>
-      <if test="latest_running_status != null">
-        latest_running_status,
-      </if>
-      <if test="flag != null">
-        flag,
-      </if>
-      <if test="create_time != null">
-        create_time,
-      </if>
-      <if test="update_time != null">
-        update_time,
-      </if>
-      <if test="table_stage_info != null">
-        table_stage_info,
-      </if>
-      <if test="triggle_tables != null">
-        triggle_tables,
-      </if>
-      <if test="latest_running_info != null">
-        latest_running_info,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="information != null">
-        #{information,jdbcType=VARCHAR},
-      </if>
-      <if test="bin_file_uri != null">
-        #{bin_file_uri,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null">
-        #{type,jdbcType=BIT},
-      </if>
-      <if test="export_dir_uri != null">
-        #{export_dir_uri,jdbcType=VARCHAR},
-      </if>
-      <if test="priority != null">
-        #{priority,jdbcType=INTEGER},
-      </if>
-      <if test="active != null">
-        #{active,jdbcType=BIT},
-      </if>
-      <if test="task_schedule != null">
-        #{task_schedule,jdbcType=VARCHAR},
-      </if>
-      <if test="latest_running_time != null">
-        #{latest_running_time,jdbcType=TIMESTAMP},
-      </if>
-      <if test="latest_running_status != null">
-        #{latest_running_status,jdbcType=BIT},
-      </if>
-      <if test="flag != null">
-        #{flag,jdbcType=BIT},
-      </if>
-      <if test="create_time != null">
-        #{create_time,jdbcType=TIMESTAMP},
-      </if>
-      <if test="update_time != null">
-        #{update_time,jdbcType=TIMESTAMP},
-      </if>
-      <if test="table_stage_info != null">
-        #{table_stage_info,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="triggle_tables != null">
-        #{triggle_tables,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="latest_running_info != null">
-        #{latest_running_info,jdbcType=LONGVARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="taskAction" parameterType="java.lang.Integer">
-  	update tb_mr_task set active=1 where id=#{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
-    update tb_mr_task
-    <set>
-      <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="information != null">
-        information = #{information,jdbcType=VARCHAR},
-      </if>
-      <if test="bin_file_uri != null">
-        bin_file_uri = #{bin_file_uri,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null">
-        type = #{type,jdbcType=BIT},
-      </if>
-      <if test="export_dir_uri != null">
-        export_dir_uri = #{export_dir_uri,jdbcType=VARCHAR},
-      </if>
-      <if test="priority != null">
-        priority = #{priority,jdbcType=INTEGER},
-      </if>
-      <if test="active != null">
-        active = #{active,jdbcType=BIT},
-      </if>
-      <if test="task_schedule != null">
-        task_schedule = #{task_schedule,jdbcType=VARCHAR},
-      </if>
-      <if test="latest_running_time != null">
-        latest_running_time = #{latest_running_time,jdbcType=TIMESTAMP},
-      </if>
-      <if test="latest_running_status != null">
-        latest_running_status = #{latest_running_status,jdbcType=BIT},
-      </if>
-      <if test="flag != null">
-        flag = #{flag,jdbcType=BIT},
-      </if>
-      <if test="create_time != null">
-        create_time = #{create_time,jdbcType=TIMESTAMP},
-      </if>
-      <if test="update_time != null">
-        update_time = #{update_time,jdbcType=TIMESTAMP},
-      </if>
-      <if test="table_stage_info != null">
-        table_stage_info = #{table_stage_info,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="triggle_tables != null">
-        triggle_tables = #{triggle_tables,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="latest_running_info != null">
-        latest_running_info = #{latest_running_info,jdbcType=LONGVARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
-    update tb_mr_task
-    set name = #{name,jdbcType=VARCHAR},
-      information = #{information,jdbcType=VARCHAR},
-      bin_file_uri = #{bin_file_uri,jdbcType=VARCHAR},
-      type = #{type,jdbcType=BIT},
-      export_dir_uri = #{export_dir_uri,jdbcType=VARCHAR},
-      priority = #{priority,jdbcType=INTEGER},
-      active = #{active,jdbcType=BIT},
-      task_schedule = #{task_schedule,jdbcType=VARCHAR},
-      latest_running_time = #{latest_running_time,jdbcType=TIMESTAMP},
-      latest_running_status = #{latest_running_status,jdbcType=BIT},
-      flag = #{flag,jdbcType=BIT},
-      create_time = #{create_time,jdbcType=TIMESTAMP},
-      update_time = #{update_time,jdbcType=TIMESTAMP},
-      table_stage_info = #{table_stage_info,jdbcType=LONGVARCHAR},
-      triggle_tables = #{triggle_tables,jdbcType=LONGVARCHAR},
-      latest_running_info = #{latest_running_info,jdbcType=LONGVARCHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.zktx.platform.entity.tb.MrTask">
-    update tb_mr_task
-    set name = #{name,jdbcType=VARCHAR},
-      information = #{information,jdbcType=VARCHAR},
-      bin_file_uri = #{bin_file_uri,jdbcType=VARCHAR},
-      type = #{type,jdbcType=BIT},
-      export_dir_uri = #{export_dir_uri,jdbcType=VARCHAR},
-      priority = #{priority,jdbcType=INTEGER},
-      active = #{active,jdbcType=BIT},
-      task_schedule = #{task_schedule,jdbcType=VARCHAR},
-      latest_running_time = #{latest_running_time,jdbcType=TIMESTAMP},
-      latest_running_status = #{latest_running_status,jdbcType=BIT},
-      flag = #{flag,jdbcType=BIT},
-      create_time = #{create_time,jdbcType=TIMESTAMP},
-      update_time = #{update_time,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+	<resultMap id="BaseResultMap" type="com.zktx.platform.entity.tb.MrTask">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="information" jdbcType="VARCHAR" property="information" />
+		<result column="bin_file_uri" jdbcType="VARCHAR" property="bin_file_uri" />
+		<result column="type" jdbcType="BIT" property="type" />
+		<result column="export_dir_uri" jdbcType="VARCHAR" property="export_dir_uri" />
+		<result column="priority" jdbcType="INTEGER" property="priority" />
+		<result column="active" jdbcType="BIT" property="active" />
+		<result column="task_schedule" jdbcType="VARCHAR" property="task_schedule" />
+		<result column="latest_running_time" jdbcType="TIMESTAMP" property="latest_running_time" />
+		<result column="latest_running_status" jdbcType="BIT" property="latest_running_status" />
+		<result column="flag" jdbcType="BIT" property="flag" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="create_time" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="update_time" />
+	</resultMap>
+	<resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
+		<result column="table_stage_info" jdbcType="LONGVARCHAR" property="table_stage_info" />
+		<result column="triggle_tables" jdbcType="LONGVARCHAR" property="triggle_tables" />
+		<result column="latest_running_info" jdbcType="LONGVARCHAR" property="latest_running_info" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, name, information, bin_file_uri, type, export_dir_uri, priority, active, task_schedule,
+		latest_running_time, latest_running_status, flag, create_time, update_time
+	</sql>
+	<sql id="Blob_Column_List">
+		table_stage_info, triggle_tables, latest_running_info
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from tb_mr_task
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<select id="findCount" resultType="java.lang.Integer">
+
+
+		select count(id) from tb_mr_task
+	</select>
+
+	<select id="findCountByPagination" resultType="java.lang.Integer">
+		select
+			count(*)
+		from tb_mr_task
+		<where>
+			flag=0
+			<if test="latest_running_status != null">
+				and latest_running_status=#{latest_running_status,jdbcType=INTEGER}
+			</if>
+			<if test="search_name != null and search_name != '' ">
+				and name like #{search_name}
+			</if>
+			<if test="search_type != null and search_type != '' ">
+				and type = #{search_type}
+			</if>
+			<if test="search_triggle_tables != null and search_triggle_tables != '' ">
+				and triggle_tables = #{search_triggle_tables}
+			</if>
+			<if test="search_active != null and search_active != '' ">
+				and active = #{search_active}
+			</if>
+			<if test="search_create_time_begin != null and search_create_time_begin != '' ">
+     		<![CDATA[and create_time >= #{search_create_time_begin}]]>
+			</if>
+			<if test="search_create_time_end != null and search_create_time_end != '' ">
+     		<![CDATA[and create_time <= #{search_create_time_end}]]>
+			</if>
+		</where>
+		limit #{offset,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
+	</select>
+
+	<select id="findByPagination" resultType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from tb_mr_task
+		<where>
+			flag=0
+			<if test="latest_running_status != null">
+				and latest_running_status=#{latest_running_status,jdbcType=INTEGER}
+			</if>
+			<if test="search_name != null and search_name != '' ">
+				and name like #{search_name}
+			</if>
+			<if test="search_type != null and search_type != '' ">
+				and type = #{search_type}
+			</if>
+			<if test="search_triggle_tables != null and search_triggle_tables != '' ">
+				and triggle_tables = #{search_triggle_tables}
+			</if>
+			<if test="search_active != null and search_active != '' ">
+				and active = #{search_active}
+			</if>
+			<if test="search_create_time_begin != null and search_create_time_begin != '' ">
+     		<![CDATA[and create_time >= #{search_create_time_begin}]]>
+			</if>
+			<if test="search_create_time_end != null and search_create_time_end != '' ">
+     		<![CDATA[and create_time <= #{search_create_time_end}]]>
+			</if>
+		</where>
+		limit #{offset,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
+	</select>
+	<select id="findByHasProcessed" resultType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
+		select m.id, m.name, m.information, m.bin_file_uri, m.type, m.export_dir_uri, m.priority, m.active, m.task_schedule,
+		m.latest_running_time, m.latest_running_status, m.create_time, m.update_time
+		from tb_mr_task m,tb_task_queue q
+		where m.id = q.mr_task_id and m.flag=0 and q.has_processed=#{has_processed,jdbcType=INTEGER}
+		limit #{offset,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		update tb_mr_task set flag=1
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
+		insert into tb_mr_task (id, name, information,
+		bin_file_uri, type, export_dir_uri,
+		priority, active, task_schedule,
+		latest_running_time, latest_running_status,
+		flag, create_time, update_time,
+		table_stage_info, triggle_tables,
+		latest_running_info)
+		values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{information,jdbcType=VARCHAR},
+		#{bin_file_uri,jdbcType=VARCHAR}, #{type,jdbcType=BIT}, #{export_dir_uri,jdbcType=VARCHAR},
+		#{priority,jdbcType=INTEGER}, #{active,jdbcType=BIT}, #{task_schedule,jdbcType=VARCHAR},
+		#{latest_running_time,jdbcType=TIMESTAMP}, #{latest_running_status,jdbcType=BIT},
+		#{flag,jdbcType=BIT}, #{create_time,jdbcType=TIMESTAMP},
+		#{update_time,jdbcType=TIMESTAMP},
+		#{table_stage_info,jdbcType=LONGVARCHAR}, #{triggle_tables,jdbcType=LONGVARCHAR},
+		#{latest_running_info,jdbcType=LONGVARCHAR})
+	</insert>
+
+	<insert id="insertSelective" parameterType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
+		insert into tb_mr_task
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="information != null">
+				information,
+			</if>
+			<if test="bin_file_uri != null">
+				bin_file_uri,
+			</if>
+			<if test="type != null">
+				type,
+			</if>
+			<if test="export_dir_uri != null">
+				export_dir_uri,
+			</if>
+			<if test="priority != null">
+				priority,
+			</if>
+			<if test="active != null">
+				active,
+			</if>
+			<if test="task_schedule != null">
+				task_schedule,
+			</if>
+			<if test="latest_running_time != null">
+				latest_running_time,
+			</if>
+			<if test="latest_running_status != null">
+				latest_running_status,
+			</if>
+			<if test="flag != null">
+				flag,
+			</if>
+			<if test="create_time != null">
+				create_time,
+			</if>
+			<if test="update_time != null">
+				update_time,
+			</if>
+			<if test="table_stage_info != null">
+				table_stage_info,
+			</if>
+			<if test="triggle_tables != null">
+				triggle_tables,
+			</if>
+			<if test="latest_running_info != null">
+				latest_running_info,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="information != null">
+				#{information,jdbcType=VARCHAR},
+			</if>
+			<if test="bin_file_uri != null">
+				#{bin_file_uri,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=BIT},
+			</if>
+			<if test="export_dir_uri != null">
+				#{export_dir_uri,jdbcType=VARCHAR},
+			</if>
+			<if test="priority != null">
+				#{priority,jdbcType=INTEGER},
+			</if>
+			<if test="active != null">
+				#{active,jdbcType=BIT},
+			</if>
+			<if test="task_schedule != null">
+				#{task_schedule,jdbcType=VARCHAR},
+			</if>
+			<if test="latest_running_time != null">
+				#{latest_running_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="latest_running_status != null">
+				#{latest_running_status,jdbcType=BIT},
+			</if>
+			<if test="flag != null">
+				#{flag,jdbcType=BIT},
+			</if>
+			<if test="create_time != null">
+				#{create_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="update_time != null">
+				#{update_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="table_stage_info != null">
+				#{table_stage_info,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="triggle_tables != null">
+				#{triggle_tables,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="latest_running_info != null">
+				#{latest_running_info,jdbcType=LONGVARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="taskAction" parameterType="java.lang.Integer">
+		update tb_mr_task set active=1 where id=#{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
+		update tb_mr_task
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="information != null">
+				information = #{information,jdbcType=VARCHAR},
+			</if>
+			<if test="bin_file_uri != null">
+				bin_file_uri = #{bin_file_uri,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				type = #{type,jdbcType=BIT},
+			</if>
+			<if test="export_dir_uri != null">
+				export_dir_uri = #{export_dir_uri,jdbcType=VARCHAR},
+			</if>
+			<if test="priority != null">
+				priority = #{priority,jdbcType=INTEGER},
+			</if>
+			<if test="active != null">
+				active = #{active,jdbcType=BIT},
+			</if>
+			<if test="task_schedule != null">
+				task_schedule = #{task_schedule,jdbcType=VARCHAR},
+			</if>
+			<if test="latest_running_time != null">
+				latest_running_time = #{latest_running_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="latest_running_status != null">
+				latest_running_status = #{latest_running_status,jdbcType=BIT},
+			</if>
+			<if test="flag != null">
+				flag = #{flag,jdbcType=BIT},
+			</if>
+			<if test="create_time != null">
+				create_time = #{create_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="update_time != null">
+				update_time = #{update_time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="table_stage_info != null">
+				table_stage_info = #{table_stage_info,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="triggle_tables != null">
+				triggle_tables = #{triggle_tables,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="latest_running_info != null">
+				latest_running_info = #{latest_running_info,jdbcType=LONGVARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
+		update tb_mr_task
+		set name = #{name,jdbcType=VARCHAR},
+		information = #{information,jdbcType=VARCHAR},
+		bin_file_uri = #{bin_file_uri,jdbcType=VARCHAR},
+		type = #{type,jdbcType=BIT},
+		export_dir_uri = #{export_dir_uri,jdbcType=VARCHAR},
+		priority = #{priority,jdbcType=INTEGER},
+		active = #{active,jdbcType=BIT},
+		task_schedule = #{task_schedule,jdbcType=VARCHAR},
+		latest_running_time = #{latest_running_time,jdbcType=TIMESTAMP},
+		latest_running_status = #{latest_running_status,jdbcType=BIT},
+		flag = #{flag,jdbcType=BIT},
+		create_time = #{create_time,jdbcType=TIMESTAMP},
+		update_time = #{update_time,jdbcType=TIMESTAMP},
+		table_stage_info =
+		#{table_stage_info,jdbcType=LONGVARCHAR},
+		triggle_tables = #{triggle_tables,jdbcType=LONGVARCHAR},
+		latest_running_info = #{latest_running_info,jdbcType=LONGVARCHAR}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.zktx.platform.entity.tb.MrTask">
+		update tb_mr_task
+		set name = #{name,jdbcType=VARCHAR},
+		information = #{information,jdbcType=VARCHAR},
+		bin_file_uri = #{bin_file_uri,jdbcType=VARCHAR},
+		type = #{type,jdbcType=BIT},
+		export_dir_uri = #{export_dir_uri,jdbcType=VARCHAR},
+		priority = #{priority,jdbcType=INTEGER},
+		active = #{active,jdbcType=BIT},
+		task_schedule = #{task_schedule,jdbcType=VARCHAR},
+		latest_running_time = #{latest_running_time,jdbcType=TIMESTAMP},
+		latest_running_status = #{latest_running_status,jdbcType=BIT},
+		flag = #{flag,jdbcType=BIT},
+		create_time = #{create_time,jdbcType=TIMESTAMP},
+		update_time = #{update_time,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
 </mapper>

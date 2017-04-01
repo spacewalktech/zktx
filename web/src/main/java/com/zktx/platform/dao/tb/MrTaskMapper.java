@@ -22,8 +22,32 @@ public interface MrTaskMapper {
     
     void taskAction(Integer id);
     
-    List<MrTaskWithBLOBs> findByPagination(@Param("latest_running_status") Integer latest_running_status,@Param("fromRowId") Integer fromRowId,@Param("num") Integer num);
+    List<MrTaskWithBLOBs> findByPagination(
+    		@Param("latest_running_status") Integer latest_running_status,
+    		@Param("offset") Integer offset,
+    		@Param("limit") Integer limit,
+    		@Param("search_name") String search_name, 
+    		@Param("search_type") String search_type, 
+    		@Param("search_triggle_tables") String search_triggle_tables, 
+    		@Param("search_active") String search_active, 
+    		@Param("search_create_time_begin") String search_create_time_begin, 
+    		@Param("search_create_time_end") String search_create_time_end
+    );
     //查询待运行的任务
-    List<MrTaskWithBLOBs> findByHasProcessed(@Param("has_processed") Integer has_processed,@Param("fromRowId") Integer fromRowId,@Param("num") Integer num);
+    List<MrTaskWithBLOBs> findByHasProcessed(@Param("has_processed") Integer has_processed,@Param("offset") Integer offset ,@Param("limit") Integer limit);
+
+	int findCount();
+
+	int findCountByPagination(
+    		@Param("latest_running_status") Integer latest_running_status,
+    		@Param("offset") Integer offset,
+    		@Param("limit") Integer limit,
+    		@Param("search_name") String search_name, 
+    		@Param("search_type") String search_type, 
+    		@Param("search_triggle_tables") String search_triggle_tables, 
+    		@Param("search_active") String search_active, 
+    		@Param("search_create_time_begin") String search_create_time_begin, 
+    		@Param("search_create_time_end") String search_create_time_end
+	);
     
 }

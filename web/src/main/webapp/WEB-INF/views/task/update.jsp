@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>添加任务</title>
+<title>修改任务</title>
 <%@ include file="../header.jsp"%>
 </head>
 <body style='width: 99.5%'>
@@ -11,7 +11,7 @@
 			<div class="row">
 				<section class="col col-2 text-right"> <label class="text">任务名称</label> </section>
 				<section class="col col-3"> <label class="input">
-					<input type="text" placeholder="任务名称" disabled="true">
+					<input type="text" placeholder="任务名称" disabled="true" name="name" value='${task.name }'>
 				</label> </section>
 				<section class="col col-2 text-right"> <label class="text">运行文件</label> </section>
 				<section class="col col-3"> <label class="input">
@@ -20,7 +20,7 @@
 							<input type="file" id="file" name="file" onchange="this.parentNode.nextSibling.value = this.value">
 							浏览...
 						</span>
-						<input type="text" placeholder="选择文件" readonly="">
+						<input type="text" placeholder="选择文件" readonly="" name="bin_file_uri" value="${task.bin_file_uri }">
 					</div>
 				</label> </section>
 			</div>
@@ -28,7 +28,7 @@
 			<div class="row">
 				<section class="col col-2 text-right"> <label class="text">任务描述</label> </section>
 				<section class="col col-9"> <label class="input">
-					<input type="text" placeholder="任务描述" disabled="true">
+					<input type="text" placeholder="任务描述" disabled="true" name="information" value="${task.information }">
 				</label> </section>
 			</div>
 
@@ -89,7 +89,7 @@
 				</section>
 				<section class="col col-2 text-right"> <label class="text">定时运行表达式</label> </section>
 				<section class="col col-3 text-right"> <label class="input">
-					<input type="text" placeholder="corn表达式" disabled="true">
+					<input type="text" placeholder="corn表达式" disabled="true" name="task_schedule" value="${task.task_schedule }">
 				</label> </section>
 			</div>
 		</fieldset>

@@ -3,55 +3,31 @@
 <html lang="en-us">
 <head>
 <meta charset="utf-8">
-<!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
-
 <title>任务列表</title>
 <meta name="description" content="">
 <meta name="author" content="">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-<!-- Basic Styles -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="${root }/resources/js/bootstrap-table/bootstrap-table.css">
 <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/font-awesome.min.css">
-
-<!-- SmartAdmin Styles : Caution! DO NOT change the order -->
 <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/smartadmin-production-plugins.min.css">
 <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/smartadmin-production.min.css">
 <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/smartadmin-skins.min.css">
-
-<!-- SmartAdmin RTL Support  -->
 <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/smartadmin-rtl.min.css">
-
-
-<!-- Demo purpose only: goes with demo.js, you can delete this css when designing your own WebApp -->
 <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/demo.min.css">
-
-<!-- FAVICONS -->
 <link rel="shortcut icon" href="${root}/resources/img/favicon/favicon.ico" type="image/x-icon">
 <link rel="icon" href="${root}/resources/img/favicon/favicon.ico" type="image/x-icon">
-
-<!-- GOOGLE FONT -->
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
-
-<!-- Specifying a Webpage Icon for Web Clip 
-			 Ref: https://developer.apple.com/library/ios/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html -->
 <link rel="apple-touch-icon" href="${root}/resources/img/splash/sptouch-icon-iphone.png">
 <link rel="apple-touch-icon" sizes="76x76" href="${root}/resources/img/splash/touch-icon-ipad.png">
 <link rel="apple-touch-icon" sizes="120x120" href="${root}/resources/img/splash/touch-icon-iphone-retina.png">
 <link rel="apple-touch-icon" sizes="152x152" href="${root}/resources/img/splash/touch-icon-ipad-retina.png">
-
-<!-- iOS web-app metas : hides Safari UI Components and Changes Status Bar Appearance -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-
-<!-- Startup image for web apps -->
 <link rel="apple-touch-startup-image" href="${root}/resources/img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
 <link rel="apple-touch-startup-image" href="${root}/resources/img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
 <link rel="apple-touch-startup-image" href="${root}/resources/img/splash/iphone.png" media="screen and (max-device-width: 320px)">
-
 </head>
-
 <style type="text/css">
 #titlogo {
 	width: 220px;
@@ -142,23 +118,16 @@ select.input-sm {
 	padding: 0 5px;
 }
 </style>
+
 <body class="desktop-detected pace-done smart-style-2">
 
-	<!-- HEADER -->
 	<header id="header">
 		<div id="logo-group">
-
-			<!-- PLACE YOUR LOGO HERE -->
 			<span id="titlogo">中坤天行数据平台</span>
-			<!-- END LOGO PLACEHOLDER -->
-
-			<!-- Note: The activity badge color changes when clicked and resets the number to 0
-				Suggestion: You may want to set a flag when this happens to tick off all checked messages / notifications -->
-
 		</div>
-
+		<!-- 右上角操作按钮 -->
 		<div class="pull-right">
-
+			<!--隐藏按钮-->
 			<div id="hide-menu" class="btn-header pull-right">
 				<span>
 					<a href="javascript:void(0);" data-action="toggleMenu" title="Collapse Menu">
@@ -167,6 +136,7 @@ select.input-sm {
 				</span>
 			</div>
 
+			<!-- 登出 -->
 			<div id="logout" class="btn-header transparent pull-right">
 				<span>
 					<a href="login.html" title="Sign Out" data-action="userLogout" data-logout-msg="You can improve your security further after logging out by closing this opened browser">
@@ -175,6 +145,7 @@ select.input-sm {
 				</span>
 			</div>
 
+			<!--全屏-->
 			<div id="fullscreen" class="btn-header transparent pull-right">
 				<span>
 					<a href="javascript:void(0);" data-action="launchFullscreen" title="Full Screen">
@@ -182,13 +153,13 @@ select.input-sm {
 					</a>
 				</span>
 			</div>
-
 		</div>
-
 	</header>
 
+	<!--   左侧菜单 -->
 	<aside id="left-panel">
 
+		<!-- 用户信息 -->
 		<div class="login-info">
 			<span>
 				<a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut">
@@ -199,7 +170,7 @@ select.input-sm {
 			</span>
 		</div>
 
-		<!-- NAVIGATION : This navigation is also responsive-->
+		<!--菜单-->
 		<nav>
 			<ul>
 				<li class="active open">
@@ -232,21 +203,17 @@ select.input-sm {
 							<a href="mrTaskList">任务列表</a>
 						</li>
 						<li>
-							<a href="task_wait.html">待运行任务列表</a>
+							<a href="mrTaskWait">待运行任务列表</a>
 						</li>
 						<li>
-							<a href="task_error.html">任务运行预警</a>
+							<a href="mrTaskError">任务运行预警</a>
 						</li>
-
-
 					</ul>
 				</li>
-
-
-
 			</ul>
 		</nav>
 
+		<!-- 隐藏按钮 -->
 		<span class="minifyme" data-action="minifyMenu">
 			<i class="fa fa-arrow-circle-left hit"></i>
 		</span>
@@ -268,20 +235,11 @@ select.input-sm {
 		</div>
 
 		<div id="content">
-
 			<article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable no-padding">
-
 				<!-- Widget ID (each widget will need unique ID)-->
 				<div class="jarviswidget jarviswidget-sortable" id="wid-id-0" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false" role="widget" style="border-top: 1px solid #CCC !important;">
-
-					<!-- widget div-->
 					<div role="content" style="padding: 0;">
-
-
-
-						<!-- widget content -->
 						<div class="widget-body no-padding">
-
 							<form class="smart-form">
 								<header> 查询 </header>
 								<fieldset class="padding-top-20">
@@ -294,17 +252,18 @@ select.input-sm {
 
 										<section class="col col-3">
 											<label class="input">
-												<input type="text" placeholder="请输入任务名称">
+												<input type="text" placeholder="请输入任务名称" id="search_name">
 											</label>
 										</section>
 
 										<section class="col col-1 text-right">
-											<label class="text">生成逻辑表</label>
+											<label class="text">生成派生表</label>
 										</section>
 
 										<section class="col col-3">
 											<label class="select">
-												<select>
+												<select id="search_type">
+													<option value="">请选择</option>
 													<option value="0">否</option>
 													<option value="1">是</option>
 												</select>
@@ -317,7 +276,7 @@ select.input-sm {
 										</section>
 										<section class="col col-3">
 											<label class="input">
-												<input type='text' placeholder='输入触发表，多个按,号隔开' >
+												<input type='text' placeholder='输入触发表，多个按,号隔开' id="search_triggle_tables">
 											</label>
 										</section>
 										
@@ -328,7 +287,8 @@ select.input-sm {
 										</section>
 										<section class="col col-3">
 											<label class="select">
-												<select>
+												<select id="search_active">
+													<option value="">请选择</option>
 													<option value="1">是</option>
 													<option value="0">否</option>
 												</select>
@@ -341,7 +301,7 @@ select.input-sm {
 										<section class="col col-3">
 											<section class="col col-5" style="padding: 0; margin: 0;">
 												<label class="input">
-													<input type="text" placeholder="">
+													<input type="text" placeholder="" id="search_create_time_begin">
 												</label>
 											</section>
 											<section class="col col-1" style="padding: 0; margin: 0;">
@@ -349,623 +309,56 @@ select.input-sm {
 											</section>
 											<section class="col col-6" style="padding: 0; margin: 0;">
 												<label class="input">
-													<input type="text" placeholder="">
+													<input type="text" placeholder="" id="search_create_time_end">
 												</label>
 											</section>
 										</section>
 									</div>
-
-
 								</fieldset>
 								<footer>
-									<button type="submit" class="btn btn-primary">查询</button>
-									<button type="button" class="btn btn-default" onclick="window.history.back();">重置</button>
+									<button type="button" class="btn btn-primary" onclick="queryTable()" >查询</button>
 								</footer>
 							</form>
-
 						</div>
-						<!-- end widget content -->
-
 					</div>
-					<!-- end widget div -->
-
 				</div>
 				<!-- end widget -->
-
 			</article>
-
+			
 			<!-- 任务管理主表 -->
-			<section id="widget-grid" class="">
-
-				<!-- row -->
-				<div class="row">
-					<article class="col-sm-12">
-						<!-- new widget -->
-						<button id="task_add" class="btn btn-primary btn-lg mb">创建任务</button>
-						<br>
-						<br>
-						<div id="addtab" title="<div class='widget-header'><h4><i class='fa fa-plus'></i> 创建任务</h4></div>">
-							<form class="smart-form">
-
-								<fieldset>
-									<div class="row">
-										<section class="col col-2 text-right">
-											<label class="text">任务名称</label>
-										</section>
-										<section class="col col-10">
-											<label class="input">
-												<input type="text" placeholder="任务名称" disabled="true">
-											</label>
-										</section>
-
-									</div>
-									<div class="row">
-										<section class="col col-2 text-right">
-											<label class="text">定时触发</label>
-										</section>
-										<section class="col col-10">
-											<label class="input">
-												<input type="text" placeholder="">
-											</label>
-										</section>
-									</div>
-									<div class="row">
-
-										<section class="col col-2 text-right">
-											<label class="text">条件触发</label>
-										</section>
-										<section class="col col-10">
-
-											<div class="row">
-
-												<section class="col col-4">
-													<label class="input">
-														<input type="text" list="list" placeholder="库名">
-														<datalist id="list">
-															<option value="Alexandra">库名一</option>
-															<option value="Alice">库名二</option>
-															<option value="Anastasia">库名三</option>
-
-														</datalist>
-													</label>
-												</section>
-
-												<section class="col col-4">
-													<label class="input">
-														<input type="text" list="list" placeholder="表名">
-														<datalist id="list">
-															<option value="Alexandra">库名一</option>
-															<option value="Alice">库名二</option>
-															<option value="Anastasia">库名三</option>
-
-														</datalist>
-													</label>
-												</section>
-
-												<section class="col col-4">
-													<label class="input">
-														<input type="text" list="list" placeholder="全量/增量">
-														<datalist id="list">
-															<option value="Alexandra">库名一</option>
-															<option value="Alice">库名二</option>
-															<option value="Anastasia">库名三</option>
-
-														</datalist>
-													</label>
-												</section>
-											</div>
-										</section>
-									</div>
-									<div class="row">
-										<section class="col col-2 text-right">
-											<label class="text">优先级</label>
-										</section>
-										<section class="col col-10">
-											<label class="input">
-												<input type="text" placeholder="">
-											</label>
-										</section>
-									</div>
-									<div class="row">
-										<section class="col col-2 text-right">
-											<label class="text">描述</label>
-										</section>
-										<section class="col col-10">
-
-											<label class="textarea textarea-resizable">
-												<textarea rows="3" class="custom-scroll"></textarea>
-											</label>
-
-										</section>
-									</div>
-
-
-									<div class="row">
-
-										<section class="col col-2 text-right">
-											<label class="text">上传文件</label>
-										</section>
-										<section class="col col-10">
-											<div class="input input-file">
-												<span class="button">
-													<input type="file" id="file" name="file" onchange="this.parentNode.nextSibling.value = this.value">
-													浏览...
-												</span>
-												<input type="text" placeholder="Include some files" readonly="">
-											</div>
-										</section>
-
-									</div>
-
-									<div class="row">
-										<section class="col col-2 text-right">
-											<label class="text">是否激活</label>
-										</section>
-										<section class="col col-10">
-											<div class="inline-group">
-												<label class="radio">
-													<input type="radio" name="radio" checked="checked">
-													<i></i>
-													是
-												</label>
-												<label class="radio">
-													<input type="radio" name="radio">
-													<i></i>
-													否
-												</label>
-
-											</div>
-
-										</section>
-									</div>
-									<div class="row">
-										<section class="col col-2 text-right">
-											<label class="text">是否创建派生表</label>
-										</section>
-										<section class="col col-10">
-
-											<div class="inline-group">
-												<label class="radio">
-													<input type="radio" name="radio-inline" checked="checked">
-													<i></i>
-													是
-												</label>
-												<label class="radio">
-													<input type="radio" name="radio-inline">
-													<i></i>
-													否
-												</label>
-
-											</div>
-										</section>
-									</div>
-
-
-								</fieldset>
-								<footer>
-									<button type="button" class="btn btn-default" onclick="window.history.back();">重置</button>
-									<button type="submit" class="btn btn-primary">新建</button>
-
-								</footer>
-							</form>
-						</div>
-
-						<div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
-
-
-
-							<div class="widget-body no-padding bordertop">
-								<!-- content -->
-								<div id="dt_basic_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
-									<table id="dt_basic" class="table table-striped table-bordered table-hover dataTable no-footer" width="100%" role="grid" aria-describedby="dt_basic_info" style="width: 100%;">
-										<thead>
-											<tr role="row">
-												<th data-hide="phone" class="sorting_asc" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-sort="ascending" aria-label="ID: activate to sort column descending">任务ID</th>
-												<th data-class="expand" class="expand sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label=" Name: activate to sort column ascending">任务名称</th>
-												<th data-hide="phone" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label=" Phone: activate to sort column ascending">任务说明</th>
-												<th class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="Company: activate to sort column ascending">优先级</th>
-												<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label=" Zip: activate to sort column ascending">是否创建派生表</th>
-												<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">触发条件</th>
-												<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label=" Date: activate to sort column ascending">是否激活</th>
-												<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">定时运行表达式</th>
-												<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">上次运行时间</th>
-												<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">是否成功</th>
-												<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">失败信息</th>
-												<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">创建时间</th>
-												<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">操作</th>
-											</tr>
-										</thead>
-										<tbody>
-
-											<tr role="row" class="odd" aria-selected="false">
-
-												<td class="sorting_1">1</td>
-												<td class=" expand">
-													<span class="responsiveExpander"></span>
-													生成保单宽表
-												</td>
-												<td>由保单相关的信息生成保单宽表</td>
-												<td>999</td>
-												<td>是</td>
-												<td>[{“table”：a，“type”：“full”}，{“table”：b，“type”：“incremental”}]</td>
-												<td>是</td>
-												<td>WIN 0 0 30 2</td>
-												<td>2017-03-15 11:30:20</td>
-												<td>成功</td>
-												<td></td>
-												<td>2015-12-20 11:30:20</td>
-												<td>
-
-													<!-- Demo -->
-
-													<div class="btn-group" style="width: 100px;">
-														<a class="btn btn-default" href="javascript:void(0);">操作</a>
-														<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);">
-															<span class="caret"></span>
-														</a>
-														<ul class="dropdown-menu">
-															<li id="add_tab">
-																<a href="javascript:void(0);">查看表</a>
-															</li>
-
-															<!-- <div id="addtab" title="<div class='widget-header'><h4><i class='fa fa-plus'></i> 创建任务</h4></div>">11111111111</div>-->
-															<li>
-																<a href="javascript:void(0);">修改</a>
-															</li>
-															<li>
-																<a href="javascript:void(0);">删除</a>
-															</li>
-															<li>
-																<a href="javascript:void(0);">激活</a>
-															</li>
-
-															<li>
-																<a href="javascript:void(0);">停止</a>
-															</li>
-														</ul>
-													</div>
-													<button type="submit" class="btn btn-primary btn-lg" onclick="window.open ('任务查看表.html','newwindow','height=500,width=900,top=100,left=200,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no') " style="margin-bottom: 20px;">查看表</button>
-
-												</td>
-											</tr>
-											<tr role="row" class="even">
-
-												<td class="sorting_1">2</td>
-												<td class=" expand">
-													<span class="responsiveExpander"></span>
-													生成理赔宽表
-												</td>
-												<td>由保单理赔信息生成理赔宽表</td>
-												<td>998</td>
-												<td>是</td>
-												<td>[{“table”：a，“type”：“full”}，{“table”：b，“type”：“incremental”}]</td>
-												<td>是</td>
-												<td>FEB 0 1 30 2</td>
-												<td>2017-03-15 12:30:20</td>
-												<td>失败</td>
-												<td>连接超时</td>
-												<td>2015-12-20 12:30:20</td>
-												<td></td>
-											</tr>
-											<tr role="row" class="odd">
-
-												<td class="sorting_1">3</td>
-												<td class=" expand">
-													<span class="responsiveExpander"></span>
-													生成定损宽表
-												</td>
-												<td>由保单定损信息生成定损宽表</td>
-												<td>998</td>
-												<td>是</td>
-												<td>[{“table”：a，“type”：“full”}，{“table”：b，“type”：“incremental”}]</td>
-												<td>是</td>
-												<td></td>
-												<td>2017-03-18 12:30:20</td>
-												<td>成功</td>
-												<td></td>
-												<td>2016-12-20 12:30:20</td>
-												<td></td>
-											</tr>
-											<tr role="row" class="even">
-
-												<td class="sorting_1">4</td>
-												<td class=" expand">
-													<span class="responsiveExpander"></span>
-													生成保单宽表
-												</td>
-												<td>由保单相关的信息生成保单宽表</td>
-												<td>999</td>
-												<td>是</td>
-												<td>[{“table”：a，“type”：“full”}，{“table”：b，“type”：“incremental”}]</td>
-												<td>是</td>
-												<td>WIN 0 0 30 2</td>
-												<td>2017-03-16 11:30:20</td>
-												<td>成功</td>
-												<td></td>
-												<td>2015-12-20 11:30:20</td>
-												<td></td>
-											</tr>
-											<tr role="row" class="odd">
-
-												<td class="sorting_1">5</td>
-												<td class=" expand">
-													<span class="responsiveExpander"></span>
-													生成保单宽表
-												</td>
-												<td>由保单相关的信息生成保单宽表</td>
-												<td>999</td>
-												<td>是</td>
-												<td>[{“table”：a，“type”：“full”}，{“table”：b，“type”：“incremental”}]</td>
-												<td>是</td>
-												<td>WIN 0 0 30 2</td>
-												<td>2017-03-17 11:30:20</td>
-												<td>成功</td>
-												<td></td>
-												<td>2015-12-20 11:30:20</td>
-												<td></td>
-											</tr>
-											<tr role="row" class="even">
-
-												<td class="sorting_1">6</td>
-												<td class=" expand">
-													<span class="responsiveExpander"></span>
-													生成保单宽表
-												</td>
-												<td>由保单相关的信息生成保单宽表</td>
-												<td>999</td>
-												<td>是</td>
-												<td>[{“table”：a，“type”：“full”}，{“table”：b，“type”：“incremental”}]</td>
-												<td>是</td>
-												<td>WIN 0 0 30 2</td>
-												<td>2017-03-18 11:30:20</td>
-												<td>成功</td>
-												<td></td>
-												<td>2015-12-20 11:30:20</td>
-												<td></td>
-											</tr>
-											<tr role="row" class="odd">
-
-												<td class="sorting_1">7</td>
-												<td class=" expand">
-													<span class="responsiveExpander"></span>
-													生成保单宽表
-												</td>
-												<td>由保单相关的信息生成保单宽表</td>
-												<td>999</td>
-												<td>是</td>
-												<td>[{“table”：a，“type”：“full”}，{“table”：b，“type”：“incremental”}]</td>
-												<td>是</td>
-												<td>WIN 0 0 30 2</td>
-												<td>2017-03-19 11:30:20</td>
-												<td>成功</td>
-												<td></td>
-												<td>2015-12-20 11:30:20</td>
-												<td></td>
-											</tr>
-											<tr role="row" class="even">
-
-												<td class="sorting_1">8</td>
-												<td class=" expand">
-													<span class="responsiveExpander"></span>
-													生成保单宽表
-												</td>
-												<td>由保单相关的信息生成保单宽表</td>
-												<td>999</td>
-												<td>是</td>
-												<td>[{“table”：a，“type”：“full”}，{“table”：b，“type”：“incremental”}]</td>
-												<td>是</td>
-												<td>WIN 0 0 30 2</td>
-												<td>2017-03-20 11:30:20</td>
-												<td>成功</td>
-												<td></td>
-												<td>2015-12-20 11:30:20</td>
-												<td></td>
-											</tr>
-											<tr role="row" class="odd">
-
-												<td class="sorting_1">9</td>
-												<td class=" expand">
-													<span class="responsiveExpander"></span>
-													生成保单宽表
-												</td>
-												<td>由保单相关的信息生成保单宽表</td>
-												<td>999</td>
-												<td>是</td>
-												<td>[{“table”：a，“type”：“full”}，{“table”：b，“type”：“incremental”}]</td>
-												<td>是</td>
-												<td>WIN 0 0 30 2</td>
-												<td>2017-03-21 11:30:20</td>
-												<td>成功</td>
-												<td></td>
-												<td>2015-12-20 11:30:20</td>
-												<td></td>
-											</tr>
-											<tr role="row" class="even">
-
-												<td class="sorting_1">10</td>
-												<td class=" expand">
-													<span class="responsiveExpander"></span>
-													生成保单宽表
-												</td>
-												<td>由保单相关的信息生成保单宽表</td>
-												<td>999</td>
-												<td>是</td>
-												<td>[{“table”：a，“type”：“full”}，{“table”：b，“type”：“incremental”}]</td>
-												<td>是</td>
-												<td>WIN 0 0 30 2</td>
-												<td>2017-03-22 11:30:20</td>
-												<td>成功</td>
-												<td></td>
-												<td>2015-12-20 11:30:20</td>
-												<td></td>
-											</tr>
-										</tbody>
-									</table>
-									<div class="dt-toolbar-footer">
-										<div class="col-sm-6 col-xs-12 hidden-xs">
-											<div class="dataTables_info" id="dt_basic_info" role="status" aria-live="polite">Showing 1 to 10 of 100 entries</div>
-										</div>
-										<div class="col-xs-12 col-sm-6">
-											<div class="dataTables_paginate paging_simple_numbers" id="dt_basic_paginate">
-												<ul class="pagination">
-													<li class="paginate_button previous disabled" id="dt_basic_previous">
-														<a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0">Previous</a>
-													</li>
-													<li class="paginate_button active">
-														<a href="#" aria-controls="dt_basic" data-dt-idx="1" tabindex="0">1</a>
-													</li>
-													<li class="paginate_button ">
-														<a href="#" aria-controls="dt_basic" data-dt-idx="2" tabindex="0">2</a>
-													</li>
-													<li class="paginate_button ">
-														<a href="#" aria-controls="dt_basic" data-dt-idx="3" tabindex="0">3</a>
-													</li>
-													<li class="paginate_button ">
-														<a href="#" aria-controls="dt_basic" data-dt-idx="4" tabindex="0">4</a>
-													</li>
-													<li class="paginate_button ">
-														<a href="#" aria-controls="dt_basic" data-dt-idx="5" tabindex="0">5</a>
-													</li>
-													<li class="paginate_button disabled" id="dt_basic_ellipsis">
-														<a href="#" aria-controls="dt_basic" data-dt-idx="6" tabindex="0">…</a>
-													</li>
-													<li class="paginate_button ">
-														<a href="#" aria-controls="dt_basic" data-dt-idx="7" tabindex="0">10</a>
-													</li>
-													<li class="paginate_button next" id="dt_basic_next">
-														<a href="#" aria-controls="dt_basic" data-dt-idx="8" tabindex="0">Next</a>
-													</li>
-												</ul>
-											</div>
-										</div>
-									</div>
-								</div>
-
-
-								<!-- end content -->
-							</div>
-
-
-
-							<!-- end widget div -->
-						</div>
-						<!-- end widget -->
-
-					</article>
+			<div class="panel">
+			<div>
+				<div id="toolbar" class="btn-group">
+					<button id="btn_add" type="button" class="btn btn-primary">
+						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+						新增
+					</button>
 				</div>
-
-				<!-- end row -->
-
-
-
-			</section>
-			<!-- 任务管理主表 -->
-
+			</div>
+			<table id="task_list"</table>
+			</div>
 		</div>
-		<!-- END MAIN CONTENT -->
-
 	</div>
-
 	<script data-pace-options='{ "restartOnRequestAfter": true }' src="${root}/resources/js/plugin/pace/pace.min.js"></script>
-
-	<!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script>
 	if (!window.jQuery) {
 	    document.write('<script src="${root}/resources/js/libs/jquery-2.1.1.min.js"><\/script>');
 	}
     </script>
-
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 	<script>
 	if (!window.jQuery.ui) {
 	    document.write('<script src="${root}/resources/js/libs/jquery-ui-1.10.3.min.js"><\/script>');
 	}
     </script>
-
-	<!-- IMPORTANT: APP CONFIG -->
 	<script src="${root}/resources/js/app.config.js"></script>
-
-	<!-- JS TOUCH : include this plugin for mobile drag / drop touch events--
-		<script src="js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script> 
-
-		<!-- BOOTSTRAP JS -->
 	<script src="${root}/resources/js/bootstrap/bootstrap.min.js"></script>
-
-	<!-- CUSTOM NOTIFICATION --
-		<script src="${root}/resources/js/notification/SmartNotification.min.js"></script>
-
-		<!-- JARVIS WIDGETS -->
 	<script src="${root}/resources/js/smartwidgets/jarvis.widget.min.js"></script>
-
-	<!-- EASY PIE CHARTS --
-		<script src="js/plugin/easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
-
-		<!-- SPARKLINES --
-		<script src="js/plugin/sparkline/jquery.sparkline.min.js"></script>
-
-		<!-- JQUERY VALIDATE --
-		<script src="js/plugin/jquery-validate/jquery.validate.min.js"></script>
-
-		<!-- JQUERY MASKED INPUT --
-		<script src="js/plugin/masked-input/jquery.maskedinput.min.js"></script>
-
-		<!-- JQUERY SELECT2 INPUT --
-		<script src="js/plugin/select2/select2.min.js"></script>
-
-		<!-- JQUERY UI + Bootstrap Slider --
-		<script src="js/plugin/bootstrap-slider/bootstrap-slider.min.js"></script>
-
-		<!-- browser msie issue fix --
-		<script src="js/plugin/msie-fix/jquery.mb.browser.min.js"></script>
-
-		<!-- FastClick: For mobile devices --
-		<script src="js/plugin/fastclick/fastclick.min.js"></script>
-
-		<!--[if IE 8]>
-
-		<h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>
-
-		<![endif]-->
-
-	<!-- Demo purpose only -->
 	<script src="${root}/resources/js/demo.min.js"></script>
-
-	<!-- MAIN APP JS FILE -->
 	<script src="${root}/resources/js/app.min.js"></script>
-	
 	<script src="${root}/resources/layer/layer.js"></script>
-
-	<!-- ENHANCEMENT PLUGINS : NOT A REQUIREMENT -->
-	<!-- Voice command : plugin --
-		<script src="js/speech/voicecommand.min.js"></script>
-
-		<!-- SmartChat UI : plugin --
-		<script src="js/smart-chat-ui/smart.chat.ui.min.js"></script>
-		<script src="js/smart-chat-ui/smart.chat.manager.min.js"></script>
-		
-		<!-- PAGE RELATED PLUGIN(S) -->
-
-	<!-- Flot Chart Plugin: Flot Engine, Flot Resizer, Flot Tooltip --
-		<script src="js/plugin/flot/jquery.flot.cust.min.js"></script>
-		<script src="js/plugin/flot/jquery.flot.resize.min.js"></script>
-		<script src="js/plugin/flot/jquery.flot.time.min.js"></script>
-		<script src="js/plugin/flot/jquery.flot.tooltip.min.js"></script>
-		
-		<!-- Vector Maps Plugin: Vectormap engine, Vectormap language --
-		<script src="js/plugin/vectormap/jquery-jvectormap-1.2.2.min.js"></script>
-		<script src="js/plugin/vectormap/jquery-jvectormap-world-mill-en.js"></script>
-		
-		<!-- Full Calendar --
-		<script src="js/plugin/moment/moment.min.js"></script>
-		<script src="js/plugin/fullcalendar/jquery.fullcalendar.min.js"></script>
--->
-
-
-
 	<script type="text/javascript">
-	// DO NOT REMOVE : GLOBAL FUNCTIONS!
-
 	$(document)
 		.ready(
 			function() {
@@ -1177,21 +570,207 @@ select.input-sm {
 			
     </script>
 
-
+<script src="${root }/resources/js/bootstrap-table/bootstrap-table.js" type="text/javascript"></script>
+<script src="${root }/resources/js/bootstrap-table/bootstrap-table-zh-CN.js" type="text/javascript"></script>
 	<script>
 	
-	$("#task_add").bind('click' , function(){
+	// 新增
+	$("#btn_add").bind('click' , function(){
 	    layer.open({
 		  type: 2,
 		  title: '新建任务',
 		  shadeClose: true,
-		  shade: 0.8,
-		  area: ['380px', '90%'],
-		  content: 'mrTask/addPage' //iframe的url
+		  shade: 0.2,
+		  area: ['65%', '60%'],
+		  content: 'mrTask/addPage'
 		}); 
 	})	
 	
+	// 修改 
+	function upd_task(id){
+	    layer.open({
+		  type: 2,
+		  title: '修改任务',
+		  shadeClose: true,
+		  shade: 0.2,
+		  area: ['65%', '60%'],
+		  content: 'mrTask/updatePage?id='+id
+		}); 
+	}
 	
+	// 删除
+	function del_task(id){
+	    layer.confirm('确认删除?', {
+		  btn: ['删除','取消'], //按钮
+		  icon: 3
+		}, function(){
+		    $.ajax({
+				type : 'post',
+				url : 'mrTask/deleteByid',
+				data : {
+				    id : id
+				},
+		    	success : function(result){
+		    	    if(result == true){
+		    			layer.msg('删除成功', {icon: 1});
+		    			$('#task_list').bootstrapTable('refresh');
+		    	    }else{
+		    			layer.msg('删除失败', {icon: 5});
+		    	    }
+		    	}
+		    })
+		});
+	}
+	
+	function show_task_queue(id){
+	    layer.open({
+		  type: 2,
+		  title: '新建任务',
+		  shadeClose: true,
+		  shade: 0.2,
+		  area: ['65%', '50%'],
+		  content: 'mrTask/addPage' //iframe的url
+		}); 
+	}
+	
+	
+	$(function(){
+	    
+	  	//1.初始化Table
+		var oTable = new TableInit();
+		oTable.Init();
+
+		//2.初始化Button的点击事件
+		var oButtonInit = new ButtonInit();
+		oButtonInit.Init();
+		
+		Date.prototype.format =function(format){
+			var o = {
+				"M+" : this.getMonth()+1, //month
+				"d+" : this.getDate(), //day
+				"h+" : this.getHours(), //hour
+				"m+" : this.getMinutes(), //minute
+				"s+" : this.getSeconds(), //second
+				"q+" : Math.floor((this.getMonth()+3)/3), //quarter
+				"S" : this.getMilliseconds() //millisecond
+			}
+			if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
+			(this.getFullYear()+"").substr(4- RegExp.$1.length));
+			for(var k in o)if(new RegExp("("+ k +")").test(format))
+			format = format.replace(RegExp.$1,
+			RegExp.$1.length==1? o[k] :
+			("00"+ o[k]).substr((""+ o[k]).length));
+			return format;
+		}
+	    
+	})
+	
+	var TableInit = function() {
+			var oTableInit = new Object();
+			//初始化Table
+			oTableInit.Init = function() {
+				$('#task_list').bootstrapTable({
+					url : 'mrTask/query.do', //请求后台的URL（*）
+					method : 'get', //请求方式（*）
+					toolbar : '#toolbar', //工具按钮用哪个容器
+					striped : true, //是否显示行间隔色
+					cache : false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+					pagination : true, //是否显示分页（*）
+					sortable : false, //是否启用排序
+					sortOrder : "asc", //排序方式
+					queryParams : oTableInit.queryParams,//传递参数（*）
+					sidePagination : "server", //分页方式：client客户端分页，server服务端分页（*）
+					pageNumber : 1, //初始化加载第一页，默认第一页
+					pageSize : 10, //每页的记录行数（*）
+					pageList : [ 10, 25, 50, 100 ], //可供选择的每页的行数（*）
+					search : false, //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+					strictSearch : true,
+					showColumns : true, //是否显示所有的列
+					showRefresh : true, //是否显示刷新按钮
+					minimumCountColumns : 2, //最少允许的列数
+					clickToSelect : true, //是否启用点击选中行
+					// height : 500, //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+					uniqueId : "ID", //每一行的唯一标识，一般为主键列
+					showToggle : true, //是否显示详细视图和列表视图的切换按钮
+					cardView : false, //是否显示详细视图
+					detailView : false, //是否显示父子表
+					columns : [{
+						field : 'id',
+						title : '任务ID'
+					}, {
+						field : 'name',
+						title : '任务名称'
+					}, {
+						field : 'information',
+						title : '任务说明'
+					}, {
+						field : 'type',
+						title : '创建派生表',
+						formatter : function (value, row, index){
+					    	return value == true ? '创建' : '不创建';
+					    }
+					}, {
+						field : 'triggle_tables',
+						title : '触发条件'
+					}, {
+						field : 'active',
+						title : '是否激活',
+						formatter : function (value, row, index){
+					    	return value == true ? '激活' : '未激活';
+					    }
+					}, {
+						field : 'create_time',
+						title : '创建时间',
+						formatter : function (value, row, index){
+					    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+					    }
+					},{
+					    title : '操作',
+					    formatter : function(value,row,index){
+							return '<div class="btn-group" style="width: 100px;">'
+							+	'<a class="btn btn-default" href="javascript:void(0);">操作</a>'
+							+	'<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"><span class="caret"></span></a>'
+							+	'<ul class="dropdown-menu">'
+							+	'	<li><a href="javascript:void(0);onclick=upd_task('+ row.id +')">修改</a></li>'
+							+	'	<li><a href="javascript:void(0);onclick=del_task('+ row.id +')">删除</a></li>'
+							+	'</ul></div>'
+					    }
+					}]
+				});
+			};
+
+			//得到查询的参数
+			oTableInit.queryParams = function(params) {
+			    
+				var temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+					limit : params.limit, //页面大小
+					offset : params.offset, //页码
+					search_name : $("#search_name").val(),
+					search_type : $("#search_type").val(),
+					search_triggle_tables : $("#search_triggle_tables").val(),
+					search_active : $("#search_active").val(),
+					search_create_time_begin : $("#search_create_time_begin").val(),
+					search_create_time_end : $("#search_create_time_end").val()
+				};
+				return temp;
+			};
+			return oTableInit;
+		};
+
+		var ButtonInit = function() {
+			var oInit = new Object();
+			var postdata = {};
+
+			oInit.Init = function() {
+				//初始化页面上面的按钮事件
+			};
+
+			return oInit;
+		};
+		
+		function queryTable(){
+		    $('#task_list').bootstrapTable("refresh")
+		}
 	
 	</script>
 
