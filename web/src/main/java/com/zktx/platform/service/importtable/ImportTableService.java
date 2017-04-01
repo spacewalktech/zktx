@@ -20,4 +20,6 @@ public interface ImportTableService {
 	
 	Integer findCountByParms(ImportTablesPo tablesPo);
 	
+	 ImportTablesWithBLOBs selectByPrimaryKey(Integer id);
+	
 }

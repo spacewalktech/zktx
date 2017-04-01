@@ -8,7 +8,6 @@
 		<meta name="description" content="">
 		<meta name="author" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
 		<link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/smartadmin-production-plugins.min.css">
@@ -60,6 +59,11 @@
 	</style>
 	<body class="desktop-detected pace-done smart-style-2">
 
+		<form action="" id="smartForm">
+			<input id="table_id" type="hidden" name="table_type" value="${table_type }" />
+			<input type="hidden" id="pageNum" name="pageNum" value="1">
+			<input type="hidden" id="perNum" name="perNum" value="10">
+		</form>
 		<!-- HEADER -->
 		<header id="header">
 			<div id="logo-group">
@@ -297,7 +301,6 @@
 						<article class="col-sm-12">
 							<!-- new widget -->
 							<div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
-								<input id="table_type" type="hidden" value="${table_type }"/>
 
 								<div class="widget-body no-padding bordertop">
 									<!-- content -->
@@ -327,20 +330,12 @@
 										</table>
 										<div class="dt-toolbar-footer">
 											<div class="col-sm-6 col-xs-12 hidden-xs">
-												<div class="dataTables_info" id="dt_basic_info" role="status" aria-live="polite">Showing 1 to 10 of 100 entries</div>
+												<div class="dataTables_info" id="dt_basic_info" role="status" aria-live="polite">Showing <span id="fromRowid"></span> to <span id="toRowid"></span> of <span id="rowCount"></span> entries</div>
 											</div>
 											<div class="col-xs-12 col-sm-6">
 												<div class="dataTables_paginate paging_simple_numbers" id="dt_basic_paginate">
 													<ul class="pagination">
-														<li class="paginate_button previous disabled" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0">Previous</a></li>
-														<li class="paginate_button active"><a href="#" aria-controls="dt_basic" data-dt-idx="1" tabindex="0">1</a></li>
-														<li class="paginate_button "><a href="#" aria-controls="dt_basic" data-dt-idx="2" tabindex="0">2</a></li>
-														<li class="paginate_button "><a href="#" aria-controls="dt_basic" data-dt-idx="3" tabindex="0">3</a></li>
-														<li class="paginate_button "><a href="#" aria-controls="dt_basic" data-dt-idx="4" tabindex="0">4</a></li>
-														<li class="paginate_button "><a href="#" aria-controls="dt_basic" data-dt-idx="5" tabindex="0">5</a></li>
-														<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="6" tabindex="0">…</a></li>
-														<li class="paginate_button "><a href="#" aria-controls="dt_basic" data-dt-idx="7" tabindex="0">10</a></li>
-														<li class="paginate_button next" id="dt_basic_next"><a href="#" aria-controls="dt_basic" data-dt-idx="8" tabindex="0">Next</a></li>
+														
 													</ul>
 												</div>
 											</div>
@@ -748,12 +743,14 @@
 				}
 			});	
 			
-			orgTableSubmit();
+			orgTableSubmit(1);
 		})
-		function orgTableSubmit(){
-			$.post("stage/queryStageOri.do","table_type="+$("#table_type").val(),function(msg){
+		function orgTableSubmit(pageNum){
+			$("#pageNum").val(pageNum);
+			$.post("stage/queryStageOri.do",$("#smartForm").serialize(),function(msg){
+				pagefen(pageNum,msg);
 				var htmlval=new StringBuffer();
-				$.each(eval(msg),function(index,val){
+				$.each(msg.list,function(index,val){
 					htmlval.append('<tr role="row" class='+(index%2==0?"odd":"even")+' aria-selected="false">'); 
 					htmlval.append('<td class="sorting_1">'+(val.id!=undefined?val.id:"")+'</td>');
 					htmlval.append('<td class=" expand"><span class="responsiveExpander">'+(val.import_table_id!=undefined?val.import_table_id:"")+'</span></td>');
@@ -774,6 +771,38 @@
 				$("table tbody").html(htmlval.toString());
 			});
         }
+		function pagefen(pageNum,msg){
+			
+			var perNum = $("#perNum").val();
+			var count = msg.countRows;//总行数
+			var perCount =msg.list.length;//一次返回的行数
+			var pageCount = parseInt(count/perNum)+1;//总页数
+			$("#rowCount").html(count);
+			$("#fromRowid").html(perNum*(pageNum-1)+(count==0?0:1));
+			$("#toRowid").html(perNum*(pageNum-1)+perCount);
+			var pageval=new StringBuffer();
+			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0" onclick="PreviousQuery('+(pageNum-1)+','+pageCount+')">Previous</a></li>');
+			for ( var i = 1; i <= pageCount; i++) {
+				if(i<4){
+					pageval.append('<li class="paginate_button"><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
+				}else{
+					pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0">…</a></li>');
+					pageval.append('<li class="paginate_button"><a href="#" aria-controls="dt_basic" data-dt-idx="'+pageCount+'" tabindex="0" onclick="PreviousQuery('+pageCount+','+pageCount+')">'+pageCount+'</a></li>');
+					break;
+				}
+			}
+			pageval.append('<li class="paginate_button next" id="dt_basic_next"><a href="#" aria-controls="dt_basic" data-dt-idx="'+(pageCount+1)+'" tabindex="0" onclick="PreviousQuery('+(pageNum+1)+','+pageCount+')">Next</a></li>');
+			$("#dt_basic_paginate ul").html(pageval.toString());
+		}
+		function PreviousQuery(pageNum,pageCount){
+			if(pageNum==0){
+				alert("已经是第一页");
+			}else if(pageNum>pageCount){
+				alert("已是最后一页");
+			}else{
+				doSubmit(pageNum);
+			}
+		}
 		</script>
 
 	</body>
