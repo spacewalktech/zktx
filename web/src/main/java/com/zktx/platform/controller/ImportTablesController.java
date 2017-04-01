@@ -3,14 +3,17 @@ package com.zktx.platform.controller;
 import java.io.PrintWriter;
 import java.sql.Date;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.zktx.platform.entity.tb.ImportTablesPo;
 import com.zktx.platform.entity.tb.ImportTablesWithBLOBs;
 import com.zktx.platform.service.importtable.ImportTableService;
@@ -23,24 +26,24 @@ public class ImportTablesController {
 	ImportTableService tableService;
 	//条件查询
 	@RequestMapping("/query.do")
-	public String findByPagination(HttpServletRequest request,HttpServletResponse response ,ImportTablesPo bloBs){
+	public @ResponseBody String findByPagination(HttpServletResponse response, ImportTablesPo tablesPo,  ModelMap map){
 		try {
-			String fromRowIdstr =request.getParameter("fromRowId");
-			String numstr =request.getParameter("num");
-			System.out.println("fromRowIdstr:"+fromRowIdstr+",num:"+numstr+"，bloBs.table_type:"+bloBs.getTable_type());
-			List<ImportTablesWithBLOBs> list =tableService.findByPagination(bloBs, 0, 5);
-			String jsonString =JSON.toJSONString(list, true);
-			System.out.println(jsonString);
+			System.out.println("dddd:"+tablesPo.getTable_type()+","+tablesPo.getFromRowId()+","+tablesPo.getPerNum());
+			int count =tableService.findCountByParms(tablesPo);
+			List<ImportTablesWithBLOBs> list =tableService.findByPagination(tablesPo);
+			map.put("countRows", count);
+			map.put("list", list);
+			String jsonString =JSON.toJSONString(map);
 			PrintWriter out =response.getWriter();
+			System.out.println(jsonString);
 			out.write(jsonString);
-			out.flush();
 			out.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "error";
 		}
 		
-		return "dataManage/orgTableList";
+		return null;
 	}
 	//插入
 	@RequestMapping("/insert.do")

@@ -28,6 +28,7 @@
 		<link rel="apple-touch-startup-image" href="${root}/resources/img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
 		<link rel="apple-touch-startup-image" href="${root}/resources/img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
 		<link rel="apple-touch-startup-image" href="${root}/resources/img/splash/iphone.png" media="screen and (max-device-width: 320px)">
+		
 	</head>
 
 	<style type="text/css">
@@ -231,18 +232,23 @@
 						<a><i class="fa fa-lg fa-fw fa-database"></i> <span class="menu-item-parent">数据管理</span></a>
 						<ul style="display: block;">
 							<li>
-							<li><a href="orgTableList">导入表</a></li>
-							<li><a href="logic_tables.html">派生表</a></li>
-							<li><a href=" import_tables_error.html">导入表预警</a></li>
-							<li><a href="logic_tables_error.html">派生表预警</a></li>
-
-							
-						</ul>	
+								<a href="orgTableList">导入表</a>
+							</li>
+							<li>
+								<a href="perTableList">派生表</a>
+							</li>
+							<li>
+								<a href="orgWarnTable">导入表预警</a>
+							</li>
+							<li>
+								<a href="perWarnTable">派生表预警</a>
+							</li>
+						</ul>
 					</li>
 					<li  class="top-menu-invisible">
 						<a><i class="fa fa-lg fa-fw fa-desktop"></i> <span class="menu-item-parent">任务管理</span></a>
 						<ul>
-							<li><a href="task_list.html">任务列表</a></li>
+							<li><a href="mrTaskList">任务列表</a></li>
 							<li><a href="task_wait.html">待运行任务列表</a></li>
 							<li><a href="task_error.html">任务运行预警</a></li>
 							
@@ -276,7 +282,7 @@
 
 				<!-- breadcrumb -->
 				<ol class="breadcrumb">
-					<li>首页</li><li>数据管理</li><li>导入表</li>
+					<li>首页</li><li>数据管理</li><li>${table_type==1?"派生表":"导入表" }</li>
 				</ol>
 				
 
@@ -299,7 +305,7 @@
 									<!-- widget content -->
 									<div class="widget-body no-padding">
 				
-										<form class="smart-form">
+										<form class="smart-form" id="smartForm">
 											<header>
 												查询
 											</header>
@@ -310,7 +316,7 @@
 													<section class="col col-1 text-right"><label class="text">源表</label></section>
 													<section class="col col-3">
 														<label class="input">
-														<input type="text" list="list" id="src_table">
+														<input type="text" list="list" name="src_table" id="src_table">
 														<datalist id="list">
 															<option value="Alexandra">库名一</option>
 															<option value="Alice">库名二</option>
@@ -322,7 +328,7 @@
 													<section class="col col-1 text-right"><label class="text">源库</label></section>
 													<section class="col col-3">
 														<label class="input">
-														<input type="text" list="list" id="src_db">
+														<input type="text" list="list" id="src_db" name="src_db">
 														<datalist id="list">
 															<option value="Alexandra">库名一</option>
 															<option value="Alice">库名二</option>
@@ -333,37 +339,39 @@
 													<section class="col col-1 text-right"><label class="text">源库类型</label></section>
 													<section class="col col-3">
 														<label class="select">
-														<select id="src_db_type">
-															<option value="0">Oracle</option>
-															<option value="1">DB2</option>
-															<option value="2">Sybase</option>
-															<option value="3">SQL</option>
-															<option value="4">Server</option>
-															<option value="5">Informax</option>
-															<option value="6">MySQL</option>
+														<select id="src_db_type" name="src_db_type">
+															<option value="Oracle">Oracle</option>
+															<option value="DB2">DB2</option>
+															<option value="Sybase">Sybase</option>
+															<option value="SQL">SQL</option>
+															<option value="Server">Server</option>
+															<option value="Informax">Informax</option>
+															<option value="MySQL">MySQL</option>
 														</select> <i></i> </label>
 													</section>
 											</div>
 											<div class="row">
 													<section class="col col-1 text-right"><label class="text">表名</label></section>
-													<section class="col col-3"><label class="input"><input type="text" placeholder="表名" id="table_name"></label></section>
+													<section class="col col-3"><label class="input"><input type="text" placeholder="表名" name="table_name" id="table_name"></label></section>
 													<section class="col col-1 text-right"><label class="text">库名</label></section>
-													<section class="col col-3"><label class="input"><input type="text" placeholder="库名" id="dbname"></label></section>
+													<section class="col col-3"><label class="input"><input type="text" placeholder="库名" name="dbname" id="dbname"></label></section>
 													<section class="col col-1 text-right"><label class="text">创建时间</label></section>
 													<section class="col col-3">
 														<section class="col col-5" style="padding: 0; margin: 0;">
-															<label class="input"><input type="text" placeholder="" id="create_time_from"></label>
+															<label class="input"><input type="text" placeholder="" name="create_time_from" id="create_time_from"></label>
 														</section>
 														<section class="col col-1" style="padding: 0; margin: 0;">
 														<label>－</label>
 														</section>
 														<section class="col col-6" style="padding: 0; margin: 0;">
-															<label class="input"><input type="text" placeholder="" id="create_time_to"></label>
+															<label class="input"><input type="text" placeholder="" name="create_time_to" id="create_time_to"></label>
 														</section>
 													</section>
 												</div>
 												
-												
+												<input type="hidden" id="table_type" name="table_type" value="${table_type }">
+												<input type="hidden" name="pageNum" value="1">
+												<input type="hidden" name="perNum" value="10">
 											</fieldset>
 				
 										
@@ -508,201 +516,7 @@
 												</tr>
 											</thead>
 											<tbody>
-												
-											<tr role="row" class="odd" aria-selected="false">
-													<td class="sorting_1">1</td>
-													<td class=" expand"><span class="responsiveExpander"></span>car_insurance</td>
-													<td>copymain</td>
-													<td>informix</td>
-													<td>car3g</td>
-													<td>prpcopymain</td>
-													<td>2017-03-01 10:00:00</td>
-													<td>2017-03-01 10:00:00</td>
-													<td>张三</td>
-													<td>激活</td>
-													<td>200MB</td>
-													<td>2999776</td>
-													<td>
-													 <div class="btn-group" style="width: 100px;">
-															<a class="btn btn-default" href="javascript:void(0);">操作</a>
-															<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"><span class="caret"></span></a>
-															<ul class="dropdown-menu">
-																<li><a href="javascript:void(0);">查看表</a></li>
-																<li>
-																	<a href="javascript:void(0);">查看表定义</a>
-																</li>
-																<li>
-																	<a href="javascript:void(0);">编辑</a>
-																</li>
-																<li>
-																	<a href="javascript:void(0);">删除表</a>
-																</li>
-															
-																<li>
-																	<a href="javascript:void(0);">删除外部文件</a>
-																</li>
-															</ul>
-														</div>
-													<button type="submit"  class="btn btn-primary btn-lg" onclick="window.open ('数据管理查看表.html','newwindow','height=500,width=900,top=100,left=200,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no') " style="margin-bottom: 20px;">查看表</button>
-													<button type="submit"  class="btn btn-primary btn-lg" onclick="window.open ('数据管理查看表定义.html','newwindow') " style="margin-bottom: 20px;">查看表定义</button>
-								
-													</td>
-												</tr>
-												<tr role="row" class="even">
-													<td class="sorting_1">2</td>
-													<td class=" expand"><span class="responsiveExpander"></span>car_insurance</td>
-													<td>third_car</td>
-													<td>infromix</td>
-													<td>lp3g</td>
-													<td>prplthird_car</td>
-													<td>2017-03-05 10:00:00</td>
-													<td>2017-03-05 10:00:00</td>
-													<td>张三</td>
-													<td>激活</td>
-													<td>500MB</td>
-													<td>5999776</td>
-													<td>
-													 
-													</td>
-												</tr>
-											<tr role="row" class="odd" aria-selected="false">
-													<td class="sorting_1">3</td>
-													<td class=" expand"><span class="responsiveExpander"></span>car_insurance</td>
-													<td>copyitemkind</td>
-													<td>informix</td>
-													<td>car3g</td>
-													<td>prpcopyitemkind</td>
-													<td>2017-03-01 10:00:00</td>
-													<td>2017-03-01 10:00:00</td>
-													<td>张三</td>
-													<td>激活</td>
-													<td>2000MB</td>
-													<td>30999776</td>
-													<td>
-													  
-													</td>
-												</tr>
-												<tr role="row" class="even">
-													<td class="sorting_1">4</td>
-													<td class=" expand"><span class="responsiveExpander"></span>car_insurance</td>
-													<td>copyitem_car</td>
-													<td>infromix</td>
-													<td>car3g</td>
-													<td>prpcopyitem_car</td>
-													<td>2017-03-05 10:00:00</td>
-													<td>2017-03-05 10:00:00</td>
-													<td>张三</td>
-													<td>激活</td>
-													<td>500MB</td>
-													<td>5999776</td>
-													<td>
-													 
-													</td>
-												</tr>
-											<tr role="row" class="odd" aria-selected="false">
-													<td class="sorting_1">5</td>
-													<td class=" expand"><span class="responsiveExpander"></span>car_insurance</td>
-													<td>copyinsured</td>
-													<td>informix</td>
-													<td>car3g</td>
-													<td>prpcopyinsured</td>
-													<td>2017-03-01 10:00:00</td>
-													<td>2017-03-01 10:00:00</td>
-													<td>张三</td>
-													<td>激活</td>
-													<td>50MB</td>
-													<td>9770</td>
-													<td>
-													 
-													</td>
-												</tr>
-												<tr role="row" class="even">
-													<td class="sorting_1">6</td>
-													<td class=" expand"><span class="responsiveExpander"></span>car_insurance</td>
-													<td>copyitem_car</td>
-													<td>infromix</td>
-													<td>car3g</td>
-													<td>prpcopyitem_car</td>
-													<td>2017-03-05 10:00:00</td>
-													<td>2017-03-05 10:00:00</td>
-													<td>张三</td>
-													<td>激活</td>
-													<td>500MB</td>
-													<td>5999776</td>
-													<td>
-													 
-													</td>
-												</tr>
-											<tr role="row" class="odd" aria-selected="false">
-													<td class="sorting_1">7</td>
-													<td class=" expand"><span class="responsiveExpander"></span>car_insurance</td>
-													<td>copycoins</td>
-													<td>informix</td>
-													<td>car3g</td>
-													<td>prpcopycoins</td>
-													<td>2017-03-01 10:00:00</td>
-													<td>2017-03-01 10:00:00</td>
-													<td>张三</td>
-													<td>激活</td>
-													<td>200MB</td>
-													<td>2999776</td>
-													<td>
-													  
-													</td>
-												</tr>
-												<tr role="row" class="even">
-													<td class="sorting_1">8</td>
-													<td class=" expand"><span class="responsiveExpander"></span>car_insurance</td>
-													<td>dcompany</td>
-													<td>infromix</td>
-													<td>car3g</td>
-													<td>prpdcompany</td>
-													<td>2017-03-05 10:00:00</td>
-													<td>2017-03-05 10:00:00</td>
-													<td>张三</td>
-													<td>激活</td>
-													<td>50MB</td>
-													<td>99776</td>
-													<td>
-													  
-													</td>
-												</tr>
-											<tr role="row" class="odd" aria-selected="false">
-													<td class="sorting_1">9</td>
-													<td class=" expand"><span class="responsiveExpander"></span>car_insurance</td>
-													<td>deflossmain</td>
-													<td>informix</td>
-													<td>car3g</td>
-													<td>prpdeflossmain</td>
-													<td>2017-03-01 10:00:00</td>
-													<td>2017-03-01 10:00:00</td>
-													<td>张三</td>
-													<td>激活</td>
-													<td>2000MB</td>
-													<td>29997760</td>
-													<td>
-													 
-													</td>
-												</tr>
-												<tr role="row" class="even">
-													<td class="sorting_1">10</td>
-													<td class=" expand"><span class="responsiveExpander"></span>car_insurance</td>
-													<td>compensate</td>
-													<td>infromix</td>
-													<td>car3g</td>
-													<td>prplcompensate</td>
-													<td>2017-03-05 10:00:00</td>
-													<td>2017-03-05 10:00:00</td>
-													<td>张三</td>
-													<td>激活</td>
-													<td>500MB</td>
-													<td>5999776</td>
-													<td>
-													  
-													</td>
-												</tr>
-
-
+											</tbody>
 									</table>
 										
 										<div class="dt-toolbar-footer">
@@ -835,7 +649,6 @@
 
 		<!-- PACE LOADER - turn this on if you want ajax loading to show (caution: uses lots of memory on iDevices)-->
 		<script data-pace-options='{ "restartOnRequestAfter": true }' src="${root}/resources/js/plugin/pace/pace.min.js"></script>
-
 		<!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		<script>
@@ -926,8 +739,8 @@
 		<script src="${root}/resources/js/plugin/moment/moment.min.js"></script>
 		<script src="${root}/resources/js/plugin/fullcalendar/jquery.fullcalendar.min.js"></script>
 -->
-			
-
+		<script src="${root }/resources/js/except.js"></script>	
+		<script src="${root}/resources/layer/layer.js"></script>
 		<script type="text/javascript">
 		
 		// DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -1126,39 +939,23 @@
 		     		$(this).removeClass("ui-corner-all").addClass('progress').find(">:first-child").removeClass("ui-corner-left").addClass('progress-bar progress-bar-success');
 				}
 			});			
-
+			orgTableSubmit();
 		})
-		
-		 function orgTableSubmit()//检测客户编号是否可用
-	        {
-			var jsonStr = "";
-			jsonStr+="{'src_db':'"+$.trim($("#src_db")[0].value)+"',";
-			jsonStr+="'src_table':'"+$.trim($("#src_table")[0].value)+"',";
-			jsonStr+="'src_db_type':'"+$.trim($("#src_db_type")[0].value)+"',";
-			jsonStr+="'table_type':'"+$.trim($("#table_type")[0].value)+"',";
-			jsonStr+="'table_name':'"+$.trim($("#table_name")[0].value)+"',";
-			jsonStr+="'dbname':'"+$.trim($("#dbname")[0].value)+"',";
-			jsonStr+="'create_time_from':'"+$.trim($("#create_time_from")[0].value)+"',";
-			jsonStr+="'create_time_to':'"+$.trim($("#create_time_to")[0].value)+"'}";
-			alert(jsonStr);
-	        }
-		function checkCorpID()//检测客户编号是否可用
-        {
-            if($.trim($("#txtF_CORPID")[0].value)=="")//txtF_CORPID是客户编号输入框
-            {
-                alert("请输入客户编号!");
-            }
-            else
-            {
-                $("#checkFlag").html("正在检测");//显示提示信息
-                $.ajax({
-                 type: "get",
-                 url: "importTables/query.do?fromRowId=0&num=10",
-                 data: "ID="+$.trim($("#txtF_CORPID")[0].value),//提交表单，相当于CheckCorpID.ashx?ID=XXX
-                 success: function(msg){$("#checkFlag").html("");alert(  msg ); }   //操作成功后的操作！msg是后台传过来的值
-                }); 
-            } 
+		function orgTableSubmit(){
+			$.post("importTables/query.do",$("#smartForm").serialize(),function(msg){
+			});
         }
+		function tableQuery(id){
+			layer.open({
+				  type: 2,
+				  title: '新建任务',
+				  shadeClose: true,
+				  shade: 0.8,
+				  area: ['60%', '90%'],
+				  content: 'toQueryTable.do?table_id='+id //iframe的url
+				}); 
+		}
+		
 		</script>
 
 	</body>

@@ -1,10 +1,20 @@
 package com.zktx.platform.entity.tb;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ImportTables {
+public class ImportTables implements Serializable{
 	
-    private Integer id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+
+	private Integer id;
 
     private String src_db;
 

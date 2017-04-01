@@ -25,7 +25,7 @@ public class TestController {
 	@ResponseBody
 	public String test() {
 		
-		List<Stage> list =stageService.queryStageDerByTableType(0,0,3);
+		List<Stage> list =stageService.queryStageByTableType(0,0,3);
 		System.out.println(list+":");
 		return "this is test !";
 		
