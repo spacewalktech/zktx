@@ -1,3 +1,4 @@
+
 package com.zktx.platform.controller;
 
 import java.sql.Date;
@@ -24,11 +25,6 @@ public class TestController {
 
 	@ResponseBody
 	public String test() {
-		
-		List<Stage> list =stageService.queryStageByTableType(0,0,3);
-		System.out.println(list+":");
 		return "this is test !";
-		
 	}
-
 }

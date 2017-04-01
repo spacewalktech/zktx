@@ -13,7 +13,7 @@
 
 	<!-- 注解驱动 -->
 	<mvc:annotation-driven />
-
+	
 	<!-- 对静态资源文件的访问 -->
 	<mvc:resources mapping="/resources/**" location="/resources/" />
 
