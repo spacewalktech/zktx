@@ -3,7 +3,10 @@ package com.zktx.platform.dao.tb;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.zktx.platform.entity.tb.ImportTables;
+import com.zktx.platform.entity.tb.ImportTablesPo;
 import com.zktx.platform.entity.tb.ImportTablesWithBLOBs;
 
 public interface ImportTablesMapper {
@@ -24,6 +27,8 @@ public interface ImportTablesMapper {
 
 	List<ImportTablesWithBLOBs> findBySource(int source);
 	
-	List<ImportTablesWithBLOBs> findByPagination(Map<String, Object> params);
+	List<ImportTablesWithBLOBs> findByPagination(ImportTablesPo record);
+	
+	Integer findCountByParms(ImportTablesPo tablesPo);
 	
 }

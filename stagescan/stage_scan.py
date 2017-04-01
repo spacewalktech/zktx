@@ -45,7 +45,7 @@ class StageScan(object):
     def _get_task_queue(self):
         self.logger.info("Begin to execute _get_task_queue")
         task_queue_list = []
-        sq = sess.query(TaskQueue)
+        sq = sess.query(TaskQueue).filter(TaskQueue.has_processed == 0)
         for s in sq:
             task_queue_list.append(s)
         self.logger.info("Success to execute _get_task_queue")

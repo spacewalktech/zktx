@@ -1,8 +1,14 @@
 package com.zktx.platform.entity.tb;
 
-public class ImportTablesWithBLOBs extends ImportTables {
+public class ImportTablesWithBLOBs extends ImportTables{
 	
-    private String es_index_schema;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private String es_index_schema;
 
     private String process_info;
 

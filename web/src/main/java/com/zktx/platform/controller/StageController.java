@@ -1,9 +1,13 @@
 package com.zktx.platform.controller;
 
+import java.io.PrintWriter;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.alibaba.fastjson.JSON;
@@ -20,34 +24,41 @@ public class StageController {
 
 	@Autowired
 	private StageService stageService;
-	//导入表预警
+	//表预警
 	@RequestMapping("/queryStageOri.do")
-	public String queryByTableType(Integer tableType,Integer fromRowId,Integer num){
+	public String queryByTableType(HttpServletResponse response, Integer table_type,Integer fromRowId,Integer num){
 		try {
-			List<Stage> list =stageService.queryStageOriByTableType(0,0,5);
+			System.out.println("tableType:"+table_type);
+			List<Stage> list =stageService.queryStageByTableType(table_type,0,10);
 			String jsString =JSON.toJSONString(list, true);
 			System.out.println(jsString);
+			PrintWriter out =response.getWriter();
+			System.out.println(jsString);
+			out.write(jsString);
+			out.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "error";
 		}
 		
-		return "result";
+		return null;
 	}
-	//派生表预警
-	@RequestMapping("/queryStageDer.do")
-	public String queryInfoByParams(Integer tableType,Integer fromRowId,Integer num){
+	@RequestMapping("/queryTable.do")
+	public String queryByTableId(HttpServletResponse response, Integer table_id,Integer pageNum,Integer perNum){
 		try {
-			List<Stage> list  =stageService.queryStageDerByTableType(1,0,5);
+			System.out.println("table_id:"+table_id+",perNum:"+perNum+",pageNum:"+pageNum);
+			List<Stage> list = stageService.queryStageByTableId(table_id, 0, 10);
 			String jsString =JSON.toJSONString(list, true);
 			System.out.println(jsString);
+			PrintWriter out =response.getWriter();
+			System.out.println(jsString);
+			out.write(jsString);
+			out.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "error";
 		}
-		
-		return "result";
+		return null;
 	}
-	
 	
 }

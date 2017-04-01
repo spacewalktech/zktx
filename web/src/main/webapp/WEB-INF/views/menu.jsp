@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <style type="text/css">
@@ -161,16 +162,16 @@ select.input-sm {
 				<ul style="display: block;">
 					<li>
 					<li>
-						<a href="import_tables.html">导入表</a>
+						<a href="orgTableList">导入表</a>
 					</li>
 					<li>
-						<a href="logic_tables.html">派生表</a>
+						<a href="perTableList">派生表</a>
 					</li>
 					<li>
-						<a href=" import_tables_error.html">导入表预警</a>
+						<a href=" orgWarnTable">导入表预警</a>
 					</li>
 					<li>
-						<a href="logic_tables_error.html">派生表预警</a>
+						<a href="perWarnTable">派生表预警</a>
 					</li>
 				</ul>
 			</li>
