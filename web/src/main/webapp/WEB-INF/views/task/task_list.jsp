@@ -335,7 +335,7 @@ select.input-sm {
 					</button>
 				</div>
 			</div>
-			<table id="task_list"</table>
+			<table id="task_list"></table>
 			</div>
 		</div>
 	</div>

@@ -263,7 +263,7 @@ select.input-sm {
 		</div>
 
 		<div id="content">
-			<table id="task_wait"</table>
+			<table id="task_wait"></table>
 		</div>
 		
 	</div>
