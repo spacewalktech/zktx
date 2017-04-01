@@ -3,7 +3,10 @@ package com.zktx.platform.entity.tb;
 import java.util.Date;
 
 public class MrTask {
+	
     private Integer id;
+    
+    private Integer queue_id;
 
     private String name;
 
@@ -30,8 +33,16 @@ public class MrTask {
     private Date create_time;
 
     private Date update_time;
+    
+    public Integer getQueue_id() {
+		return queue_id;
+	}
 
-    public Integer getId() {
+	public void setQueue_id(Integer queue_id) {
+		this.queue_id = queue_id;
+	}
+
+	public Integer getId() {
         return id;
     }
 

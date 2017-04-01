@@ -16,12 +16,18 @@ public class MrTaskServiceImple implements MrTaskService {
 
 	@Override
 	public List<MrTaskWithBLOBs> findByPagination(Integer latest_running_status, Integer offset, Integer limit, String search_name, String search_type, String search_triggle_tables, String search_active, String search_create_time_begin, String search_create_time_end) {
-		return mapper.findByPagination(null, offset, limit, "%" + search_name + "%", search_type, search_triggle_tables, search_active, search_create_time_begin, search_create_time_end);
+		if (null != search_name) {
+			search_name = "%" + search_name + "%";
+		}
+		return mapper.findByPagination(null, offset, limit, search_name, search_type, search_triggle_tables, search_active, search_create_time_begin, search_create_time_end);
 	}
 
 	@Override
-	public int findCountByPagination(Object object, Integer offset, Integer limit, String search_name, String search_type, String search_triggle_tables, String search_active, String search_create_time_begin, String search_create_time_end) {
-		return mapper.findCountByPagination(null, offset, limit, "%" + search_name + "%", search_type, search_triggle_tables, search_active, search_create_time_begin, search_create_time_end);
+	public int findCountByPagination(Integer latest_running_status, String search_name, String search_type, String search_triggle_tables, String search_active, String search_create_time_begin, String search_create_time_end) {
+		if (null != search_name) {
+			search_name = "%" + search_name + "%";
+		}
+		return mapper.findCountByPagination(latest_running_status, search_name, search_type, search_triggle_tables, search_active, search_create_time_begin, search_create_time_end);
 	}
 
 	@Override
@@ -32,7 +38,7 @@ public class MrTaskServiceImple implements MrTaskService {
 
 	// 查询未被执行的任务
 	@Override
-	public List<MrTaskWithBLOBs> findByToRun(Integer offset , Integer limit) {
+	public List<MrTaskWithBLOBs> findByToRun(Integer offset, Integer limit) {
 		return mapper.findByHasProcessed(0, offset, limit);
 	}
 
@@ -56,7 +62,6 @@ public class MrTaskServiceImple implements MrTaskService {
 	@Override
 	public void taskAction(Integer id) {
 		mapper.taskAction(id);
-
 	}
 
 	@Override
@@ -67,6 +72,21 @@ public class MrTaskServiceImple implements MrTaskService {
 	@Override
 	public MrTaskWithBLOBs findById(Integer id) {
 		return mapper.selectByPrimaryKey(id);
+	}
+
+	@Override
+	public int findCountByToRun(Integer offset, Integer limit) {
+		return mapper.findCountByToRun(0, offset, limit);
+	}
+
+	@Override
+	public void deleteQueueByid(Integer id) {
+		mapper.deleteQueueByid(id);
+	}
+
+	@Override
+	public int findCountByProper() {
+		return mapper.findCountByProper();
 	}
 
 }

@@ -176,7 +176,6 @@ select.input-sm {
 					</a>
 				</span>
 			</div>
-
 		</div>
 
 	</header>
@@ -231,13 +230,8 @@ select.input-sm {
 						<li>
 							<a href="mrTaskError">任务运行预警</a>
 						</li>
-
-
 					</ul>
 				</li>
-
-
-
 			</ul>
 		</nav>
 
@@ -250,11 +244,6 @@ select.input-sm {
 	<div id="main" role="main">
 	
 		<div id="ribbon">
-			<span class="ribbon-button-alignment">
-				<span id="refresh" class="btn btn-ribbon" data-action="resetWidgets" data-title="refresh" rel="tooltip" data-placement="bottom" data-original-title="<i class='text-warning fa fa-warning'></i> Warning! This will reset all your widget settings." data-html="true">
-					<i class="fa fa-refresh"></i>
-				</span>
-			</span>
 			<ol class="breadcrumb">
 				<li>首页</li>
 				<li>任务管理</li>
@@ -525,6 +514,29 @@ select.input-sm {
 	}
 	
 	
+	function del_queue(id){
+	    layer.confirm('确认删除?', {
+		  btn: ['删除','取消'], //按钮
+		  icon: 3
+		}, function(){
+		    $.ajax({
+				type : 'post',
+				url : 'mrTask/deleteQueueByid',
+				data : {
+				    id : id
+				},
+		    	success : function(result){
+		    	    if(result == true){
+		    			layer.msg('删除成功', {icon: 1});
+		    			$('#task_wait').bootstrapTable('refresh');
+		    	    }else{
+		    			layer.msg('删除失败', {icon: 5});
+		    	    }
+		    	}
+		    })
+		});
+	}
+	
 	$(function(){
 	    
 	  	//1.初始化Table
@@ -566,9 +578,7 @@ select.input-sm {
 					showToggle : true, //是否显示详细视图和列表视图的切换按钮
 					cardView : false, //是否显示详细视图
 					detailView : false, //是否显示父子表
-					columns : [ {
-						checkbox : true
-					}, {
+					columns : [{
 						field : 'id',
 						title : '任务ID'
 					}, {
@@ -579,13 +589,19 @@ select.input-sm {
 						title : '优先级'
 					}, {
 						field : 'type',
-						title : '是否创建派生表'
+						title : '是否创建派生表',
+						formatter : function (value, row, index){
+					    	return value == true ? '创建' : '不创建';
+					    }
 					}, {
 						field : 'bin_file_uri',
 						title : '触发条件'
 					}, {
 						field : 'active',
-						title : '是否激活'
+						title : '是否激活',
+						formatter : function (value, row, index){
+					    	return value == true ? '激活' : '未激活';
+					    }
 					}, {
 						field : 'task_schedule',
 						title : '定时运行表达式'
@@ -603,7 +619,10 @@ select.input-sm {
 						title : '创建时间'
 					}, {
 						field : '',
-						title : '操作'
+						title : '操作',
+						formatter : function(value,row,index){
+						    return '<button class="btn btn-mini btn-danger" type="button" onclick=del_queue('+ row.queue_id +')>删除</button>'
+					    }
 					}]
 				});
 			};
@@ -612,9 +631,7 @@ select.input-sm {
 			oTableInit.queryParams = function(params) {
 				var temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
 					limit : params.limit, //页面大小
-					offset : params.offset, //页码
-					departmentname : $("#txt_search_departmentname").val(),
-					statu : $("#txt_search_statu").val()
+					offset : params.offset //页码
 				};
 				return temp;
 			};

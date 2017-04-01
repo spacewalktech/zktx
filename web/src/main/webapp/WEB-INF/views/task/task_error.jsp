@@ -10,7 +10,6 @@
 
 <link rel="stylesheet" href="${root }/resources/js/bootstrap-table/bootstrap-table.css">
 
-<!-- Basic Styles -->
 <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/font-awesome.min.css">
 
@@ -19,32 +18,23 @@
 <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/smartadmin-production.min.css">
 <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/smartadmin-skins.min.css">
 
-<!-- SmartAdmin RTL Support  -->
 <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/smartadmin-rtl.min.css">
 
-
-<!-- Demo purpose only: goes with demo.js, you can delete this css when designing your own WebApp -->
 <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/demo.min.css">
 
-<!-- FAVICONS -->
 <link rel="shortcut icon" href="${root}/resources/img/favicon/favicon.ico" type="image/x-icon">
 <link rel="icon" href="${root}/resources/img/favicon/favicon.ico" type="image/x-icon">
 
-<!-- GOOGLE FONT -->
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
 
-<!-- Specifying a Webpage Icon for Web Clip 
-			 Ref: https://developer.apple.com/library/ios/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html -->
 <link rel="apple-touch-icon" href="${root}/resources/img/splash/sptouch-icon-iphone.png">
 <link rel="apple-touch-icon" sizes="76x76" href="${root}/resources/img/splash/touch-icon-ipad.png">
 <link rel="apple-touch-icon" sizes="120x120" href="${root}/resources/img/splash/touch-icon-iphone-retina.png">
 <link rel="apple-touch-icon" sizes="152x152" href="${root}/resources/img/splash/touch-icon-ipad-retina.png">
 
-<!-- iOS web-app metas : hides Safari UI Components and Changes Status Bar Appearance -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-<!-- Startup image for web apps -->
 <link rel="apple-touch-startup-image" href="${root}/resources/img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
 <link rel="apple-touch-startup-image" href="${root}/resources/img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
 <link rel="apple-touch-startup-image" href="${root}/resources/img/splash/iphone.png" media="screen and (max-device-width: 320px)">
@@ -202,7 +192,7 @@ select.input-sm {
 		<!-- NAVIGATION : This navigation is also responsive-->
 		<nav>
 			<ul>
-				<li class="active open">
+				<li class="active">
 					<a>
 						<i class="fa fa-lg fa-fw fa-database"></i>
 						<span class="menu-item-parent">数据管理</span>
@@ -222,7 +212,7 @@ select.input-sm {
 						</li>
 					</ul>
 				</li>
-				<li class="top-menu-invisible">
+				<li class="active open">
 					<a>
 						<i class="fa fa-lg fa-fw fa-desktop"></i>
 						<span class="menu-item-parent">任务管理</span>
@@ -256,15 +246,10 @@ select.input-sm {
 	<div id="main" role="main">
 	
 		<div id="ribbon">
-			<span class="ribbon-button-alignment">
-				<span id="refresh" class="btn btn-ribbon" data-action="resetWidgets" data-title="refresh" rel="tooltip" data-placement="bottom" data-original-title="<i class='text-warning fa fa-warning'></i> Warning! This will reset all your widget settings." data-html="true">
-					<i class="fa fa-refresh"></i>
-				</span>
-			</span>
 			<ol class="breadcrumb">
 				<li>首页</li>
 				<li>任务管理</li>
-				<li>待任务列表</li>
+				<li>任务预警</li>
 			</ol>
 		</div>
 
@@ -540,6 +525,27 @@ select.input-sm {
 		//2.初始化Button的点击事件
 		var oButtonInit = new ButtonInit();
 		oButtonInit.Init();
+		
+		
+		Date.prototype.format =function(format){
+			var o = {
+				"M+" : this.getMonth()+1, //month
+				"d+" : this.getDate(), //day
+				"h+" : this.getHours(), //hour
+				"m+" : this.getMinutes(), //minute
+				"s+" : this.getSeconds(), //second
+				"q+" : Math.floor((this.getMonth()+3)/3), //quarter
+				"S" : this.getMilliseconds() //millisecond
+			}
+			if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
+			(this.getFullYear()+"").substr(4- RegExp.$1.length));
+			for(var k in o)if(new RegExp("("+ k +")").test(format))
+			format = format.replace(RegExp.$1,
+			RegExp.$1.length==1? o[k] :
+			("00"+ o[k]).substr((""+ o[k]).length));
+			return format;
+		}
+		
 	    
 	})
 	
@@ -548,7 +554,7 @@ select.input-sm {
 			//初始化Table
 			oTableInit.Init = function() {
 				$('#task_wait').bootstrapTable({
-					url : '', //请求后台的URL（*）
+					url : 'mrTask/findByProper.do', //请求后台的URL（*）
 					method : 'get', //请求方式（*）
 					toolbar : '#toolbar', //工具按钮用哪个容器
 					striped : true, //是否显示行间隔色
@@ -572,45 +578,65 @@ select.input-sm {
 					showToggle : true, //是否显示详细视图和列表视图的切换按钮
 					cardView : false, //是否显示详细视图
 					detailView : false, //是否显示父子表
-					columns : [ {
-						checkbox : true
-					}, {
+					columns : [{
 						field : 'id',
 						title : '任务ID'
 					}, {
 						field : 'name',
 						title : '任务名称'
 					}, {
-						field : '',
+						field : 'priority',
 						title : '优先级'
 					}, {
-						field : '',
-						title : '是否创建派生表'
+						field : 'type',
+						title : '是否创建派生表',
+						formatter : function (value, row, index){
+					    	return value == true ? '创建' : '不创建';
+					    }
 					}, {
-						field : '',
+						field : 'bin_file_uri',
 						title : '触发条件'
 					}, {
-						field : '',
-						title : '是否激活'
+						field : 'active',
+						title : '是否激活',
+						formatter : function (value, row, index){
+					    	return value == true ? '激活' : '未激活';
+					    }
 					}, {
-						field : '',
+						field : 'task_schedule',
 						title : '定时运行表达式'
 					}, {
-						field : '',
-						title : '上次运行时间'
+						field : 'latest_running_time',
+						title : '上次运行时间',
+					    formatter : function (value, row, index){
+							if (value != null) {
+					    		return new Date(value).format('yyyy-MM-dd hh:mm:ss')
+							}
+					    }
 					}, {
-						field : '',
-						title : '是否成功'
+						field : 'latest_running_status',
+						title : '是否成功',
+						formatter : function (value, row, index){
+					    	return value == true ? '成功' : '失败';
+					    }
 					} , {
-						field : '',
+						field : 'latest_running_info',
 						title : '失败信息'
 					}, {
+						field : 'create_time',
+						title : '创建时间',
+						formatter : function (value, row, index){
+							if (value != null) {
+					    		return new Date(value).format('yyyy-MM-dd hh:mm:ss')
+							}
+					    }
+					}/* , {
 						field : '',
-						title : '创建时间'
-					}, {
-						field : '',
-						title : '操作'
-					}]
+						title : '操作',
+						formatter : function(value,row,index){
+						    //return '<button class="btn btn-mini btn-danger" type="button" onclick=del_queue('+ row.queue_id +')>删除</button>'
+					    }
+					} */]
 				});
 			};
 
@@ -618,9 +644,7 @@ select.input-sm {
 			oTableInit.queryParams = function(params) {
 				var temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
 					limit : params.limit, //页面大小
-					offset : params.offset, //页码
-					departmentname : $("#txt_search_departmentname").val(),
-					statu : $("#txt_search_statu").val()
+					offset : params.offset //页码
 				};
 				return temp;
 			};
