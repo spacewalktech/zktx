@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.zktx.platform.entity.tb.TableSchema;
+import com.zktx.platform.entity.tb.TableSchemaPo;
 
 public interface TableSchemaMapper {
     int deleteByPrimaryKey(Integer id);
@@ -21,6 +22,8 @@ public interface TableSchemaMapper {
 
     int updateByPrimaryKey(TableSchema record);
     
-    List<TableSchema> selectByImportTableId(@Param("table_id")Integer table_id,@Param("fromRowId")Integer fromRowId ,@Param("num")Integer num);
+    List<TableSchemaPo> selectByImportTableId(@Param("table_id")Integer table_id,@Param("fromRowId")Integer fromRowId ,@Param("num")Integer num);
+    
+    Integer selectCountBytId(@Param("table_id")Integer table_id);
     
 }

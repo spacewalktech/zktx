@@ -16,5 +16,11 @@ public interface StageService {
 
 	    public List<Stage> queryStageByTableType(Integer tableType,Integer fromRowId,Integer num);
 	    
+	    public Integer  queryCountByTableType(Integer tableType);
+	    
 	    public List<Stage> queryStageByTableId(Integer import_table_id ,Integer fromRowId,Integer num);
+	    
+	    public Integer queryCountByTableId(Integer import_table_id );
+	    
+	    
 }

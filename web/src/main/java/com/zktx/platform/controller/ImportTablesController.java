@@ -2,7 +2,9 @@ package com.zktx.platform.controller;
 
 import java.io.PrintWriter;
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,57 +28,63 @@ public class ImportTablesController {
 	ImportTableService tableService;
 	//条件查询
 	@RequestMapping("/query.do")
-	public @ResponseBody String findByPagination(HttpServletResponse response, ImportTablesPo tablesPo,  ModelMap map){
+	public @ResponseBody Map<String, Object> findByPagination(ImportTablesPo tablesPo){
 		try {
 			System.out.println("dddd:"+tablesPo.getTable_type()+","+tablesPo.getFromRowId()+","+tablesPo.getPerNum());
 			int count =tableService.findCountByParms(tablesPo);
 			List<ImportTablesWithBLOBs> list =tableService.findByPagination(tablesPo);
+			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("countRows", count);
 			map.put("list", list);
-			String jsonString =JSON.toJSONString(map);
-			PrintWriter out =response.getWriter();
-			System.out.println(jsonString);
-			out.write(jsonString);
-			out.close();
+			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "error";
+			return null;
 		}
 		
-		return null;
+	}
+	@RequestMapping("toAddPage")
+	public String toAddPage(){
+		return "dataManage/add";
 	}
 	//插入
 	@RequestMapping("/insert.do")
-	public String insertSelective(ImportTablesWithBLOBs record){
+	public @ResponseBody String insertSelective(ImportTablesWithBLOBs record){
 		try {
-			record.setSrc_db("test_db");
-			record.setSrc_db_type("00");
-			record.setSrc_table("table1");
-			record.setDbname("fdd");
 			Date date = new Date(System.currentTimeMillis());
 			record.setCreate_time(date);
-			tableService.insertSelective(record);
+			int row = tableService.insertSelective(record);
+			System.out.println("row:"+row);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "error";
 		}
-		return "result";
+		return "success";
+	}
+	@RequestMapping("toUpdatePage")
+	public String toUpdatePage(Integer id,ModelMap map){
+		System.out.println("id:"+id);
+		ImportTablesWithBLOBs bloBs = tableService.selectByPrimaryKey(id);
+		map.put("bloBs", bloBs);
+		return "dataManage/update";
 	}
 	//更新
 	@RequestMapping("/update.do")
-	public String updateByPrimaryKeySelective(ImportTablesWithBLOBs record){
+	public @ResponseBody String updateByPrimaryKeySelective(ImportTablesWithBLOBs record){
 		try {
+			Date date = new Date(System.currentTimeMillis());
+			record.setUpdate_time(date);
 			tableService.updateByPrimaryKeySelective(record);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "error";
 		}
 		
-		return "result";
+		return "success";
 	}
 	//删除
 	@RequestMapping("/delete.do")
-	public String deleteByPrimaryKey(Integer id){
+	public @ResponseBody String deleteByPrimaryKey(Integer id){
 		try {
 			tableService.deleteByPrimaryKey(id);
 		} catch (Exception e) {
@@ -84,6 +92,8 @@ public class ImportTablesController {
 			return "error";
 		}
 		
-	return "result";	
+	return "success";	
 	}
+	
+	
 }

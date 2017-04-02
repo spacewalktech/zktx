@@ -53,5 +53,10 @@ public class ImportTableServiceImpl implements ImportTableService{
 	public Integer findCountByParms(ImportTablesPo tablesPo) {
 		return mapper.findCountByParms(tablesPo);
 	}
+	@Override
+	public ImportTablesWithBLOBs selectByPrimaryKey(Integer id) {
+		
+		return mapper.selectByPrimaryKey(id);
+	}
 
 }

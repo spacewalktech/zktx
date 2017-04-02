@@ -26,14 +26,14 @@
     from tb_table_schema
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <select id="selectByImportTableId" resultMap="BaseResultMap">
-  	 select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-  	from tb_table_schema 
-  	where table_id = #{table_id,jdbcType=INTEGER}
+  <select id="selectByImportTableId" resultType="com.zktx.platform.entity.tb.TableSchemaPo">
+  	 select s.id,s.version,t.src_db,t.src_table,t.dbname,t.table_name,s.create_time,s.schema,s.spark_schema,t.table_type    
+  	from tb_table_schema s, tb_import_tables t 
+  	where s.table_id=t.id and t.id = #{table_id,jdbcType=INTEGER}
   	limit #{fromRowId,jdbcType=INTEGER} , #{num,jdbcType=INTEGER}
+  </select>
+  <select id="selectCountBytId" resultType="java.lang.Integer">
+  	select count(*) from tb_table_schema s, tb_import_tables t where s.table_id=t.id and t.id = #{table_id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from tb_table_schema
