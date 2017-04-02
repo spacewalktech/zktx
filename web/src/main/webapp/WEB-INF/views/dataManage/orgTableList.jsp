@@ -28,7 +28,7 @@
 		<link rel="apple-touch-startup-image" href="${root}/resources/img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
 		<link rel="apple-touch-startup-image" href="${root}/resources/img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
 		<link rel="apple-touch-startup-image" href="${root}/resources/img/splash/iphone.png" media="screen and (max-device-width: 320px)">
-		
+		<link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/bootstrap-datetimepicker.min.css">
 	</head>
 
 	<style type="text/css">
@@ -340,6 +340,7 @@
 													<section class="col col-3">
 														<label class="select">
 														<select id="src_db_type" name="src_db_type">
+															<option value="">-请选择-</option>
 															<option value="Oracle">Oracle</option>
 															<option value="DB2">DB2</option>
 															<option value="Sybase">Sybase</option>
@@ -358,13 +359,15 @@
 													<section class="col col-1 text-right"><label class="text">创建时间</label></section>
 													<section class="col col-3">
 														<section class="col col-5" style="padding: 0; margin: 0;">
-															<label class="input"><input type="text" placeholder="" name="create_time_from" id="create_time_from"></label>
+															<label class="input">
+																<input type="text"name="create_time_from" id="create_time_from">
+															</label>
 														</section>
 														<section class="col col-1" style="padding: 0; margin: 0;">
 														<label>－</label>
 														</section>
 														<section class="col col-6" style="padding: 0; margin: 0;">
-															<label class="input"><input type="text" placeholder="" name="create_time_to" id="create_time_to"></label>
+															<label class="input"><input type="text" name="create_time_to" id="create_time_to"></label>
 														</section>
 													</section>
 												</div>
@@ -378,7 +381,7 @@
 				
 											<footer>
 												
-												<button type="button" class="btn btn-default" onclick="">
+												<button type="reset" class="btn btn-default">
 													重置
 												</button>
 												<button type="button" class="btn btn-primary" onclick="orgTableSubmit(1)">
@@ -520,10 +523,10 @@
 									</table>
 										
 										<div class="dt-toolbar-footer">
-											<div class="col-sm-6 col-xs-12 hidden-xs">
+											<div class="col-sm-5 col-xs-12 hidden-xs">
 												<div class="dataTables_info" id="dt_basic_info" role="status" aria-live="polite">Showing <span id="fromRowid"></span> to <span id="toRowid"></span> of <span id="rowCount"></span> entries</div>
 											</div>
-											<div class="col-xs-12 col-sm-6">
+											<div class="col-xs-12 col-sm-7">
 												<div class="dataTables_paginate paging_simple_numbers" id="dt_basic_paginate">
 													<ul class="pagination">
 													</ul>
@@ -732,6 +735,8 @@
 -->
 		<script src="${root }/resources/js/except.js"></script>	
 		<script src="${root}/resources/layer/layer.js"></script>
+		<script src="${root }/resources/js/moment.js" type="text/javascript"></script>
+		<script src="${root }/resources/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 		<script type="text/javascript">
 		
 		// DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -956,7 +961,7 @@
 					htmlval.append('<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"><span class="caret"></span></a>');
 					htmlval.append('<ul class="dropdown-menu">');
 					htmlval.append('<li><a href="javascript:void(0);" onclick="tableQuery('+val.id+')">查看表</a></li>');
-					htmlval.append('<li><a href="javascript:void(0);">查看表定义</a></li>');
+					htmlval.append('<li><a href="javascript:void(0);" onclick="tableDefine('+val.id+')">查看表定义</a></li>');
 					htmlval.append('<li><a href="javascript:void(0);" onclick="tableUpdate('+val.id+')">编辑</a></li>');
 					htmlval.append('<li><a href="javascript:void(0);" onclick="tableDelete('+val.id+')">删除表</a></li>');
 					htmlval.append('<li><a href="javascript:void(0);">删除外部文件</a></li></ul></div></td></tr>');
@@ -968,23 +973,37 @@
 		function pagefen(pageNum,msg){
 			
 			var perNum = $("#perNum").val();
-			var count = msg.countRows;
-			var perCount =msg.list.length;
-			var pageCount = parseInt(count/perNum)+1;
+			var count = msg.countRows;//总行数
+			var perCount =msg.list.length;//一次返回的行数
+			var pageCount = parseInt(count/perNum)+1;//总页数
 			$("#rowCount").html(count);
 			$("#fromRowid").html(perNum*(pageNum-1)+(count==0?0:1));
 			$("#toRowid").html(perNum*(pageNum-1)+perCount);
 			var pageval=new StringBuffer();
 			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0" onclick="PreviousQuery('+(pageNum-1)+','+pageCount+')">Previous</a></li>');
-			for ( var i = 1; i <= pageCount; i++) {
-				if(i<4){
-					pageval.append('<li class="paginate_button"><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
-				}else{
-					pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0">…</a></li>');
-					pageval.append('<li class="paginate_button"><a href="#" aria-controls="dt_basic" data-dt-idx="'+pageCount+'" tabindex="0" onclick="PreviousQuery('+pageCount+','+pageCount+')">'+i+'</a></li>');
-					break;
+			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="1" tabindex="0" onclick="PreviousQuery(1,'+pageCount+')">first</a></li>');
+			if(pageNum<=3){
+				for(var i=1;i<=(Math.min(pageCount,6));i++){
+					pageval.append('<li class='+((pageNum==i)?"paginate_button active":"paginate_button")+'><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
 				}
+				if(pageCount>=6){
+					pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="'+pageCount+'" tabindex="0">…</a></li>');
+				}
+			}else if(pageNum>(pageCount-3)){
+				if(pageCount>=6){
+					pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0">…</a></li>');
+				}
+				for(var i=(pageCount-4);i<=pageCount;i++){
+					pageval.append('<li class='+((pageNum==i)?"paginate_button active":"paginate_button")+'><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
+				}
+			}else{
+				pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0">…</a></li>');
+				for(var i=(pageNum-2);i<=(pageNum+2);i++){
+					pageval.append('<li class="paginate_button"><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
+				}
+				pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="'+pageCount+'" tabindex="0">…</a></li>');
 			}
+			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="1" tabindex="0" onclick="PreviousQuery('+pageCount+','+pageCount+')">last</a></li>');
 			pageval.append('<li class="paginate_button next" id="dt_basic_next"><a href="#" aria-controls="dt_basic" data-dt-idx="'+(pageCount+1)+'" tabindex="0" onclick="PreviousQuery('+(pageNum+1)+','+pageCount+')">Next</a></li>');
 			$("#dt_basic_paginate ul").html(pageval.toString());
 		}
@@ -1018,6 +1037,16 @@
 				  content: 'importTables/toUpdatePage.do?id='+id //iframe的url
 				}); 
 		}
+		function tableDefine(id){
+			layer.open({
+				  type: 2,
+				  title: '表定义',
+				  shadeClose: true,
+				  shade: 0.8,
+				  area: ['60%', '80%'],
+				  content: 'tableSchema/tableDdf.do?id='+id
+				}); 
+		}
 		function tableDelete(id){
 			$.post("importTables/delete.do?id="+id,function(msg){
 				alert(msg);
@@ -1034,7 +1063,14 @@
 				  content: "importTables/toAddPage"
 				}); 
 		});
-		
+		$("#create_time_from").datetimepicker({
+		    format: 'YYYY-MM-DD HH:mm:ss',
+		    locale:  'zh-cn'
+		});
+		$("#create_time_to").datetimepicker({
+		    format: 'YYYY-MM-DD HH:mm:ss',
+		    locale:  'zh-cn'
+		});
 		</script>
 
 	</body>

@@ -329,10 +329,10 @@
 											</tbody>
 										</table>
 										<div class="dt-toolbar-footer">
-											<div class="col-sm-6 col-xs-12 hidden-xs">
+											<div class="col-sm-5 col-xs-12 hidden-xs">
 												<div class="dataTables_info" id="dt_basic_info" role="status" aria-live="polite">Showing <span id="fromRowid"></span> to <span id="toRowid"></span> of <span id="rowCount"></span> entries</div>
 											</div>
-											<div class="col-xs-12 col-sm-6">
+											<div class="col-xs-12 col-sm-7">
 												<div class="dataTables_paginate paging_simple_numbers" id="dt_basic_paginate">
 													<ul class="pagination">
 														
@@ -782,15 +782,29 @@
 			$("#toRowid").html(perNum*(pageNum-1)+perCount);
 			var pageval=new StringBuffer();
 			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0" onclick="PreviousQuery('+(pageNum-1)+','+pageCount+')">Previous</a></li>');
-			for ( var i = 1; i <= pageCount; i++) {
-				if(i<4){
-					pageval.append('<li class="paginate_button"><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
-				}else{
-					pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0">…</a></li>');
-					pageval.append('<li class="paginate_button"><a href="#" aria-controls="dt_basic" data-dt-idx="'+pageCount+'" tabindex="0" onclick="PreviousQuery('+pageCount+','+pageCount+')">'+pageCount+'</a></li>');
-					break;
+			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="1" tabindex="0" onclick="PreviousQuery(1,'+pageCount+')">first</a></li>');
+			if(pageNum<=3){
+				for(var i=1;i<=(Math.min(pageCount,6));i++){
+					pageval.append('<li class='+((pageNum==i)?"paginate_button active":"paginate_button")+'><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
 				}
+				if(pageCount>=6){
+					pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="'+pageCount+'" tabindex="0">…</a></li>');
+				}
+			}else if(pageNum>(pageCount-3)){
+				if(pageCount>=6){
+					pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0">…</a></li>');
+				}
+				for(var i=(pageCount-4);i<=pageCount;i++){
+					pageval.append('<li class='+((pageNum==i)?"paginate_button active":"paginate_button")+'><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
+				}
+			}else{
+				pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0">…</a></li>');
+				for(var i=(pageNum-2);i<=(pageNum+2);i++){
+					pageval.append('<li class="paginate_button"><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
+				}
+				pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="'+pageCount+'" tabindex="0">…</a></li>');
 			}
+			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="1" tabindex="0" onclick="PreviousQuery('+pageCount+','+pageCount+')">last</a></li>');
 			pageval.append('<li class="paginate_button next" id="dt_basic_next"><a href="#" aria-controls="dt_basic" data-dt-idx="'+(pageCount+1)+'" tabindex="0" onclick="PreviousQuery('+(pageNum+1)+','+pageCount+')">Next</a></li>');
 			$("#dt_basic_paginate ul").html(pageval.toString());
 		}

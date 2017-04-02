@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zktx.platform.dao.tb.TableSchemaMapper;
-import com.zktx.platform.entity.tb.TableSchema;
+import com.zktx.platform.entity.tb.TableSchemaPo;
 import com.zktx.platform.service.importtable.TableSchemaService;
 @Service("tableSchemaService")
 public class TableSchemaServiceImpl implements TableSchemaService {
@@ -15,9 +15,15 @@ public class TableSchemaServiceImpl implements TableSchemaService {
 	private TableSchemaMapper mapper;
 	
 	@Override
-	public List<TableSchema> selectByImportTableId(Integer tableId,Integer fromRowId,Integer num) {
+	public List<TableSchemaPo> selectByImportTableId(Integer tableId,Integer fromRowId,Integer num) {
 		
 		return mapper.selectByImportTableId(tableId,fromRowId,num);
+	}
+
+	@Override
+	public Integer selectCountBytId(Integer tableId) {
+		
+		return mapper.selectCountBytId(tableId);
 	}
 
 }
