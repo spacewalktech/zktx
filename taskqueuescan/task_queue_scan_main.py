@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-：
 from taskqueuescan.task_queue_scan import TaskQueueScan
+from common.config.config import task_queue_scan_interval
 import time
-task_queue_scan_interval = 5
 
 def process_task(active_task):
     print(active_task)
