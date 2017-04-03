@@ -1,3 +1,4 @@
+
 <link href="${root }/resources/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="${root }/resources/js/bootstrap-table/bootstrap-table.css">
 <link href="${root }/resources/css/home.css" rel="stylesheet">
@@ -32,4 +33,5 @@
 <script src="${root }/resources/js/smartwidgets/jarvis.widget.min.js"></script>
 <script src="${root }/resources/js/demo.min.js"></script>
 <script src="${root }/resources/js/app.min.js"></script>
+<<<<<<< HEAD
 <script src="${root }/resources/js/jquery.fileupload.js"></script>
