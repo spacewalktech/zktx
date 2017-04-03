@@ -7,6 +7,7 @@ import common.db.db_config as db
 import common.dao.stage as stage
 import os, re, shutil, json, time
 import merge, common.config.config as config, common.util.util as util
+import create_dir
 from sqlalchemy import desc
 
 setting = None
@@ -257,4 +258,6 @@ def load():
                 shutil.move(processing_path, processed_path)
 
 
-load()
+while True:
+    load()
+    time.sleep(60 * 10)
