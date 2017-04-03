@@ -21,6 +21,7 @@
 <link rel="apple-touch-startup-image" href="${root }/resources/img/splash/iphone.png" media="screen and (max-device-width: 320px)">
 
 <script src="${root }/resources/js/jquery.min.js" type="text/javascript"></script>
+<script src="${root}/resources/layer/layer.js"></script>
 <script src="${root }/resources/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="${root }/resources/js/bootstrap-table/bootstrap-table.js" type="text/javascript"></script>
 <script src="${root }/resources/js/bootstrap-table/bootstrap-table-zh-CN.js" type="text/javascript"></script>
@@ -32,3 +33,5 @@
 <script src="${root }/resources/js/smartwidgets/jarvis.widget.min.js"></script>
 <script src="${root }/resources/js/demo.min.js"></script>
 <script src="${root }/resources/js/app.min.js"></script>
+<<<<<<< HEAD
+<script src="${root }/resources/js/jquery.fileupload.js"></script>

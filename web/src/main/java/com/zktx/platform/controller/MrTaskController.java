@@ -1,9 +1,12 @@
 
 package com.zktx.platform.controller;
 
+import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.zktx.platform.entity.tb.ImportTablesWithBLOBs;
 import com.zktx.platform.entity.tb.MrTaskWithBLOBs;
 import com.zktx.platform.service.importtable.MrTaskService;
 
@@ -32,7 +37,11 @@ public class MrTaskController {
 	MrTaskService mrTaskService;
 
 	@RequestMapping("addPage")
-	public String addPage() {
+	public String addPage(HttpServletRequest request) {
+
+		// 查询出数据库与表
+		List<String> list = mrTaskService.findDistintDBType();
+		request.setAttribute("srcdbs", list);
 		return "task/add";
 	}
 
@@ -41,6 +50,13 @@ public class MrTaskController {
 		MrTaskWithBLOBs task = mrTaskService.findById(id);
 		request.setAttribute("task", task);
 		return "task/update";
+	}
+
+	@RequestMapping("getTableByDB")
+	@ResponseBody
+	public List<ImportTablesWithBLOBs> getTableByDB(String dbname) {
+		List<ImportTablesWithBLOBs> list = mrTaskService.findTableByDBName(dbname);
+		return list;
 	}
 
 	// 分页查询
@@ -105,27 +121,47 @@ public class MrTaskController {
 		}
 		return false;
 	}
-	
+
+	@RequestMapping("upload")
+	@ResponseBody
+	public String upload(MultipartFile file, HttpServletRequest request) {
+		try {
+			String org_name = file.getOriginalFilename();
+			String upload_name = UUID.randomUUID().toString().replace("-", "");
+			String suffix = org_name.substring(org_name.lastIndexOf("."), org_name.length());
+			String uploadFileName = upload_name + suffix;
+			String path = request.getSession().getServletContext().getRealPath("upload");
+			File targetFile = new File(path, uploadFileName);
+			if (!targetFile.exists()) {
+				targetFile.mkdirs();
+			}
+			file.transferTo(targetFile);
+			return path + "/" +uploadFileName;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "error";
+		}
+	}
+
 	@RequestMapping("/insertSelective.do")
+	@ResponseBody
 	public String insertSelective(MrTaskWithBLOBs record) {
 		try {
-			record.setName("12");
-			record.setInformation("dsfdsfdsfsdfds");
-			record.setType(true);
+			record.setCreate_time(new Date());
+			record.setUpdate_time(new Date());
 			mrTaskService.insertSelective(record);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "error";
 		}
-
 		return "result";
 	}
 
 	@RequestMapping("/update.do")
+	@ResponseBody
 	public String updateByPrimaryKeySelective(MrTaskWithBLOBs record) {
 		try {
-			record.setId(1);
-			record.setName("hy");
+			record.setUpdate_time(new Date());
 			mrTaskService.updateByPrimaryKeySelective(record);
 		} catch (Exception e) {
 			e.printStackTrace();

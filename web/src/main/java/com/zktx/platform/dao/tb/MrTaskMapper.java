@@ -2,6 +2,8 @@ package com.zktx.platform.dao.tb;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import com.zktx.platform.entity.tb.ImportTablesWithBLOBs;
 import com.zktx.platform.entity.tb.MrTask;
 import com.zktx.platform.entity.tb.MrTaskWithBLOBs;
 
@@ -53,5 +55,9 @@ public interface MrTaskMapper {
 	void deleteQueueByid(Integer id);
 
 	int findCountByProper();
+
+	List<String> findDistintDBType();
+
+	List<ImportTablesWithBLOBs> findTableByDBName(String dbname);
     
 }

@@ -737,7 +737,7 @@ select.input-sm {
 						field : 'create_time',
 						title : '创建时间',
 						formatter : function (value, row, index){
-					    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+					    	return value == null ? null : new Date(value).format('yyyy-MM-dd hh:mm:ss');
 					    }
 					},{
 					    title : '操作',
