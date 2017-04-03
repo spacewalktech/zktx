@@ -28,7 +28,7 @@
 		<link rel="apple-touch-startup-image" href="${root}/resources/img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
 		<link rel="apple-touch-startup-image" href="${root}/resources/img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
 		<link rel="apple-touch-startup-image" href="${root}/resources/img/splash/iphone.png" media="screen and (max-device-width: 320px)">
-		
+		<link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/bootstrap-datetimepicker.min.css">
 	</head>
 
 	<style type="text/css">
@@ -340,6 +340,7 @@
 													<section class="col col-3">
 														<label class="select">
 														<select id="src_db_type" name="src_db_type">
+															<option value="">-请选择-</option>
 															<option value="Oracle">Oracle</option>
 															<option value="DB2">DB2</option>
 															<option value="Sybase">Sybase</option>
@@ -358,30 +359,32 @@
 													<section class="col col-1 text-right"><label class="text">创建时间</label></section>
 													<section class="col col-3">
 														<section class="col col-5" style="padding: 0; margin: 0;">
-															<label class="input"><input type="text" placeholder="" name="create_time_from" id="create_time_from"></label>
+															<label class="input">
+																<input type="text"name="create_time_from" id="create_time_from">
+															</label>
 														</section>
 														<section class="col col-1" style="padding: 0; margin: 0;">
 														<label>－</label>
 														</section>
 														<section class="col col-6" style="padding: 0; margin: 0;">
-															<label class="input"><input type="text" placeholder="" name="create_time_to" id="create_time_to"></label>
+															<label class="input"><input type="text" name="create_time_to" id="create_time_to"></label>
 														</section>
 													</section>
 												</div>
 												
 												<input type="hidden" id="table_type" name="table_type" value="${table_type }">
 												<input type="hidden" name="pageNum" value="1">
-												<input type="hidden" name="perNum" value="10">
+												<input type="hidden" id="perNum" name="perNum" value="10">
 											</fieldset>
 				
 										
 				
 											<footer>
 												
-												<button type="button" class="btn btn-default" onclick="window.history.back();">
+												<button type="reset" class="btn btn-default">
 													重置
 												</button>
-												<button type="button" class="btn btn-primary" onclick="orgTableSubmit()">
+												<button type="button" class="btn btn-primary" onclick="orgTableSubmit(1)">
 													查询
 												</button>
 											</footer>
@@ -407,7 +410,7 @@
 							<!-- new widget -->
 							<div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
 								
-								<button id="add_tab"  class="btn btn-primary btn-lg">创建表</button><br><br>
+								<button id="add_table"  class="btn btn-primary btn-lg">创建表</button><br><br>
 				   				 <div id="addtab" title="<div class='widget-header'><h4><i class='fa fa-plus'></i> 新建表</h4></div>">
 										<form class="smart-form">
 										
@@ -520,21 +523,12 @@
 									</table>
 										
 										<div class="dt-toolbar-footer">
-											<div class="col-sm-6 col-xs-12 hidden-xs">
-												<div class="dataTables_info" id="dt_basic_info" role="status" aria-live="polite">Showing 1 to 10 of 100 entries</div>
+											<div class="col-sm-5 col-xs-12 hidden-xs">
+												<div class="dataTables_info" id="dt_basic_info" role="status" aria-live="polite">Showing <span id="fromRowid"></span> to <span id="toRowid"></span> of <span id="rowCount"></span> entries</div>
 											</div>
-											<div class="col-xs-12 col-sm-6">
+											<div class="col-xs-12 col-sm-7">
 												<div class="dataTables_paginate paging_simple_numbers" id="dt_basic_paginate">
 													<ul class="pagination">
-														<li class="paginate_button previous disabled" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0">Previous</a></li>
-														<li class="paginate_button active"><a href="#" aria-controls="dt_basic" data-dt-idx="1" tabindex="0">1</a></li>
-														<li class="paginate_button "><a href="#" aria-controls="dt_basic" data-dt-idx="2" tabindex="0">2</a></li>
-														<li class="paginate_button "><a href="#" aria-controls="dt_basic" data-dt-idx="3" tabindex="0">3</a></li>
-														<li class="paginate_button "><a href="#" aria-controls="dt_basic" data-dt-idx="4" tabindex="0">4</a></li>
-														<li class="paginate_button "><a href="#" aria-controls="dt_basic" data-dt-idx="5" tabindex="0">5</a></li>
-														<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="6" tabindex="0">…</a></li>
-														<li class="paginate_button "><a href="#" aria-controls="dt_basic" data-dt-idx="7" tabindex="0">10</a></li>
-														<li class="paginate_button next" id="dt_basic_next"><a href="#" aria-controls="dt_basic" data-dt-idx="8" tabindex="0">Next</a></li>
 													</ul>
 												</div>
 											</div>
@@ -741,6 +735,8 @@
 -->
 		<script src="${root }/resources/js/except.js"></script>	
 		<script src="${root}/resources/layer/layer.js"></script>
+		<script src="${root }/resources/js/moment.js" type="text/javascript"></script>
+		<script src="${root }/resources/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 		<script type="text/javascript">
 		
 		// DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -939,12 +935,88 @@
 		     		$(this).removeClass("ui-corner-all").addClass('progress').find(">:first-child").removeClass("ui-corner-left").addClass('progress-bar progress-bar-success');
 				}
 			});			
-			orgTableSubmit();
+			orgTableSubmit(1);
 		})
-		function orgTableSubmit(){
+		function orgTableSubmit(pageNum){
+			$("#pageNum").val(pageNum);
 			$.post("importTables/query.do",$("#smartForm").serialize(),function(msg){
+				pagefen(pageNum,msg);
+				var htmlval=new StringBuffer();
+				$.each(msg.list,function(index,val){
+					htmlval.append('<tr role="row" class='+(index%2==0?"odd":"even")+' aria-selected="false">'); 
+					htmlval.append('<td class="sorting_1">'+(val.id!=undefined?val.id:"")+'</td>');
+					htmlval.append('<td class=" expand"><span class="responsiveExpander">'+(val.dbname!=undefined?val.dbname:"")+'</span></td>');
+					htmlval.append('<td>'+(val.table_name!=undefined?val.table_name:"")+'</td>');
+					htmlval.append('<td>'+(val.src_db_type!=undefined?val.src_db_type:"")+'</td>');
+					htmlval.append('<td>'+(val.src_db!=undefined?val.src_db:"")+'</td>');
+					htmlval.append('<td>'+(val.src_table!=undefined?val.src_table:"")+'</td>');
+					htmlval.append('<td>'+(val.create_time!=undefined?new Date(val.create_time).toLocaleString():"")+'</td>');
+					htmlval.append('<td>'+(val.update_time!=undefined?new Date(val.update_time).toLocaleString():"")+'</td>');
+					htmlval.append('<td>'+(val.creator_id!=undefined?val.creator_id:"")+'</td>');
+					htmlval.append('<td>'+(val.active!=undefined?val.active:"")+'</td>');
+					htmlval.append('<td>11</td>');
+					htmlval.append('<td>12</td>');
+					htmlval.append('<td><div class="btn-group" style="width: 100px;">');
+					htmlval.append('<a class="btn btn-default" href="javascript:void(0);">操作</a>');
+					htmlval.append('<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"><span class="caret"></span></a>');
+					htmlval.append('<ul class="dropdown-menu">');
+					htmlval.append('<li><a href="javascript:void(0);" onclick="tableQuery('+val.id+')">查看表</a></li>');
+					htmlval.append('<li><a href="javascript:void(0);" onclick="tableDefine('+val.id+')">查看表定义</a></li>');
+					htmlval.append('<li><a href="javascript:void(0);" onclick="tableUpdate('+val.id+')">编辑</a></li>');
+					htmlval.append('<li><a href="javascript:void(0);" onclick="tableDelete('+val.id+')">删除表</a></li>');
+					htmlval.append('<li><a href="javascript:void(0);">删除外部文件</a></li></ul></div></td></tr>');
+				})
+				
+				$("table tbody").html(htmlval.toString());
 			});
         }
+		function pagefen(pageNum,msg){
+			
+			var perNum = $("#perNum").val();
+			var count = msg.countRows;//总行数
+			var perCount =msg.list.length;//一次返回的行数
+			var pageCount = parseInt(count/perNum)+1;//总页数
+			$("#rowCount").html(count);
+			$("#fromRowid").html(perNum*(pageNum-1)+(count==0?0:1));
+			$("#toRowid").html(perNum*(pageNum-1)+perCount);
+			var pageval=new StringBuffer();
+			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0" onclick="PreviousQuery('+(pageNum-1)+','+pageCount+')">Previous</a></li>');
+			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="1" tabindex="0" onclick="PreviousQuery(1,'+pageCount+')">first</a></li>');
+			if(pageNum<=3){
+				for(var i=1;i<=(Math.min(pageCount,6));i++){
+					pageval.append('<li class='+((pageNum==i)?"paginate_button active":"paginate_button")+'><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
+				}
+				if(pageCount>=6){
+					pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="'+pageCount+'" tabindex="0">…</a></li>');
+				}
+			}else if(pageNum>(pageCount-3)){
+				if(pageCount>=6){
+					pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0">…</a></li>');
+				}
+				for(var i=(pageCount-4);i<=pageCount;i++){
+					pageval.append('<li class='+((pageNum==i)?"paginate_button active":"paginate_button")+'><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
+				}
+			}else{
+				pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0">…</a></li>');
+				for(var i=(pageNum-2);i<=(pageNum+2);i++){
+					pageval.append('<li class="paginate_button"><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
+				}
+				pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="'+pageCount+'" tabindex="0">…</a></li>');
+			}
+			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="1" tabindex="0" onclick="PreviousQuery('+pageCount+','+pageCount+')">last</a></li>');
+			pageval.append('<li class="paginate_button next" id="dt_basic_next"><a href="#" aria-controls="dt_basic" data-dt-idx="'+(pageCount+1)+'" tabindex="0" onclick="PreviousQuery('+(pageNum+1)+','+pageCount+')">Next</a></li>');
+			$("#dt_basic_paginate ul").html(pageval.toString());
+		}
+		function PreviousQuery(pageNum,pageCount){
+			if(pageNum==0){
+				alert("已经是第一页");
+			}else if(pageNum>pageCount){
+				alert("已是最后一页");
+			}else{
+				orgTableSubmit(pageNum);
+			}
+		}
+		
 		function tableQuery(id){
 			layer.open({
 				  type: 2,
@@ -955,7 +1027,50 @@
 				  content: 'toQueryTable.do?table_id='+id //iframe的url
 				}); 
 		}
-		
+		function tableUpdate(id){
+			layer.open({
+				  type: 2,
+				  title: '跟新任务',
+				  shadeClose: true,
+				  shade: 0.8,
+				  area: ['60%', '90%'],
+				  content: 'importTables/toUpdatePage.do?id='+id //iframe的url
+				}); 
+		}
+		function tableDefine(id){
+			layer.open({
+				  type: 2,
+				  title: '表定义',
+				  shadeClose: true,
+				  shade: 0.8,
+				  area: ['60%', '80%'],
+				  content: 'tableSchema/tableDdf.do?id='+id
+				}); 
+		}
+		function tableDelete(id){
+			$.post("importTables/delete.do?id="+id,function(msg){
+				alert(msg);
+				orgTableSubmit($("#perNum").val());
+			});
+		}
+		$("#add_table").bind("click",function(){
+			layer.open({
+				  type: 2,
+				  title: '新建任务',
+				  shadeClose: true,
+				  shade: 0.8,
+				  area: ['60%', '90%'],
+				  content: "importTables/toAddPage"
+				}); 
+		});
+		$("#create_time_from").datetimepicker({
+		    format: 'YYYY-MM-DD HH:mm:ss',
+		    locale:  'zh-cn'
+		});
+		$("#create_time_to").datetimepicker({
+		    format: 'YYYY-MM-DD HH:mm:ss',
+		    locale:  'zh-cn'
+		});
 		</script>
 
 	</body>

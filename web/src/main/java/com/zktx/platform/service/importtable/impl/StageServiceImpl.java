@@ -43,6 +43,19 @@ public class StageServiceImpl implements StageService {
 	public List<Stage> queryStageByTableId(Integer import_table_id,	Integer fromRowId, Integer num) {
 		return mapper.queryStageByTableId(import_table_id, fromRowId, num);
 	}
+
+
+	@Override
+	public Integer queryCountByTableId(Integer import_table_id) {
+		
+		return mapper.queryCountByTableId(import_table_id);
+	}
+
+
+	@Override
+	public Integer queryCountByTableType(Integer tableType) {
+		return mapper.queryCountByTableType(tableType);
+	}
 	
 	
 
