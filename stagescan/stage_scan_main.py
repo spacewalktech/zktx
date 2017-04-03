@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-：
 import time
 from stagescan.stage_scan import StageScan
-stage_scan_interval = 5
+from common.config.config import stage_scan_interval
 
 if __name__ == "__main__":
     sc = StageScan()

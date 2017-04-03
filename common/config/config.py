@@ -35,3 +35,5 @@ pro_path = {
 }
 LOGGING_DIR = "../logs"
 LOGGING_STDOUT = True
+stage_scan_interval = 600
+task_queue_scan_interval = 600
