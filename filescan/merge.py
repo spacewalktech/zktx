@@ -56,6 +56,7 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
     fields = [StructField(field_name, StringType(), False) for field_name in schema_str.split(",")]
     schema_df = StructType(fields)
 
+    #
     client = Client('http://hadoop01:50070')
 
     # 全量更新
