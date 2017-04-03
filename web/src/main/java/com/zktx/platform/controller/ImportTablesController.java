@@ -17,6 +17,7 @@ public class ImportTablesController {
 
 	@Autowired
 	ImportTableService tableService;
+	
 	//条件查询
 	@RequestMapping("/query.do")
 	public String findByPagination(HttpServletRequest request,ImportTablesPo bloBs){

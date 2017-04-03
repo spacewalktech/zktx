@@ -29,6 +29,12 @@
 	<sql id="Blob_Column_List">
 		table_stage_info, triggle_tables, latest_running_info
 	</sql>
+	<select id="findTableByDBName" parameterType="String" resultType="com.zktx.platform.entity.tb.ImportTables">
+		select id, src_table from tb_import_tables where src_db = #{dbname}
+	</select>
+	<select id="findDistintDBType" resultType="String">
+		select distinct src_db from tb_import_tables
+	</select>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
 		select
 		<include refid="Base_Column_List" />
@@ -38,11 +44,8 @@
 		where id = #{id,jdbcType=INTEGER}
 	</select>
 	<select id="findCount" resultType="java.lang.Integer">
-
-
 		select count(id) from tb_mr_task
 	</select>
-
 	<select id="findCountByPagination" resultType="java.lang.Integer">
 		select
 		count(*)
@@ -107,6 +110,7 @@
      		<![CDATA[and create_time <= #{search_create_time_end}]]>
 			</if>
 		</where>
+		order by id desc
 		limit #{offset,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
 	</select>
 	<delete id="deleteQueueByid" parameterType="Integer">
