@@ -60,13 +60,19 @@ class MRTask(Base):
     def triggle_cond_list(self):
         # unmarsh the triggle_tables into python object
         # return TriggleCond list
-        return util.decode_triggle_conds(self.triggle_tables)
+        if self.triggle_tables:
+            return util.decode_triggle_conds(self.triggle_tables)
+        else:
+            return []
 
     @hybrid_property
     def table_stage_list(self):
         # unmarsh the table_stage_info into python object
         # return StageToProcess list
-        return util.decode_table_stage_info(self.table_stage_info)
+        if self.table_stage_info:
+            return util.decode_table_stage_info(self.table_stage_info)
+        else:
+            return []
 
 
 '''
@@ -104,4 +110,7 @@ class TaskQueue(Base):
     def table_stage_list(self):
         # unmarsh the table_stage_info into python object
         # return StageToProcess list
-        return util.decode_table_stage_info(self.table_stage_info)
+        if self.table_stage_info:
+            return util.decode_table_stage_info(self.table_stage_info)
+        else:
+            return []
