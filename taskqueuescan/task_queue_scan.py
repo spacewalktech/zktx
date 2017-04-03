@@ -27,3 +27,6 @@ class TaskQueueScan(object):
             sess.flush()
         else:
             raise ValueError("Can not find the task_id(" + task_id + ") from task queue")
+
+    def submit_task(self, atask):
+        pass
