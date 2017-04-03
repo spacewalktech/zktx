@@ -29,6 +29,12 @@
 	<sql id="Blob_Column_List">
 		table_stage_info, triggle_tables, latest_running_info
 	</sql>
+	<select id="findTableByDBName" parameterType="String" resultType="com.zktx.platform.entity.tb.ImportTables">
+		select id, src_table from tb_import_tables where src_db = #{dbname}
+	</select>
+	<select id="findDistintDBType" resultType="String">
+		select distinct src_db from tb_import_tables
+	</select>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
 		select
 		<include refid="Base_Column_List" />
@@ -38,14 +44,11 @@
 		where id = #{id,jdbcType=INTEGER}
 	</select>
 	<select id="findCount" resultType="java.lang.Integer">
-
-
 		select count(id) from tb_mr_task
 	</select>
-
 	<select id="findCountByPagination" resultType="java.lang.Integer">
 		select
-			count(*)
+		count(*)
 		from tb_mr_task
 		<where>
 			flag=0
@@ -71,7 +74,10 @@
      		<![CDATA[and create_time <= #{search_create_time_end}]]>
 			</if>
 		</where>
-		limit #{offset,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
+	</select>
+	
+	<select id="findCountByProper">
+		select count(*) from tb_mr_task where flag = 0 and latest_running_status = 0
 	</select>
 
 	<select id="findByPagination" resultType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
@@ -104,11 +110,22 @@
      		<![CDATA[and create_time <= #{search_create_time_end}]]>
 			</if>
 		</where>
+		order by id desc
 		limit #{offset,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
 	</select>
+	<delete id="deleteQueueByid" parameterType="Integer">
+		update tb_task_queue set has_processed = -1 where id = #{id}
+	</delete>
 	<select id="findByHasProcessed" resultType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
-		select m.id, m.name, m.information, m.bin_file_uri, m.type, m.export_dir_uri, m.priority, m.active, m.task_schedule,
+		select q.id as queue_id,
+		m.id, m.name, m.information, m.bin_file_uri, m.type, m.export_dir_uri, m.priority, m.active, m.task_schedule,
 		m.latest_running_time, m.latest_running_status, m.create_time, m.update_time
+		from tb_mr_task m,tb_task_queue q
+		where m.id = q.mr_task_id and m.flag=0 and q.has_processed=#{has_processed,jdbcType=INTEGER}
+		limit #{offset,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
+	</select>
+	<select id="findCountByToRun" resultType="Integer">
+		select count(*)
 		from tb_mr_task m,tb_task_queue q
 		where m.id = q.mr_task_id and m.flag=0 and q.has_processed=#{has_processed,jdbcType=INTEGER}
 		limit #{offset,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
