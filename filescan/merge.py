@@ -69,10 +69,13 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
             # 将文件加载到hdfs上   /opt/spacewalk/data/orgin_file/test_db/test_table/processing/20170901_12_09_30
             hdfs_path = '/spacewalk/hdfs/orgin_file/' + src_db + '/' + src_table
             # 修改path，开始读取
-            client.makedirs(hdfs_path)
-            client.upload(hdfs_path, data_path)
+            try:
+                client.makedirs(hdfs_path)
+                client.upload(hdfs_path, data_path)
+            except Exception, e:
+                client.upload(hdfs_path, data_path, overwrite=True)
             # 读取数据
-            df = spark.read.load(hdfs_path + data_path.split('processing')[1] + "/data_full.csv", format="csv", encoding="gbk", schema=schema_df)
+            df = spark.read.load(hdfs_path + data_path.split('processing')[1] + "/data_full.csv", format="csv", schema=schema_df)
         else:
             df = spark.read.load(data_path + "/data_full.csv", format="csv", encoding="gbk", schema=schema_df)
 
@@ -90,6 +93,7 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
         new_schema_org_df = spark.sql("select " + schema_string + " from " + src_db + "_" + src_table + "_temp")
 
         # 写成parquet文件
+        print parquet_path + src_db + "/" + src_table + ".parquet"
         new_schema_org_df.write.format("parquet").mode("overwrite").save(parquet_path + src_db + "/" + src_table + ".parquet")
 
         if env == "pro":
@@ -145,7 +149,7 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
                 except Exception, e:
                     client.upload(hdfs_path, data_path, overwrite=True)
                 # 读取数据
-                update_df = spark.read.load(hdfs_path + data_path.split('processing')[1] + "/data_insert_updated.csv", format="csv", encoding="gbk", schema=schema_df)
+                update_df = spark.read.load(hdfs_path + data_path.split('processing')[1] + "/data_insert_updated.csv", format="csv", schema=schema_df)
             else:
                 update_df = spark.read.load(data_path + "/data_insert_updated.csv", format="csv", encoding="gbk", schema=schema_df)
 
@@ -196,7 +200,7 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
                 except Exception, e:
                     client.upload(hdfs_path, data_path, overwrite=True)
                 # 读取数据
-                delete_df = spark.read.load(hdfs_path + data_path.split('processing')[1] + "/data_deleted.csv", format="csv", encoding="gbk", schema=schema_df)
+                delete_df = spark.read.load(hdfs_path + data_path.split('processing')[1] + "/data_deleted.csv", format="csv", schema=schema_df)
             else:
                 delete_df = spark.read.load(data_path + "/data_deleted.csv", format="csv", encoding="gbk", schema=schema_df)
 
