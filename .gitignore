@@ -100,3 +100,8 @@ ENV/
 
 # target file
 web/target/
+
+# web hidden files
+web/.DS_Store
+web/.classpath
+web/.settings/
