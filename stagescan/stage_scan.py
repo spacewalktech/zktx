@@ -2,7 +2,7 @@
 from sqlalchemy import desc
 
 from common.dao.mr_task import MRTask
-from common.dao.stage import Stage
+from common.dao.import_tables import Stage
 from common.dao.mr_task import TaskQueue
 from common.db.db_config import session as sess
 from common.entity.active_task import ActiveTask
@@ -14,6 +14,7 @@ class StageScan(object):
 
     def __init__(self):
         self.logger = Logger(self.__class__.__name__).get()
+        self.stages = None
 
     def _get_lastest_stages(self):
         self.logger.info("Begin to execute _get_latest_stages")
@@ -24,7 +25,7 @@ class StageScan(object):
             stages.append(s)
         # Get normal ordered stages
         self.logger.info("Success to execute _get_latest_stages")
-        return reversed(stages)
+        return stages[::-1]
 
     def _get_mr_tasks(self):
         self.logger.info("Begin to execute _get_mr_tasks")
@@ -68,7 +69,8 @@ class StageScan(object):
 
     # Get triggled tasks
     def _get_staged_active_tasks(self):
-        stages = self._get_lastest_stages()
+        self.stages = self._get_lastest_stages()
+        stages = self.stages
         mr_tasks = self._get_mr_tasks()
         cond_task_map = self._get_rindex_task_map(mr_tasks) # {TriggleCond: [mr_active_tasks]}
         active_tasks = []
@@ -179,3 +181,25 @@ class StageScan(object):
                 queued_task.table_stage_info = util.encode_table_stage(active_task.table_stage_list)
         sess.commit()
         sess.flush()
+        self._update_stage_to_processed()
+
+    def _update_stage_to_processed(self):
+        self.logger.info("Begin to _update_stage_to_processed")
+        # Get not-processed stages from the bottom of the table
+        sq = sess.query(Stage).order_by(desc(Stage.id)).filter(Stage.process_status == 0)
+        print ("sq is: ", sq)
+        print("self.stages is: ", self.stages)
+        processed_stages = set()
+        for stage in self.stages:
+            print ("stage is: ", stage)
+            processed_stages.add(stage.id)
+        for s in sq:
+            print ("s is: ",s)
+            if s.id in processed_stages:
+                self.logger.debug("Updating stage(stage_id=%s)" % s.id)
+                s.process_status = 1
+        sess.commit()
+        sess.flush()
+
+
+
