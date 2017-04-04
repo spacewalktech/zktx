@@ -8,8 +8,20 @@
 
 <script type="text/javascript">
 	function doSubmit(){
-		$.post("update.do",$("#smartForm").serialize(),function(msg){
-			alert(msg);
+		$.post("update.do",$("#smartForm").serialize(),function(result){
+			if (result == "error") {
+			    layer.msg('添加失败！', {
+				  icon: 2
+				}) 
+			}else{
+			    layer.msg('添加成功！', {
+				  icon: 1
+				},function(){
+					var index = parent.layer.getFrameIndex(window.name);
+					parent.$('#task_list').bootstrapTable('refresh')
+					parent.layer.close(index);
+				})
+			}
 		});
 	}
 </script>
@@ -72,10 +84,10 @@
 				<section class="col col-5">
 					
 				<div class="inline-group">
-					<label class="radio"> <input type="radio" name="active" <c:if test="${!bloBs.active }">checked="checked"</c:if>/> 
+					<label class="radio"> <input type="radio" name="active"  checked="${bloBs.active==false?"'checked'":''}"/> 
 						<i></i>激活
 					</label> 
-					<label class="radio"> <input type="radio" name="active" <c:if test="${bloBs.active }">checked="checked"</c:if>">
+					<label class="radio"> <input type="radio" name="active" checked="${bloBs.active==true?"'checked'":''}"/>
 						<i></i>不激活
 					</label>
 				</div>

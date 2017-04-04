@@ -23,15 +23,15 @@ public class TableSchemaController {
 	private TableSchemaService service;
 	//查询schema信息
 	@RequestMapping("/query.do")
-	public @ResponseBody Map<String, Object> queryTableSchemaByTableId(Integer table_id,Integer pageNum,Integer perNum){
+	public @ResponseBody Map<String, Object> queryTableSchemaByTableId(Integer table_id,Integer limit,Integer offset){
 		try {
-			System.out.println("table_id:"+table_id+",perNum:"+perNum+",pageNum:"+pageNum+"------");
+			System.out.println("table_id:"+table_id+",limit:"+limit+",offset:"+offset+"------");
 			int count =service.selectCountBytId(table_id);
-			List<TableSchemaPo> list =service.selectByImportTableId(table_id,(pageNum-1)*perNum,perNum);
+			List<TableSchemaPo> list =service.selectByImportTableId(table_id,offset,limit);
 			System.out.println(count);
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("countRows", count);
-			map.put("list", list);
+			map.put("total", count);
+			map.put("rows", list);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();

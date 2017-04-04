@@ -7,14 +7,28 @@
 <%@ include file="../header.jsp"%>
 <script type="text/javascript">
 	function doSubmit(){
-		$.post("insert.do",$("#smartForm").serialize(),function(msg){
-			alert(msg);
+		$.post("insert.do",$("#smartForm").serialize(),function(result){
+			if (result == "error") {
+			    layer.msg('添加失败！', {
+				  icon: 2
+				}) 
+			}else{
+			    layer.msg('添加成功！', {
+				  icon: 1
+				},function(){
+					var index = parent.layer.getFrameIndex(window.name);
+					parent.$('#task_list').bootstrapTable('refresh');
+					parent.layer.close(index);
+				})
+			}
 		});
 	}
 </script>
 </head>
 <body style='width: 99.5%'>
 	<form class="smart-form" id="smartForm">
+		<input id="table_type" name="table_type" value="${table_type }" type="hidden"/>
+		<input id="creator_id" name="creator_id" value="1" type="hidden">
 		<fieldset>
 			<div class="row">
 				<section class="col col-1 text-right">

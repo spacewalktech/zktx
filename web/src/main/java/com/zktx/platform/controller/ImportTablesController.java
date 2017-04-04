@@ -30,12 +30,12 @@ public class ImportTablesController {
 	@RequestMapping("/query.do")
 	public @ResponseBody Map<String, Object> findByPagination(ImportTablesPo tablesPo){
 		try {
-			System.out.println("dddd:"+tablesPo.getTable_type()+","+tablesPo.getFromRowId()+","+tablesPo.getPerNum());
+			System.out.println("dddd:"+tablesPo.getTable_type()+","+tablesPo.getFromRowId()+","+tablesPo.getLimit()+","+tablesPo.getOffset());
 			int count =tableService.findCountByParms(tablesPo);
 			List<ImportTablesWithBLOBs> list =tableService.findByPagination(tablesPo);
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("countRows", count);
-			map.put("list", list);
+			map.put("total", count);
+			map.put("rows", list);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -44,7 +44,8 @@ public class ImportTablesController {
 		
 	}
 	@RequestMapping("toAddPage")
-	public String toAddPage(){
+	public String toAddPage(Integer table_type,ModelMap map){
+		map.put("table_type", table_type);
 		return "dataManage/add";
 	}
 	//插入

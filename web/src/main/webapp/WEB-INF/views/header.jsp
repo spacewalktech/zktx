@@ -32,3 +32,4 @@
 <script src="${root }/resources/js/smartwidgets/jarvis.widget.min.js"></script>
 <script src="${root }/resources/js/demo.min.js"></script>
 <script src="${root }/resources/js/app.min.js"></script>
+<script src="${root}/resources/layer/layer.js"></script>

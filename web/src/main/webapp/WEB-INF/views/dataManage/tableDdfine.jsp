@@ -6,80 +6,105 @@
 <title>添加任务</title>
 <%@ include file="../header.jsp"%>
 <script src="${root }/resources/js/except.js"></script>	
+<script src="${root }/resources/js/bootstrap-table/bootstrap-table.js" type="text/javascript"></script>
+		<script src="${root }/resources/js/bootstrap-table/bootstrap-table-zh-CN.js" type="text/javascript"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
-		doSubmit(1);
+		var oTable = new TableInit();
+		oTable.Init();
+		Date.prototype.format =function(format){
+			var o = {
+				"M+" : this.getMonth()+1, //month
+				"d+" : this.getDate(), //day
+				"h+" : this.getHours(), //hour
+				"m+" : this.getMinutes(), //minute
+				"s+" : this.getSeconds(), //second
+				"q+" : Math.floor((this.getMonth()+3)/3), //quarter
+				"S" : this.getMilliseconds() //millisecond
+			}
+			if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
+			(this.getFullYear()+"").substr(4- RegExp.$1.length));
+			for(var k in o)if(new RegExp("("+ k +")").test(format))
+			format = format.replace(RegExp.$1,
+			RegExp.$1.length==1? o[k] :
+			("00"+ o[k]).substr((""+ o[k]).length));
+			return format;
+		}
 	});
-	function doSubmit(pageNum){
-		$("#pageNum").val(pageNum);
-		$.post("query.do",$("#smartForm").serialize(),function(msg){
-			sessionStorage.clear();
-			pagefen(pageNum,msg);
-			var htmlval=new StringBuffer();
-			$.each(msg.list,function(index,val){
-				htmlval.append('<tr class='+(index%2==0?"odd":"even")+' onclick="showschema('+val.id+')">'); 
-				htmlval.append('<td class="sorting_1">'+(val.id!=undefined?val.id:"")+'</td>');
-				htmlval.append('<td>'+(val.version!=undefined?val.version:"")+'</td>');
-				htmlval.append('<td>'+(val.dbname!=undefined?val.dbname:"")+'</td>');
-				htmlval.append('<td>'+(val.table_name!=undefined?val.table_name:"")+'</td>');
-				htmlval.append('<td>'+(val.src_db!=undefined?val.src_db:"")+'</td>');
-				htmlval.append('<td>'+(val.src_table!=undefined?val.src_table:"")+'</td>');
-				htmlval.append('<td>'+(val.create_time!=undefined?new Date(val.create_time).toLocaleString():"")+'</td></tr>');
-				sessionStorage.setItem("src_"+val.id, val.schema);
-				sessionStorage.setItem("spark_"+val.id, val.spark_schema);
-				
-			})
-			$("#dt_basic tbody").html(htmlval.toString());
-		});
-	}
-	function pagefen(pageNum,msg){
+	
+	var TableInit = function() {
+		var oTableInit = new Object();
+		//初始化Table
+		oTableInit.Init = function() {
+			$('#dt_basic').bootstrapTable({
+				url : 'query.do', //请求后台的URL（*）
+				method : 'get', //请求方式（*）
+				toolbar : '#toolbar', //工具按钮用哪个容器
+				striped : true, //是否显示行间隔色
+				cache : false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+				pagination : true, //是否显示分页（*）
+				sortable : false, //是否启用排序
+				sortOrder : "asc", //排序方式
+				queryParams : oTableInit.queryParams,//传递参数（*）
+				sidePagination : "server", //分页方式：client客户端分页，server服务端分页（*）
+				pageNumber : 1, //初始化加载第一页，默认第一页
+				pageSize : 10, //每页的记录行数（*）
+				pageList : [ 10, 25, 50, 100 ], //可供选择的每页的行数（*）
+				search : false, //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+				strictSearch : true,
+				showColumns : true, //是否显示所有的列
+				showRefresh : true, //是否显示刷新按钮
+				minimumCountColumns : 2, //最少允许的列数
+				clickToSelect : true, //是否启用点击选中行
+				// height : 500, //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+				uniqueId : "ID", //每一行的唯一标识，一般为主键列
+				onClickRow:function(row){
+					querySchema(row.schema,row.spark_schema);
+				},
+				showToggle : true, //是否显示详细视图和列表视图的切换按钮
+				cardView : false, //是否显示详细视图
+				detailView : false, //是否显示父子表
+				columns : [{
+					field : 'id',
+					title : 'ID'
+				},{
+					field : 'version',
+					title : '版本名称'
+				}, {
+					field : 'dbname',
+					title : '库名'
+				}, {
+					field : 'table_name',
+					title : '表名'
+				}, {
+					field : 'src_db',
+					title : '源库名称'
+				},{
+					field : 'src_table',
+					title : '源表名称'
+				},{
+					field : 'create_time',
+					title : '创建时间',
+					formatter : function (value, row, index){
+				    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+				    }
+				}]
+			});
+		};
+		//得到查询的参数
+		oTableInit.queryParams = function(params) {
+			var temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+					limit : params.limit, //页面大小
+					offset : params.offset, //页码
+					table_id : $("#table_id").val()
+			};
+			return temp;
+		};
+		return oTableInit;
+	};
+	
+	function querySchema(src_schema,sparkSchema){
 		
-		var perNum = $("#perNum").val();
-		var count = msg.countRows;//总行数
-		var perCount =msg.list.length;//一次返回的行数
-		var pageCount = parseInt(count/perNum)+1;//总页数
-		$("#rowCount").html(count);
-		$("#fromRowid").html(perNum*(pageNum-1)+(count==0?0:1));
-		$("#toRowid").html(perNum*(pageNum-1)+perCount);
-		var pageval=new StringBuffer();
-		pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0" onclick="PreviousQuery('+(pageNum-1)+','+pageCount+')">Previous</a></li>');
-		pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="1" tabindex="0" onclick="PreviousQuery(1,'+pageCount+')">first</a></li>');
-		if(pageNum<=3){
-			for(var i=1;i<=(Math.min(pageCount,6));i++){
-				pageval.append('<li class='+((pageNum==i)?"paginate_button active":"paginate_button")+'><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
-			}
-			if(pageCount>=6){
-				pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="'+pageCount+'" tabindex="0">…</a></li>');
-			}
-		}else if(pageNum>(pageCount-3)){
-			if(pageCount>=6){
-				pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0">…</a></li>');
-			}
-			for(var i=(pageCount-4);i<=pageCount;i++){
-				pageval.append('<li class='+((pageNum==i)?"paginate_button active":"paginate_button")+'><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
-			}
-		}else{
-			pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0">…</a></li>');
-			for(var i=(pageNum-2);i<=(pageNum+2);i++){
-				pageval.append('<li class="paginate_button"><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
-			}
-			pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="'+pageCount+'" tabindex="0">…</a></li>');
-		}
-		pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="1" tabindex="0" onclick="PreviousQuery('+pageCount+','+pageCount+')">last</a></li>');
-		pageval.append('<li class="paginate_button next" id="dt_basic_next"><a href="#" aria-controls="dt_basic" data-dt-idx="'+(pageCount+1)+'" tabindex="0" onclick="PreviousQuery('+(pageNum+1)+','+pageCount+')">Next</a></li>');
-		$("#dt_basic_paginate ul").html(pageval.toString());
-	}
-	function PreviousQuery(pageNum,pageCount){
-		if(pageNum==0){
-			alert("已经是第一页");
-		}else if(pageNum>pageCount){
-			alert("已是最后一页");
-		}else{
-			doSubmit(pageNum);
-		}
-	}
-	function showschema(id){
-		var src_schema = sessionStorage.getItem("src_"+id);
 		var src =eval('('+src_schema+')');
 		var htmlval=new StringBuffer();
 		$.each(src.schema,function(index,val){
@@ -92,7 +117,6 @@
 		})
 		$("#dt_src tbody").html(htmlval.toString());
 		
-		var sparkSchema = sessionStorage.getItem("spark_"+id);
 		var spark = eval('('+sparkSchema+')');
 		var  sparkvl = new StringBuffer();
 		$.each(spark.schema,function(index,val){
@@ -109,11 +133,7 @@
 </script>
 </head>
 <body style='width: 99.5%'>
-	<form action="" id="smartForm">
 			<input id="table_id" type="hidden" name="table_id" value="${table_id }" />
-			<input type="hidden" id="pageNum" name="pageNum" value="1">
-			<input type="hidden" id="perNum" name="perNum" value="10">
-		</form>
 		<!-- MAIN PANEL -->
 		<div id="main" role="main">
 
@@ -136,35 +156,9 @@
 									<!-- content -->
 									
 									<div id="dt_basic_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
-									<table id="dt_basic" class="table table-striped table-bordered table-hover dataTable no-footer" width="100%" role="grid" aria-describedby="dt_basic_info" style="width: 100%;">
-											<thead>			                
-												<tr role="row">
-													<th>ID</th>
-													<th>版本名称</th>
-													<th>库名</th>
-													<th>表名</th>
-													<th>源库名称</th>
-													<th>源表名称</th>
-													<th>创建时间</th>
-												</tr>
-											</thead>
-											<tbody>
-												
-										</tbody>
+									<table id="dt_basic">
 
 									</table>
-										
-										<div class="dt-toolbar-footer">
-											<div class="col-sm-5 col-xs-12 hidden-xs">
-												<div class="dataTables_info" id="dt_basic_info" role="status" aria-live="polite">Showing <span id="fromRowid"></span> to <span id="toRowid"></span> of <span id="rowCount"></span> entries</div>
-											</div>
-											<div class="col-xs-12 col-sm-7">
-												<div class="dataTables_paginate paging_simple_numbers" id="dt_basic_paginate">
-													<ul class="pagination">
-													</ul>
-												</div>
-											</div>
-										</div>
 									</div>
 									
 									
@@ -198,7 +192,7 @@
 											<!-- content -->
 											
 											<div id="dt_basic_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
-												<table id="dt_src" class="table table-striped table-bordered table-hover dataTable no-footer" width="100%" role="grid" aria-describedby="dt_basic_info" style="width: 100%;">
+													<table id="dt_src" class="table table-striped table-bordered table-hover dataTable no-footer" width="100%" role="grid" aria-describedby="dt_basic_info" style="width: 100%;">
 											<thead>			                
 												<tr role="row">
 													<th data-hide="phone " class="sorting_asc " tabindex="0 " aria-controls="dt_basic " rowspan="1 " colspan="1 " aria-sort="ascending " aria-label="ID: activate to sort column descending ">序号</th>

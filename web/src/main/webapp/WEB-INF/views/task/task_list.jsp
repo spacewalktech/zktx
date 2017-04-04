@@ -568,11 +568,8 @@ select.input-sm {
 
 
 
-	<%-- <script src="${root }/resources/js/moment.js" type="text/javascript"></script> --%>
 	<script src="${root }/resources/js/moment.js" type="text/javascript"></script>
 	<script src="${root }/resources/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-	<%-- <script src="${root }/resources/js/bootstrap-datepicker.zh-CN.js" type="text/javascript"></script> --%>
-	<%-- <script src="${root }/resources/js/bootstrap-datetimepicker.zh-CN.js" type="text/javascript"></script> --%>
 
 	<script src="${root }/resources/js/bootstrap-table/bootstrap-table.js" type="text/javascript"></script>
 	<script src="${root }/resources/js/bootstrap-table/bootstrap-table-zh-CN.js" type="text/javascript"></script>

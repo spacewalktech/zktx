@@ -47,63 +47,64 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="findByPagination" parameterType="com.zktx.platform.entity.tb.ImportTablesPo" resultType="com.zktx.platform.entity.tb.ImportTablesWithBLOBs">
-  	select * from tb_import_tables 
+  	select t.id,t.src_db,t.src_table,t.src_db_type,t.dbname,t.table_name,t.create_time,t.update_time,t.active,u.name creator_username,t.creator_id
+  	from tb_import_tables t,tb_user u
   	<where>
-  		flag=0
+  		t.flag=0 and t.creator_id = u.id
       <if test="src_db!= null and src_db!=''">
-       and src_db= #{src_db,jdbcType=VARCHAR}
+       and t.src_db like CONCAT ('%',#{src_db,jdbcType=VARCHAR},'%')
       </if>
       <if test="src_table != null and src_table != ''">
-        and src_table=#{src_table,jdbcType=VARCHAR}
+        and t.src_table like CONCAT('%',#{src_table,jdbcType=VARCHAR},'%')
       </if>
      
       <if test="src_db_type != null and src_db_type != ''">
-       and src_db_type = #{src_db_type,jdbcType=VARCHAR}
+       and t.src_db_type like CONCAT('%',#{src_db_type,jdbcType=VARCHAR},'%')
       </if>
       <if test="dbname != null and dbname != ''">
-       and dbname =  #{dbname,jdbcType=VARCHAR}
+       and t.dbname like CONCAT('%',#{dbname,jdbcType=VARCHAR},'%')
       </if>
       <if test="table_name != null and table_name != ''">
-       and table_name =  #{table_name,jdbcType=VARCHAR}
+       and t.table_name like  CONCAT('%',#{table_name,jdbcType=VARCHAR},'%')
       </if>
       <if test="table_type!=null">
-      	and table_type =#{table_type,jdbcType=INTEGER}
+      	and t.table_type =#{table_type,jdbcType=INTEGER}
       </if>
       <if test="create_time_from!=null and create_time_to!=null">
-      	and create_time between #{create_time_from,jdbcType=TIMESTAMP} and #{create_time_to,jdbcType=TIMESTAMP}
+      	and t.create_time between #{create_time_from,jdbcType=TIMESTAMP} and #{create_time_to,jdbcType=TIMESTAMP}
       </if>
   	</where>
-  		order by id desc
+  		order by t.id desc
   		<if test="fromRowId!=null and perNum!=null">
   		limit #{fromRowId,jdbcType=INTEGER} , #{perNum,jdbcType=INTEGER}
   		</if>
   		
   </select>
   <select id="findCountByParms" parameterType="com.zktx.platform.entity.tb.ImportTablesPo" resultType="java.lang.Integer">
-  	select count(*) from tb_import_tables 
+  	select count(*) from tb_import_tables t,tb_user u
   	<where>
-  		flag=0
+  		t.flag=0
       <if test="src_db!= null and src_db!=''">
-       and src_db= #{src_db,jdbcType=VARCHAR}
+       and t.src_db= #{src_db,jdbcType=VARCHAR}
       </if>
       <if test="src_table != null and src_table != ''">
-        and src_table=#{src_table,jdbcType=VARCHAR}
+        and t.src_table=#{src_table,jdbcType=VARCHAR}
       </if>
      
       <if test="src_db_type != null and src_db_type != ''">
-       and src_db_type = #{src_db_type,jdbcType=VARCHAR}
+       and t.src_db_type = #{src_db_type,jdbcType=VARCHAR}
       </if>
       <if test="dbname != null and dbname != ''">
-       and dbname =  #{dbname,jdbcType=VARCHAR}
+       and t.dbname =  #{dbname,jdbcType=VARCHAR}
       </if>
       <if test="table_name != null and table_name != ''">
-       and table_name =  #{table_name,jdbcType=VARCHAR}
+       and t.table_name =  #{table_name,jdbcType=VARCHAR}
       </if>
       <if test="table_type!=null">
-      	and table_type =#{table_type,jdbcType=INTEGER}
+      	and t.table_type =#{table_type,jdbcType=INTEGER}
       </if>
       <if test="create_time_from!=null and create_time_to!=null">
-      	and create_time between #{create_time_from,jdbcType=TIMESTAMP} and #{create_time_to,jdbcType=TIMESTAMP}
+      	and t.create_time between #{create_time_from,jdbcType=TIMESTAMP} and #{create_time_to,jdbcType=TIMESTAMP}
       </if>
   	</where>
   </select>

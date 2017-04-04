@@ -59,11 +59,7 @@
 	</style>
 	<body class="desktop-detected pace-done smart-style-2">
 
-		<form action="" id="smartForm">
-			<input id="table_id" type="hidden" name="table_type" value="${table_type }" />
-			<input type="hidden" id="pageNum" name="pageNum" value="1">
-			<input type="hidden" id="perNum" name="perNum" value="10">
-		</form>
+			<input id="table_type" type="hidden" name="table_type" value="${table_type }" />
 		<!-- HEADER -->
 		<header id="header">
 			<div id="logo-group">
@@ -287,83 +283,12 @@
 				<ol class="breadcrumb">
 					<li>首页</li><li>数据管理</li><li>${table_type==1?"派生表预警":"导入表预警" }</li>
 				</ol>
-				
-
 			</div>
 			<!-- END RIBBON -->
 
 			<!-- MAIN CONTENT -->
 			<div id="content">
-				<section id="widget-grid" class="">
-
-					<!-- row -->
-					<div class="row">
-						<article class="col-sm-12">
-							<!-- new widget -->
-							<div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
-
-								<div class="widget-body no-padding bordertop">
-									<!-- content -->
-									<div id="dt_basic_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
-									<table id="dt_basic" class="table table-striped table-bordered table-hover dataTable no-footer" width="100%" role="grid" aria-describedby="dt_basic_info" style="width: 100%;">
-											<thead>			                
-												<tr role="row">
-													<th data-hide="phone" class="sorting_asc" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-sort="ascending" aria-label="ID: activate to sort column descending">ID</th>
-													<th data-class="expand" class="expand sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label=" Name: activate to sort column ascending"> 导入表ID</th>
-													<th data-hide="phone" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label=" Phone: activate to sort column ascending">stage_ID</th>
-													<th class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="Company: activate to sort column ascending">导入类型</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label=" Zip: activate to sort column ascending"> 增加的记录数</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">更新的记录数</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label=" Date: activate to sort column ascending">删除的记录数</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">记录条数</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">失败信息</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">是否触发任务</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">创建时间</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">更新时间</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">开始执行时间</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">执行结束时间</th>
-												</tr>
-											</thead>
-											<tbody>
-											
-											</tbody>
-										</table>
-										<div class="dt-toolbar-footer">
-											<div class="col-sm-5 col-xs-12 hidden-xs">
-												<div class="dataTables_info" id="dt_basic_info" role="status" aria-live="polite">Showing <span id="fromRowid"></span> to <span id="toRowid"></span> of <span id="rowCount"></span> entries</div>
-											</div>
-											<div class="col-xs-12 col-sm-7">
-												<div class="dataTables_paginate paging_simple_numbers" id="dt_basic_paginate">
-													<ul class="pagination">
-														
-													</ul>
-												</div>
-											</div>
-										</div>
-									</div>
-									
-									
-									<!-- end content -->
-								</div>
-
-						
-								<!-- end widget div -->
-							</div>
-							<!-- end widget -->
-
-						</article>
-					</div>
-
-					<!-- end row -->
-
-					
-
-				</section>
-				<!-- end widget grid -->
-
-				
-				<!-- end widget grid -->
-
+				<table id="task_list"></table>
 			</div>
 			<!-- END MAIN CONTENT -->
 
@@ -543,6 +468,10 @@
 		<script src="${root}/resources/js/plugin/moment/moment.min.js"></script>
 		<script src="${root}/resources/js/plugin/fullcalendar/jquery.fullcalendar.min.js"></script>
 -->
+<script src="${root }/resources/js/moment.js" type="text/javascript"></script>
+<script src="${root}/resources/layer/layer.js"></script>
+	<script src="${root }/resources/js/bootstrap-table/bootstrap-table.js" type="text/javascript"></script>
+	<script src="${root }/resources/js/bootstrap-table/bootstrap-table-zh-CN.js" type="text/javascript"></script>
 		<script src="${root }/resources/js/except.js"></script>	
 		<script type="text/javascript">
 		
@@ -743,80 +672,131 @@
 				}
 			});	
 			
-			orgTableSubmit(1);
+			var oTable = new TableInit();
+			oTable.Init();
+			Date.prototype.format =function(format){
+				var o = {
+					"M+" : this.getMonth()+1, //month
+					"d+" : this.getDate(), //day
+					"h+" : this.getHours(), //hour
+					"m+" : this.getMinutes(), //minute
+					"s+" : this.getSeconds(), //second
+					"q+" : Math.floor((this.getMonth()+3)/3), //quarter
+					"S" : this.getMilliseconds() //millisecond
+				}
+				if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
+				(this.getFullYear()+"").substr(4- RegExp.$1.length));
+				for(var k in o)if(new RegExp("("+ k +")").test(format))
+				format = format.replace(RegExp.$1,
+				RegExp.$1.length==1? o[k] :
+				("00"+ o[k]).substr((""+ o[k]).length));
+				return format;
+			}
 		})
-		function orgTableSubmit(pageNum){
-			$("#pageNum").val(pageNum);
-			$.post("stage/queryStageOri.do",$("#smartForm").serialize(),function(msg){
-				pagefen(pageNum,msg);
-				var htmlval=new StringBuffer();
-				$.each(msg.list,function(index,val){
-					htmlval.append('<tr role="row" class='+(index%2==0?"odd":"even")+' aria-selected="false">'); 
-					htmlval.append('<td class="sorting_1">'+(val.id!=undefined?val.id:"")+'</td>');
-					htmlval.append('<td class=" expand"><span class="responsiveExpander">'+(val.import_table_id!=undefined?val.import_table_id:"")+'</span></td>');
-					htmlval.append('<td>'+(val.stage_id!=undefined?val.stage_id:"")+'</td>');
-					htmlval.append('<td>'+(val.import_type!=undefined&&val.import_type?"增量":"全量")+'</td>');
-					htmlval.append('<td>'+(val.inserted_num!=undefined?val.inserted_num:"")+'</td>');
-					htmlval.append('<td>'+(val.updated_num!=undefined?val.updated_num:"")+'</td>');
-					htmlval.append('<td>'+(val.deleted_num!=undefined?val.deleted_num:"")+'</td>');
-					htmlval.append('<td>'+(val.record_num!=undefined?val.record_num:"")+'</td>');
-					htmlval.append('<td>'+(val.fail_info!=undefined?val.fail_info:"")+'</td>');
-					htmlval.append('<td>'+(val.process_status!=undefined?val.process_status:"")+'</td>');
-					htmlval.append('<td>'+(val.create_time!=undefined?new Date(val.create_time).toLocaleString():"")+'</td>');
-					htmlval.append('<td>'+(val.update_time!=undefined?new Date(val.update_time).toLocaleString():"")+'</td>');
-					htmlval.append('<td>'+(val.begin_time!=undefined?new Date(val.begin_time).toLocaleString():"")+'</td>');
-					htmlval.append('<td>'+(val.end_time!=undefined?new Date(val.end_time).toLocaleString():"")+'</td>');
-				})
-				
-				$("table tbody").html(htmlval.toString());
-			});
-        }
-		function pagefen(pageNum,msg){
-			
-			var perNum = $("#perNum").val();
-			var count = msg.countRows;//总行数
-			var perCount =msg.list.length;//一次返回的行数
-			var pageCount = parseInt(count/perNum)+1;//总页数
-			$("#rowCount").html(count);
-			$("#fromRowid").html(perNum*(pageNum-1)+(count==0?0:1));
-			$("#toRowid").html(perNum*(pageNum-1)+perCount);
-			var pageval=new StringBuffer();
-			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0" onclick="PreviousQuery('+(pageNum-1)+','+pageCount+')">Previous</a></li>');
-			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="1" tabindex="0" onclick="PreviousQuery(1,'+pageCount+')">first</a></li>');
-			if(pageNum<=3){
-				for(var i=1;i<=(Math.min(pageCount,6));i++){
-					pageval.append('<li class='+((pageNum==i)?"paginate_button active":"paginate_button")+'><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
-				}
-				if(pageCount>=6){
-					pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="'+pageCount+'" tabindex="0">…</a></li>');
-				}
-			}else if(pageNum>(pageCount-3)){
-				if(pageCount>=6){
-					pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0">…</a></li>');
-				}
-				for(var i=(pageCount-4);i<=pageCount;i++){
-					pageval.append('<li class='+((pageNum==i)?"paginate_button active":"paginate_button")+'><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
-				}
-			}else{
-				pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0">…</a></li>');
-				for(var i=(pageNum-2);i<=(pageNum+2);i++){
-					pageval.append('<li class="paginate_button"><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
-				}
-				pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="'+pageCount+'" tabindex="0">…</a></li>');
-			}
-			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="1" tabindex="0" onclick="PreviousQuery('+pageCount+','+pageCount+')">last</a></li>');
-			pageval.append('<li class="paginate_button next" id="dt_basic_next"><a href="#" aria-controls="dt_basic" data-dt-idx="'+(pageCount+1)+'" tabindex="0" onclick="PreviousQuery('+(pageNum+1)+','+pageCount+')">Next</a></li>');
-			$("#dt_basic_paginate ul").html(pageval.toString());
-		}
-		function PreviousQuery(pageNum,pageCount){
-			if(pageNum==0){
-				alert("已经是第一页");
-			}else if(pageNum>pageCount){
-				alert("已是最后一页");
-			}else{
-				doSubmit(pageNum);
-			}
-		}
+
+
+		var TableInit = function() {
+			var oTableInit = new Object();
+			//初始化Table
+			oTableInit.Init = function() {
+				$('#task_list').bootstrapTable({
+					url : 'stage/queryStageOri.do', //请求后台的URL（*）
+					method : 'get', //请求方式（*）
+					toolbar : '#toolbar', //工具按钮用哪个容器
+					striped : true, //是否显示行间隔色
+					cache : false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+					pagination : true, //是否显示分页（*）
+					sortable : false, //是否启用排序
+					sortOrder : "asc", //排序方式
+					queryParams : oTableInit.queryParams,//传递参数（*）
+					sidePagination : "server", //分页方式：client客户端分页，server服务端分页（*）
+					pageNumber : 1, //初始化加载第一页，默认第一页
+					pageSize : 10, //每页的记录行数（*）
+					pageList : [ 10, 25, 50, 100 ], //可供选择的每页的行数（*）
+					search : false, //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+					strictSearch : true,
+					showColumns : true, //是否显示所有的列
+					showRefresh : true, //是否显示刷新按钮
+					minimumCountColumns : 2, //最少允许的列数
+					clickToSelect : false, //是否启用点击选中行
+					// height : 500, //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+					uniqueId : "ID", //每一行的唯一标识，一般为主键列
+					showToggle : true, //是否显示详细视图和列表视图的切换按钮
+					cardView : false, //是否显示详细视图
+					detailView : false, //是否显示父子表
+					columns : [{
+						field : 'id',
+						title : 'ID'
+					}, {
+						field : 'import_table_id',
+						title : '导入表ID'
+					}, {
+						field : 'stage_id',
+						title : 'stage_ID'
+					}, {
+						field : 'import_type',
+						title : '导入类型',
+						formatter : function (value, row, index){
+					    	return value?"增量":"全量";
+					    }
+					}, {
+						field : 'inserted_num',
+						title : '增加的记录数'
+					}, {
+						field : 'updated_num',
+						title : '更新的记录数'
+					}, {
+						field : 'deleted_num',
+						title : '删除的记录数'
+					}, {
+						field : 'record_num',
+						title : '记录条数'
+					}, {
+						field : 'fail_info',
+						title : '失败信息'
+					}, {
+						field : 'process_status',
+						title : '是否触发任务'
+					},{
+						field : 'create_time',
+						title : '创建时间',
+						formatter : function (value, row, index){
+					    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+					    }
+					},{
+						field : 'update_time',
+						title : '更新时间',
+						formatter : function (value, row, index){
+					    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+					    }
+					},{
+						field : 'begin_time',
+						title : '开始执行时间',
+						formatter : function (value, row, index){
+					    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+					    }
+					},{
+						field : 'end_time',
+						title : '执行结束时间',
+						formatter : function (value, row, index){
+					    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+					    }
+					}]
+				});
+			};
+			//得到查询的参数
+			oTableInit.queryParams = function(params) {
+			    
+				var temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+						limit : params.limit, //页面大小
+						offset : params.offset, //页码
+					table_type : $("#table_type").val()
+					
+				};
+				return temp;
+			};
+			return oTableInit;
+		};
 		</script>
 
 	</body>
