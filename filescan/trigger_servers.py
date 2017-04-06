@@ -8,7 +8,7 @@ from impala.dbapi import connect
 
 
 def get_cursor():
-    conn = connect(host='hadoop01', port=10000, auth_mechanism='PLAIN')
+    conn = connect(host='hadoop01', port=10000, auth_mechanism='PLAIN', user='hadoop', password='hadoop')
     cur = conn.cursor()
     return cur
 
@@ -21,7 +21,7 @@ def get_schema(table_id):
 
 def get_create_sql(schema):
     schema = json.loads(schema)
-    sql = 'create table if not exists ' + schema.get('db_name') + '_' + schema.get('table_name') + '_text ' + '('
+    sql = 'create table if not exists ' + schema.get('db_name') + '.' + schema.get('table_name') + '_text ' + '('
     array = []
     for i in schema.get("schema"):
         array.append(i.get("name") + ' string')
@@ -32,7 +32,7 @@ def get_create_sql(schema):
 
 def get_parquet_sql(schema):
     schema = json.loads(schema)
-    sql = 'create table if not exists ' + schema.get('db_name') + '_' + schema.get('table_name') + ' stored as parquetfile as select * from ' + schema.get('db_name') + '_' + schema.get('table_name') + '_text '
+    sql = 'create table if not exists ' + schema.get('db_name') + '.' + schema.get('table_name') + ' stored as parquetfile as select * from ' + schema.get('db_name') + '.' + schema.get('table_name') + '_text '
     return sql
 
 
@@ -44,16 +44,17 @@ def thrift_server(table_id, db_name, table_name):
         sql = get_create_sql(schema.schema)
         # 获取连接
         cur = get_cursor()
+        # 需要创建数据库
+        cur.execute('create database if not exists ' + db_name)
         # 移除以前的旧表
-        cur.execute('drop table if exists ' + db_name + '.' + table_name)
+        cur.execute('drop table if exists ' + db_name + '.' + table_name + '_text')
         # 创建外表
         cur.execute(sql)
+        # 移除以前的parquet表
+        cur.execute('drop table if exists ' + db_name + '.' + table_name)
         # 获取parquet表语句
-        sql = get_parquet_sql(schema)
+        sql = get_parquet_sql(schema.schema)
         # 创建parquet表
         cur.execute(sql)
     except Exception, e:
         print e
-
-
-thrift_server(1, 'test_db', 'test_name')
