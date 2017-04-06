@@ -8,6 +8,7 @@ import common.dao.stage as stage
 import os, re, shutil, json, time
 import merge, common.config.config as config, common.util.util as util
 import create_dir
+import trigger_servers
 from sqlalchemy import desc
 
 setting = None
@@ -258,7 +259,7 @@ def load():
                 shutil.move(processing_path, processed_path)
 
         if table.export_to_sql_warehouse == 1:
-            print "export_to_sql_warehouse"
+            trigger_servers.thrift_server(1, table.dbname, table.table_name)
 
         if table.export_to_es_index_warehouse == 1:
             print "export_to_es_index_warehouse"
