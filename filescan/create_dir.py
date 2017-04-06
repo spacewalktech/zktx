@@ -16,8 +16,8 @@ else:
     prefix = "/Users/lzf/data/"
 
 
+# 根据我们的库名和表名来创建对应的目录
 def create_dir(db_name, table_name):
-
     path = prefix + db_name + "/" + table_name
 
     if os.path.exists(path) is False:
@@ -27,16 +27,19 @@ def create_dir(db_name, table_name):
         os.makedirs(prefix + db_name + "/" + table_name + "/" + "processing")
 
 
+# 查询出的是我们自己库和表的名称
 def get_table():
     ImportTable = import_tables.ImportTable
-    importtable = db.session.query(ImportTable.src_db, ImportTable.src_table).distinct().all()
+    importtable = db.session.query(ImportTable.dbname, ImportTable.table_name).distinct().all()
     return importtable
 
 
+# 在每次import这个表的时候去查询和创建目录
 def load():
     for i in get_table():
         src_db = i[0]
         src_table = i[1]
         create_dir(src_db, src_table)
+
 
 load()
