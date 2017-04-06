@@ -257,6 +257,12 @@ def load():
                 # 将 processing 目录下面的东西移动到 processed目录下
                 shutil.move(processing_path, processed_path)
 
+        if table.export_to_sql_warehouse == 1:
+            print "export_to_sql_warehouse"
+
+        if table.export_to_es_index_warehouse == 1:
+            print "export_to_es_index_warehouse"
+
 
 while True:
     load()
