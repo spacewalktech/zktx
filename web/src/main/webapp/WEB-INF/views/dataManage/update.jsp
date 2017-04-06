@@ -8,9 +8,38 @@
 
 <script type="text/javascript">
 	function doSubmit(){
-		$.post("update.do",$("#smartForm").serialize(),function(msg){
-			alert(msg);
+		var data ={id:$("#id").val(),src_table:$("#src_table").val(),src_db:$("#src_db").val(),table_name:$("#table_name").val(),dbname:$("#dbname").val()};
+		$.post("queryCountTable.do",data,function(msg){
+			if(msg>0){
+				layer.msg("表名重复，请重新输入", {
+					  icon: 2
+					}) 
+			}else if(msg<0){
+				layer.msg('表名或库名不能为空', {
+					  icon: 2
+					}) 
+			}else{
+				doSubmit_ready();
+			}
 		});
+	}
+	function doSubmit_ready(){
+		$.post("update.do",$("#smartForm").serialize(),function(result){
+			if (result == "error") {
+			    layer.msg('添加失败！', {
+				  icon: 2
+				}) 
+			}else{
+			    layer.msg('添加成功！', {
+				  icon: 1
+				},function(){
+					var index = parent.layer.getFrameIndex(window.name);
+					parent.$('#task_list').bootstrapTable('refresh')
+					parent.layer.close(index);
+				})
+			}
+		});
+		
 	}
 </script>
 </head>
@@ -24,34 +53,45 @@
 				</section>
 				<section class="col col-5"> 
 					<label class="input">
-						<input type="text" list="list" id="src_db" name="src_db" value="${bloBs.src_db }"/> 
-						<datalist id="list">
-						<option value="Alexandra">库名一</option>
-						<option value="Alice">库名二</option>
-						<option value="Anastasia">库名三</option>
+						<input type="text" list="list_src_db"  id="src_db" name="src_db" value="${bloBs.src_db }"/> 
+						<datalist id="list_src_db">
+							<c:forEach var="i" items="${src_dbList}">
+								<option value="${i}">${i }</option>
+							</c:forEach>
 						</datalist>
-					</label> 
+						<i></i>
+					</label>
 				</section>
-
+				
 				<section class="col col-1 text-right">
-				<label class="text">库名</label></section>
+					<label class="text">源表</label>
+				</section>
+				<section class="col col-5"> 
+					<label class="input"><input type="text" placeholder="表名" id="src_table" name="src_table" value="${bloBs.src_table }">
+					</label>
+				</section>
+				
+				<section class="col col-1 text-right">
+					<label class="text">库名</label>
+				</section>
 				<section class="col col-5">
-				<label class="input"><input type="text" placeholder="库名" id="dbname" name="dbname" value="${bloBs.dbname }"></label></section>
-				<section class="col col-1 text-right">
-				<label class="text">源表</label></section>
-				<section class="col col-5"> <label class="input">
-					<input type="text" list="list" id="src_table" name="src_table" value="${bloBs.src_table }"/> 
-					<datalist id="list">
-						<option value="Alexandra">库名一</option>
-						<option value="Alice">库名二</option>
-						<option value="Anastasia">库名三</option>
-
-					</datalist>
-				</label> </section>
+					<label class="input">
+						<input type="text" list="list_dbname"  id="dbname" name="dbname" value="${bloBs.dbname }"/> 
+						<datalist id="list_dbname">
+							<c:forEach var="i" items="${dbList}">
+								<option value="${i}">${i }</option>
+							</c:forEach>
+						</datalist>
+						<i></i>
+					</label>
+				</section>
+				
 				<section class="col col-1 text-right">
 				<label class="text">表名</label></section>
 				<section class="col col-5">
-				<label class="input"><input type="text" placeholder="表名" id="table_name" name="table_name" value="${bloBs.table_name }"/></label></section>
+				<label class="input"><input type="text" placeholder="表名" id="table_name" name="table_name" value="${bloBs.table_name }"/></label>
+				</section>
+				
 				<section class="col col-1 text-right">
 				<label class="text">源库类型</label></section>
 				<section class="col col-5"> 
@@ -70,15 +110,19 @@
 				<section class="col col-1 text-right">
 				<label class="text">是否激活</label></section>
 				<section class="col col-5">
-					
+				
 				<div class="inline-group">
-					<label class="radio"> <input type="radio" name="active" <c:if test="${!bloBs.active }">checked="checked"</c:if>/> 
-						<i></i>激活
-					</label> 
-					<label class="radio"> <input type="radio" name="active" <c:if test="${bloBs.active }">checked="checked"</c:if>">
-						<i></i>不激活
-					</label>
-				</div>
+						<label class="radio">
+							<input type="radio" name="active" value="0" <c:if test='${bloBs.active == false }'>checked</c:if> >
+							<i></i>
+							是
+						</label>
+						<label class="radio">
+							<input type="radio" name="active" value="1" <c:if test='${bloBs.active == true }'>checked</c:if> >
+							<i></i>
+							否
+						</label>
+					</div>
 				</section>
 			</div>
 			<div class="row">

@@ -31,4 +31,10 @@ public interface ImportTablesMapper {
 	
 	Integer findCountByParms(ImportTablesPo tablesPo);
 	
+	List<String> findDistintSRCDBType();
+	
+	List<String> findDistintDBType();
+	
+	Integer queryCountTable(@Param("id") Integer id,@Param("src_table") String src_table,@Param("src_db") String src_db,@Param("table_name") String table_name,@Param("dbname") String dbname);
+	
 }

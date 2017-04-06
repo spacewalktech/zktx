@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSON;
+import com.zktx.platform.entity.tb.ImportTables;
 import com.zktx.platform.entity.tb.ImportTablesWithBLOBs;
 import com.zktx.platform.entity.tb.MrTaskWithBLOBs;
 import com.zktx.platform.service.importtable.MrTaskService;
@@ -48,7 +50,15 @@ public class MrTaskController {
 	@RequestMapping("updatePage")
 	public String updatePage(Integer id, HttpServletRequest request) {
 		MrTaskWithBLOBs task = mrTaskService.findById(id);
+		List<String> list = mrTaskService.findDistintDBType();
+		List<ImportTables> tables =mrTaskService.findAllTables();
 		request.setAttribute("task", task);
+		
+		String StrList =JSON.toJSONString(list, true);
+		String tableList =JSON.toJSONString(tables, true);
+		System.out.println(tableList+"----");
+		request.setAttribute("srcdbs", StrList);
+		request.setAttribute("tableList", tableList);
 		return "task/update";
 	}
 

@@ -58,5 +58,18 @@ public class ImportTableServiceImpl implements ImportTableService{
 		
 		return mapper.selectByPrimaryKey(id);
 	}
+	@Override
+	public List<String> findDistintSRCDBType() {
+		
+		return mapper.findDistintSRCDBType();
+	}
+	@Override
+	public List<String> findDistintDBType() {
+		return mapper.findDistintDBType();
+	}
+	@Override
+	public Integer queryCountTable(Integer id,String src_table,String src_db,String table_name,String dbname) {
+		return mapper.queryCountTable(id,src_table,src_db,table_name,dbname);
+	}
 
 }

@@ -8,7 +8,6 @@
 		<meta name="description" content="">
 		<meta name="author" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
 		<link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/smartadmin-production-plugins.min.css">
@@ -70,49 +69,7 @@
 				<!-- END LOGO PLACEHOLDER -->
 				
 			</div>
-			<div class="project-context ">
-			<span id="activity" class="activity-dropdown"> <i class="fa fa-user isize"></i> <b class="badge"> 21 </b> </span>
 
-				<!-- AJAX-DROPDOWN : control this dropdown height, look and feel from the LESS variable file -->
-				<div class="ajax-dropdown">
-
-					<!-- the ID links are fetched via AJAX to the ajax container "ajax-notifications" -->
-					<div class="btn-group btn-group-justified" data-toggle="buttons">
-						<label class="btn btn-default">
-							<input type="radio" name="activity" id="${root}/resources/ajax/notify/mail.html">
-							Msgs (14) </label>
-						<label class="btn btn-default">
-							<input type="radio" name="activity" id="${root}/resources/ajax/notify/notifications.html">
-							notify (3) </label>
-						<label class="btn btn-default">
-							<input type="radio" name="activity" id="${root}/resources/ajax/notify/tasks.html">
-							Tasks (4) </label>
-					</div>
-
-					<!-- notification content -->
-					<div class="ajax-notifications custom-scroll">
-
-						<div class="alert alert-transparent">
-							<h4>Click a button to show messages here</h4>
-							This blank page message helps protect your privacy, or you can show the first message here automatically.
-						</div>
-
-						<i class="fa fa-lock fa-4x fa-border"></i>
-
-					</div>
-					<!-- end notification content -->
-
-					<!-- footer: refresh area -->
-					<span> Last updated on: 12/12/2013 9:43AM
-						<button type="button" data-loading-text="<i class='fa fa-refresh fa-spin'></i> Loading..." class="btn btn-xs btn-default pull-right">
-							<i class="fa fa-refresh"></i>
-						</button> 
-					</span>
-					<!-- end footer -->
-
-				</div>
-				<!-- END AJAX-DROPDOWN -->
-			 </div>
 
 			<!-- pulled right: nav area -->
 			<div class="pull-right">
@@ -125,34 +82,6 @@
 				
 				<!-- #MOBILE -->
 				<!-- Top menu profile link : this shows only when top menu is active -->
-				<ul id="mobile-profile-img" class="header-dropdown-list hidden-xs padding-5">
-					<li class="">
-						<a href="#" class="dropdown-toggle no-margin userdropdown" data-toggle="dropdown"> 
-							<img src="${root}/resources/img/avatars/sunny.png" alt="John Doe" class="online" />  
-						</a>
-						<ul class="dropdown-menu pull-right">
-							<li>
-								<a href="javascript:void(0);" class="padding-10 padding-top-0 padding-bottom-0"><i class="fa fa-cog"></i> Setting</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a href="profile.html" class="padding-10 padding-top-0 padding-bottom-0"> <i class="fa fa-user"></i> <u>P</u>rofile</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a href="javascript:void(0);" class="padding-10 padding-top-0 padding-bottom-0" data-action="toggleShortcut"><i class="fa fa-arrow-down"></i> <u>Shortcut</u></a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a href="javascript:void(0);" class="padding-10 padding-top-0 padding-bottom-0" data-action="launchFullscreen"><i class="fa fa-arrows-alt"></i>  <u>FullScreen</u></a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a href="login.html" class="padding-10 padding-top-5 padding-bottom-5" data-action="userLogout"><i class="fa fa-sign-out fa-lg"></i> <strong><u>Logout</u></strong></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
 
 				<!-- logout button -->
 				<div id="logout" class="btn-header transparent pull-right">
@@ -160,42 +89,10 @@
 				</div>
 				<!-- end logout button -->
 
-				<!-- search mobile button (this is hidden till mobile view port) -->
-				<div id="search-mobile" class="btn-header transparent pull-right">
-					<span> <a href="javascript:void(0)" title="Search"><i class="fa fa-search"></i></a> </span>
-				</div>
 				<!-- end search mobile button -->
 
 				<!-- input: search field -->
-				<form action="search.html" class="header-search pull-right">
-					<input id="search-fld"  type="text" name="param" placeholder="Find reports and more" data-autocomplete='[
-					"ActionScript",
-					"AppleScript",
-					"Asp",
-					"BASIC",
-					"C",
-					"C++",
-					"Clojure",
-					"COBOL",
-					"ColdFusion",
-					"Erlang",
-					"Fortran",
-					"Groovy",
-					"Haskell",
-					"Java",
-					"JavaScript",
-					"Lisp",
-					"Perl",
-					"PHP",
-					"Python",
-					"Ruby",
-					"Scala",
-					"Scheme"]'>
-					<button type="submit">
-						<i class="fa fa-search"></i>
-					</button>
-					<a href="javascript:void(0);" id="cancel-search-js" title="Cancel Search"><i class="fa fa-times"></i></a>
-				</form>
+			
 				<!-- end input: search field -->
 
 				<!-- fullscreen button -->
@@ -249,8 +146,8 @@
 						<a><i class="fa fa-lg fa-fw fa-desktop"></i> <span class="menu-item-parent">任务管理</span></a>
 						<ul>
 							<li><a href="mrTaskList">任务列表</a></li>
-							<li><a href="task_wait.html">待运行任务列表</a></li>
-							<li><a href="task_error.html">任务运行预警</a></li>
+							<li><a href="mrTaskWait">待运行任务列表</a></li>
+							<li><a href="mrTaskError">任务运行预警</a></li>
 							
 							
 						</ul>	
@@ -313,29 +210,11 @@
 											<fieldset class="padding-top-0">
 												　
 												<div class="row">
-													<section class="col col-1 text-right"><label class="text">源表</label></section>
-													<section class="col col-3">
-														<label class="input">
-														<input type="text" list="list" name="src_table" id="src_table">
-														<datalist id="list">
-															<option value="Alexandra">库名一</option>
-															<option value="Alice">库名二</option>
-															<option value="Anastasia">库名三</option>
-															
-														</datalist> </label>
-													</section>
-													
 													<section class="col col-1 text-right"><label class="text">源库</label></section>
-													<section class="col col-3">
-														<label class="input">
-														<input type="text" list="list" id="src_db" name="src_db">
-														<datalist id="list">
-															<option value="Alexandra">库名一</option>
-															<option value="Alice">库名二</option>
-															<option value="Anastasia">库名三</option>
-															
-														</datalist> </label>
-													</section>
+													<section class="col col-3"><label class="input"><input type="text" placeholder="库名" name="src_db" id="src_db"></label></section>
+													<section class="col col-1 text-right"><label class="text">源表</label></section>
+													<section class="col col-3"><label class="input"><input type="text" placeholder="表名" name="src_table" id="src_table"></label></section>
+													
 													<section class="col col-1 text-right"><label class="text">源库类型</label></section>
 													<section class="col col-3">
 														<label class="select">
@@ -352,14 +231,16 @@
 													</section>
 											</div>
 											<div class="row">
-													<section class="col col-1 text-right"><label class="text">表名</label></section>
-													<section class="col col-3"><label class="input"><input type="text" placeholder="表名" name="table_name" id="table_name"></label></section>
 													<section class="col col-1 text-right"><label class="text">库名</label></section>
 													<section class="col col-3"><label class="input"><input type="text" placeholder="库名" name="dbname" id="dbname"></label></section>
+													<section class="col col-1 text-right"><label class="text">表名</label></section>
+													<section class="col col-3"><label class="input"><input type="text" placeholder="表名" name="table_name" id="table_name"></label></section>
+													
 													<section class="col col-1 text-right"><label class="text">创建时间</label></section>
 													<section class="col col-3">
 														<section class="col col-5" style="padding: 0; margin: 0;">
 															<label class="input">
+																<i class="icon-append fa fa-calendar"></i>
 																<input type="text"name="create_time_from" id="create_time_from">
 															</label>
 														</section>
@@ -367,7 +248,9 @@
 														<label>－</label>
 														</section>
 														<section class="col col-6" style="padding: 0; margin: 0;">
-															<label class="input"><input type="text" name="create_time_to" id="create_time_to"></label>
+															<label class="input">
+															<i class="icon-append fa fa-calendar"></i>
+															<input type="text" name="create_time_to" id="create_time_to"></label>
 														</section>
 													</section>
 												</div>
@@ -384,7 +267,7 @@
 												<button type="reset" class="btn btn-default">
 													重置
 												</button>
-												<button type="button" class="btn btn-primary" onclick="orgTableSubmit(1)">
+												<button type="button" class="btn btn-primary" onclick="doSubmit()">
 													查询
 												</button>
 											</footer>
@@ -402,158 +285,18 @@
 						</article>
 
 							<!-- widget grid -->
-				<section id="widget-grid" class="">
-
-					<!-- row -->
-					<div class="row">
-						<article class="col-sm-12">
-							<!-- new widget -->
-							<div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
-								
-								<button id="add_table"  class="btn btn-primary btn-lg">创建表</button><br><br>
-				   				 <div id="addtab" title="<div class='widget-header'><h4><i class='fa fa-plus'></i> 新建表</h4></div>">
-										<form class="smart-form">
-										
-				
-											<fieldset>
-												<div class="row">
-													<section class="col col-1 text-right"><label class="text">源库</label></section>
-													<section class="col col-5">
-														<label class="input">
-														<input type="text" list="list">
-														<datalist id="list">
-															<option value="Alexandra">库名一</option>
-															<option value="Alice">库名二</option>
-															<option value="Anastasia">库名三</option>
-															
-														</datalist> </label>
-													</section>
-													
-													<section class="col col-1 text-right"><label class="text">库名</label></section>
-													<section class="col col-5"><label class="input"><input type="text" placeholder="表名"></label></section>
-													<section class="col col-1 text-right"><label class="text">源表</label></section>
-													<section class="col col-5">
-														<label class="input">
-														<input type="text" list="list">
-														<datalist id="list">
-															<option value="Alexandra">库名一</option>
-															<option value="Alice">库名二</option>
-															<option value="Anastasia">库名三</option>
-															
-														</datalist> </label>
-													</section>
-													<section class="col col-1 text-right"><label class="text">表名</label></section>
-													<section class="col col-5"><label class="input"><input type="text" placeholder="表名"></label></section>
-													<section class="col col-1 text-right"><label class="text">源库类型</label></section>
-													<section class="col col-5">
-														<label class="select">
-														<select>
-															<option value="0">Oracle</option>
-															<option value="1">DB2</option>
-															<option value="2">Sybase</option>
-															<option value="3">SQL</option>
-															<option value="4">Server</option>
-															<option value="5">Informax</option>
-															<option value="6">MySQL</option>
-														</select> <i></i> </label>
-													</section>
-													<section class="col col-1 text-right"><label class="text">是否激活</label></section>
-													<section class="col col-5">
-														
-														<div class="inline-group">
-															<label class="radio">
-																<input type="radio" name="radio-inline" checked="checked">
-																<i></i>激活</label>
-															<label class="radio">
-																<input type="radio" name="radio-inline">
-																<i></i>不激活</label>
-														</div>
-													</section>
-												</div>
-												<div class="row">
-													<section class="col col-1 text-right"><label class="text">源库版本</label></section>
-													<section class="col col-5"><label class="input"><input type="text" placeholder="表名"></label></section>
-													<section class="col col-1 text-right"><label class="text">描述</label></section>
-													<section class="col col-5">
-														
-														<label class="textarea textarea-resizable"> 										
-															<textarea rows="3" class="custom-scroll"></textarea> 
-														</label>
-														
-													 </section>
-													
-												</div>
-											</fieldset>
-											<footer>
-												<button type="button" class="btn btn-default" onclick="window.history.back();">
-													重置
-												</button>
-												<button type="submit" class="btn btn-primary">
-													新建
-												</button>
-												
-											</footer>
-										</form>
-								</div>
-								
-								<div class="widget-body no-padding bordertop">
-									<!-- content -->
-									
-									<div id="dt_basic_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
-									<table id="dt_basic" class="table table-striped table-bordered table-hover dataTable no-footer" width="100%" role="grid" aria-describedby="dt_basic_info" style="width: 100%;">
-											<thead>			                
-												<tr role="row">
-													<th data-hide="phone" class="sorting_asc" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-sort="ascending" aria-label="ID: activate to sort column descending">序号</th>
-													<th data-class="expand" class="expand sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label=" Name: activate to sort column ascending">数据库名称</th>
-													<th data-class="expand" class="expand sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label=" Name: activate to sort column ascending">表名称</th>
-													<th data-hide="phone" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label=" Phone: activate to sort column ascending">源库类型</th>
-													<th class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="Company: activate to sort column ascending">源库名称</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">源表名称</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label=" Date: activate to sort column ascending">创建时间</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">更新时间</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">创建人</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">状态</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">文件大小</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">总记录数</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">操作</th>
-												</tr>
-											</thead>
-											<tbody>
-											</tbody>
-									</table>
-										
-										<div class="dt-toolbar-footer">
-											<div class="col-sm-5 col-xs-12 hidden-xs">
-												<div class="dataTables_info" id="dt_basic_info" role="status" aria-live="polite">Showing <span id="fromRowid"></span> to <span id="toRowid"></span> of <span id="rowCount"></span> entries</div>
-											</div>
-											<div class="col-xs-12 col-sm-7">
-												<div class="dataTables_paginate paging_simple_numbers" id="dt_basic_paginate">
-													<ul class="pagination">
-													</ul>
-												</div>
-											</div>
-										</div>
-									</div>
-									
-									
-									<!-- end content -->
-								</div>
-
-						
-								<!-- end widget div -->
-							</div>
-							<!-- end widget -->
-
-						</article>
-					</div>
-
-					<!-- end row -->
-
-					
-
-				</section>
 				<!-- end widget grid -->
-
+				<div class="panel">
+				<div>
+					<div id="toolbar" class="btn-group">
+						<button id="add_table" type="button" class="btn btn-primary">
+							<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+							创建表
+						</button>
+					</div>
+				</div>
+			</div>
+				<table id="task_list"></table>
 			</div>
 			<!-- END MAIN CONTENT -->
 
@@ -561,82 +304,10 @@
 		<!-- END MAIN PANEL -->
 
 		<!-- PAGE FOOTER -->
-		<div class="page-footer">
-			<div class="row">
-				<div class="col-xs-12 col-sm-6">
-					<span class="txt-color-white">SmartAdmin 1.8.2 <span class="hidden-xs"> - Web Application Framework</span> © 2014-2015</span>
-				</div>
-
-				<div class="col-xs-6 col-sm-6 text-right hidden-xs">
-					<div class="txt-color-white inline-block">
-						<i class="txt-color-blueLight hidden-mobile">Last account activity <i class="fa fa-clock-o"></i> <strong>52 mins ago &nbsp;</strong> </i>
-						<div class="btn-group dropup">
-							<button class="btn btn-xs dropdown-toggle bg-color-blue txt-color-white" data-toggle="dropdown">
-								<i class="fa fa-link"></i> <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu pull-right text-left">
-								<li>
-									<div class="padding-5">
-										<p class="txt-color-darken font-sm no-margin">Download Progress</p>
-										<div class="progress progress-micro no-margin">
-											<div class="progress-bar progress-bar-success" style="width: 50%;"></div>
-										</div>
-									</div>
-								</li>
-								<li class="divider"></li>
-								<li>
-									<div class="padding-5">
-										<p class="txt-color-darken font-sm no-margin">Server Load</p>
-										<div class="progress progress-micro no-margin">
-											<div class="progress-bar progress-bar-success" style="width: 20%;"></div>
-										</div>
-									</div>
-								</li>
-								<li class="divider"></li>
-								<li>
-									<div class="padding-5">
-										<p class="txt-color-darken font-sm no-margin">Memory Load <span class="text-danger">*critical*</span></p>
-										<div class="progress progress-micro no-margin">
-											<div class="progress-bar progress-bar-danger" style="width: 70%;"></div>
-										</div>
-									</div>
-								</li>
-								<li class="divider"></li>
-								<li>
-									<div class="padding-5">
-										<button class="btn btn-block btn-default">refresh</button>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+	
 		<!-- END PAGE FOOTER -->
 
-		<div id="shortcut">
-			<ul>
-				<li>
-					<a href="inbox.html" class="jarvismetro-tile big-cubes bg-color-blue"> <span class="iconbox"> <i class="fa fa-envelope fa-4x"></i> <span>Mail <span class="label pull-right bg-color-darken">14</span></span> </span> </a>
-				</li>
-				<li>
-					<a href="calendar.html" class="jarvismetro-tile big-cubes bg-color-orangeDark"> <span class="iconbox"> <i class="fa fa-calendar fa-4x"></i> <span>Calendar</span> </span> </a>
-				</li>
-				<li>
-					<a href="gmap-xml.html" class="jarvismetro-tile big-cubes bg-color-purple"> <span class="iconbox"> <i class="fa fa-map-marker fa-4x"></i> <span>Maps</span> </span> </a>
-				</li>
-				<li>
-					<a href="invoice.html" class="jarvismetro-tile big-cubes bg-color-blueDark"> <span class="iconbox"> <i class="fa fa-book fa-4x"></i> <span>Invoice <span class="label pull-right bg-color-darken">99</span></span> </span> </a>
-				</li>
-				<li>
-					<a href="gallery.html" class="jarvismetro-tile big-cubes bg-color-greenLight"> <span class="iconbox"> <i class="fa fa-picture-o fa-4x"></i> <span>Gallery </span> </span> </a>
-				</li>
-				<li>
-					<a href="profile.html" class="jarvismetro-tile big-cubes selected bg-color-pinkDark"> <span class="iconbox"> <i class="fa fa-user fa-4x"></i> <span>My Profile </span> </span> </a>
-				</li>
-			</ul>
-		</div>
+	
 		<!-- END SHORTCUT AREA -->
 
 		<!--================================================== -->
@@ -737,6 +408,9 @@
 		<script src="${root}/resources/layer/layer.js"></script>
 		<script src="${root }/resources/js/moment.js" type="text/javascript"></script>
 		<script src="${root }/resources/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+	
+	<script src="${root }/resources/js/bootstrap-table/bootstrap-table.js" type="text/javascript"></script>
+	<script src="${root }/resources/js/bootstrap-table/bootstrap-table-zh-CN.js" type="text/javascript"></script>
 		<script type="text/javascript">
 		
 		// DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -935,78 +609,37 @@
 		     		$(this).removeClass("ui-corner-all").addClass('progress').find(">:first-child").removeClass("ui-corner-left").addClass('progress-bar progress-bar-success');
 				}
 			});			
-			orgTableSubmit(1);
-		})
-		function orgTableSubmit(pageNum){
-			$("#pageNum").val(pageNum);
-			$.post("importTables/query.do",$("#smartForm").serialize(),function(msg){
-				pagefen(pageNum,msg);
-				var htmlval=new StringBuffer();
-				$.each(msg.list,function(index,val){
-					htmlval.append('<tr role="row" class='+(index%2==0?"odd":"even")+' aria-selected="false">'); 
-					htmlval.append('<td class="sorting_1">'+(val.id!=undefined?val.id:"")+'</td>');
-					htmlval.append('<td class=" expand"><span class="responsiveExpander">'+(val.dbname!=undefined?val.dbname:"")+'</span></td>');
-					htmlval.append('<td>'+(val.table_name!=undefined?val.table_name:"")+'</td>');
-					htmlval.append('<td>'+(val.src_db_type!=undefined?val.src_db_type:"")+'</td>');
-					htmlval.append('<td>'+(val.src_db!=undefined?val.src_db:"")+'</td>');
-					htmlval.append('<td>'+(val.src_table!=undefined?val.src_table:"")+'</td>');
-					htmlval.append('<td>'+(val.create_time!=undefined?new Date(val.create_time).toLocaleString():"")+'</td>');
-					htmlval.append('<td>'+(val.update_time!=undefined?new Date(val.update_time).toLocaleString():"")+'</td>');
-					htmlval.append('<td>'+(val.creator_id!=undefined?val.creator_id:"")+'</td>');
-					htmlval.append('<td>'+(val.active!=undefined?val.active:"")+'</td>');
-					htmlval.append('<td>11</td>');
-					htmlval.append('<td>12</td>');
-					htmlval.append('<td><div class="btn-group" style="width: 100px;">');
-					htmlval.append('<a class="btn btn-default" href="javascript:void(0);">操作</a>');
-					htmlval.append('<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"><span class="caret"></span></a>');
-					htmlval.append('<ul class="dropdown-menu">');
-					htmlval.append('<li><a href="javascript:void(0);" onclick="tableQuery('+val.id+')">查看表</a></li>');
-					htmlval.append('<li><a href="javascript:void(0);" onclick="tableDefine('+val.id+')">查看表定义</a></li>');
-					htmlval.append('<li><a href="javascript:void(0);" onclick="tableUpdate('+val.id+')">编辑</a></li>');
-					htmlval.append('<li><a href="javascript:void(0);" onclick="tableDelete('+val.id+')">删除表</a></li>');
-					htmlval.append('<li><a href="javascript:void(0);">删除外部文件</a></li></ul></div></td></tr>');
-				})
-				
-				$("table tbody").html(htmlval.toString());
-			});
-        }
-		function pagefen(pageNum,msg){
-			
-			var perNum = $("#perNum").val();
-			var count = msg.countRows;//总行数
-			var perCount =msg.list.length;//一次返回的行数
-			var pageCount = parseInt(count/perNum)+1;//总页数
-			$("#rowCount").html(count);
-			$("#fromRowid").html(perNum*(pageNum-1)+(count==0?0:1));
-			$("#toRowid").html(perNum*(pageNum-1)+perCount);
-			var pageval=new StringBuffer();
-			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0" onclick="PreviousQuery('+(pageNum-1)+','+pageCount+')">Previous</a></li>');
-			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="1" tabindex="0" onclick="PreviousQuery(1,'+pageCount+')">first</a></li>');
-			if(pageNum<=3){
-				for(var i=1;i<=(Math.min(pageCount,6));i++){
-					pageval.append('<li class='+((pageNum==i)?"paginate_button active":"paginate_button")+'><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
+			var oTable = new TableInit();
+			oTable.Init();
+			Date.prototype.format =function(format){
+				var o = {
+					"M+" : this.getMonth()+1, //month
+					"d+" : this.getDate(), //day
+					"h+" : this.getHours(), //hour
+					"m+" : this.getMinutes(), //minute
+					"s+" : this.getSeconds(), //second
+					"q+" : Math.floor((this.getMonth()+3)/3), //quarter
+					"S" : this.getMilliseconds() //millisecond
 				}
-				if(pageCount>=6){
-					pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="'+pageCount+'" tabindex="0">…</a></li>');
-				}
-			}else if(pageNum>(pageCount-3)){
-				if(pageCount>=6){
-					pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0">…</a></li>');
-				}
-				for(var i=(pageCount-4);i<=pageCount;i++){
-					pageval.append('<li class='+((pageNum==i)?"paginate_button active":"paginate_button")+'><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
-				}
-			}else{
-				pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0">…</a></li>');
-				for(var i=(pageNum-2);i<=(pageNum+2);i++){
-					pageval.append('<li class="paginate_button"><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
-				}
-				pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="'+pageCount+'" tabindex="0">…</a></li>');
+				if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
+				(this.getFullYear()+"").substr(4- RegExp.$1.length));
+				for(var k in o)if(new RegExp("("+ k +")").test(format))
+				format = format.replace(RegExp.$1,
+				RegExp.$1.length==1? o[k] :
+				("00"+ o[k]).substr((""+ o[k]).length));
+				return format;
 			}
-			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="1" tabindex="0" onclick="PreviousQuery('+pageCount+','+pageCount+')">last</a></li>');
-			pageval.append('<li class="paginate_button next" id="dt_basic_next"><a href="#" aria-controls="dt_basic" data-dt-idx="'+(pageCount+1)+'" tabindex="0" onclick="PreviousQuery('+(pageNum+1)+','+pageCount+')">Next</a></li>');
-			$("#dt_basic_paginate ul").html(pageval.toString());
-		}
+			$("#create_time_from").datetimepicker({
+			    format: 'YYYY-MM-DD HH:mm:ss',
+			    locale:  'zh-cn'
+			});
+			$("#create_time_to").datetimepicker({
+			    format: 'YYYY-MM-DD HH:mm:ss',
+			    locale:  'zh-cn'
+			});
+		})
+	
+
 		function PreviousQuery(pageNum,pageCount){
 			if(pageNum==0){
 				alert("已经是第一页");
@@ -1020,10 +653,10 @@
 		function tableQuery(id){
 			layer.open({
 				  type: 2,
-				  title: '新建任务',
+				  title: '查看表',
 				  shadeClose: true,
 				  shade: 0.8,
-				  area: ['60%', '90%'],
+				  area: ['70%', '70%'],
 				  content: 'toQueryTable.do?table_id='+id //iframe的url
 				}); 
 		}
@@ -1050,7 +683,7 @@
 		function tableDelete(id){
 			$.post("importTables/delete.do?id="+id,function(msg){
 				alert(msg);
-				orgTableSubmit($("#perNum").val());
+				$('#task_list').bootstrapTable('refresh')
 			});
 		}
 		$("#add_table").bind("click",function(){
@@ -1060,17 +693,122 @@
 				  shadeClose: true,
 				  shade: 0.8,
 				  area: ['60%', '90%'],
-				  content: "importTables/toAddPage"
+				  content: "importTables/toAddPage.do?table_type="+$("#table_type").val()
 				}); 
 		});
-		$("#create_time_from").datetimepicker({
-		    format: 'YYYY-MM-DD HH:mm:ss',
-		    locale:  'zh-cn'
-		});
-		$("#create_time_to").datetimepicker({
-		    format: 'YYYY-MM-DD HH:mm:ss',
-		    locale:  'zh-cn'
-		});
+		
+		var TableInit = function() {
+			var oTableInit = new Object();
+			//初始化Table
+			oTableInit.Init = function() {
+				$('#task_list').bootstrapTable({
+					url : 'importTables/query.do', //请求后台的URL（*）
+					method : 'get', //请求方式（*）
+					toolbar : '#toolbar', //工具按钮用哪个容器
+					striped : true, //是否显示行间隔色
+					cache : false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+					pagination : true, //是否显示分页（*）
+					sortable : false, //是否启用排序
+					sortOrder : "asc", //排序方式
+					queryParams : oTableInit.queryParams,//传递参数（*）
+					sidePagination : "server", //分页方式：client客户端分页，server服务端分页（*）
+					pageNumber : 1, //初始化加载第一页，默认第一页
+					pageSize : 10, //每页的记录行数（*）
+					pageList : [ 10, 25, 50, 100 ], //可供选择的每页的行数（*）
+					search : false, //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+					strictSearch : true,
+					showColumns : true, //是否显示所有的列
+					showRefresh : true, //是否显示刷新按钮
+					minimumCountColumns : 2, //最少允许的列数
+					clickToSelect : true, //是否启用点击选中行
+					// height : 500, //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+					uniqueId : "ID", //每一行的唯一标识，一般为主键列
+					showToggle : true, //是否显示详细视图和列表视图的切换按钮
+					cardView : false, //是否显示详细视图
+					detailView : false, //是否显示父子表
+					columns : [{
+						field : 'id',
+						title : '序号'
+					}, {
+						field : 'dbname',
+						title : '数据库名称'
+					}, {
+						field : 'table_name',
+						title : '表名称'
+					}, {
+						field : 'src_db_type',
+						title : '源库类型'
+					}, {
+						field : 'src_db',
+						title : '源库名称'
+					}, {
+						field : 'src_table',
+						title : '源表名称'
+					}, {
+						field : 'create_time',
+						title : '创建时间',
+						formatter : function (value, row, index){
+					    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+					    }
+					},{
+						field : 'update_time',
+						title : '更新时间',
+						formatter : function (value, row, index){
+					    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+					    }
+					}, {
+						field : 'creator_username',
+						title : '创建人'
+					}, {
+						field : 'active',
+						title : '状态',
+						formatter : function (value, row, index){
+					    	return value == false ? '激活' : '未激活';
+					    }
+					}, {
+						field : '',
+						title : '文件大小'
+					}, {
+						field : '',
+						title : '总记录数'
+					},{
+					    title : '操作',
+					    formatter : function(value,row,index){
+							return '<div class="btn-group" style="width: 100px;">'
+							+	'<a class="btn btn-default" href="javascript:void(0);">操作</a>'
+							+	'<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"><span class="caret"></span></a>'
+							+	'<ul class="dropdown-menu">'
+							+      '<li><a href="javascript:void(0);" onclick="tableQuery('+row.id+')">查看表</a></li>'
+							+	   '<li><a href="javascript:void(0);" onclick="tableDefine('+row.id+')">查看表定义</a></li>'
+							+		'<li><a href="javascript:void(0);" onclick="tableUpdate('+row.id+')">编辑</a></li>'
+							+      '<li><a href="javascript:void(0);" onclick="tableDelete('+row.id+')">删除表</a></li>'
+							+	'</ul></div>'
+					    }
+					}]
+				});
+			};
+			//得到查询的参数
+			oTableInit.queryParams = function(params) {
+			    
+				var temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+					limit : params.limit, //页面大小
+					offset : params.offset, //页码
+					src_db : $("#src_db").val(),
+					src_table : $("#src_table").val(),
+					src_db_type : $("#src_db_type").val(),
+					dbname : $("#dbname").val(),
+					table_name : $("#table_name").val(),
+					table_type : $("#table_type").val(),
+					create_time_from : $("#create_time_from").val(),
+					create_time_to : $("#create_time_to").val()
+				};
+				return temp;
+			};
+			return oTableInit;
+		};
+		function doSubmit(){
+			$('#task_list').bootstrapTable("refresh");
+		}
 		</script>
 
 	</body>

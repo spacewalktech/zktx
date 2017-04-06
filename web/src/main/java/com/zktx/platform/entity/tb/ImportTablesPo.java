@@ -30,9 +30,9 @@ public class ImportTablesPo implements Serializable{
 	
 	private Date create_time_to;
 	
-	private Integer pageNum;
+	private Integer limit;
 	
-	private Integer perNum;
+	private Integer offset;
 	 
 	private Integer fromRowId;
 	
@@ -101,20 +101,22 @@ public class ImportTablesPo implements Serializable{
 		this.table_type = table_type;
 	}
 
-	public Integer getPageNum() {
-		return pageNum;
+	
+
+	public Integer getLimit() {
+		return limit;
 	}
 
-	public void setPageNum(Integer pageNum) {
-		this.pageNum = pageNum;
+	public void setLimit(Integer limit) {
+		this.limit = limit;
 	}
 
-	public Integer getPerNum() {
-		return perNum;
+	public Integer getOffset() {
+		return offset;
 	}
 
-	public void setPerNum(Integer perNum) {
-		this.perNum = perNum;
+	public void setOffset(Integer offset) {
+		this.offset = offset;
 	}
 
 	public Integer getFromRowId() {
@@ -122,7 +124,7 @@ public class ImportTablesPo implements Serializable{
 	}
 
 	public void setFromRowId(Integer fromRowId) {
-		this.fromRowId = (this.pageNum-1)*this.perNum;
+		this.fromRowId = this.offset;
 	}
 
 	

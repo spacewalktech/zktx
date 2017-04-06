@@ -51,7 +51,7 @@
 		
 		for( var i=0 ; i < trigger_db_arry.length ; i++){
 		    
-		    arry.push('{"table": '+ $(trigger_table_arry[i]).val() +', "type": '+ $(trigger_type_arry[i]).val() +'}')
+		    arry.push('{"'+ $(trigger_table_arry[i]).val() +'":'+ $(trigger_type_arry[i]).val() +'}')
 		    
 		}
 		
@@ -303,7 +303,7 @@
 				</section>
 				<section class="col col-3"> 
 					<label class="select">
-						<select id="trigger_table_999" name="trigger_table">
+						<select id="trigger_table_999" name="trigger_table"> 
 
 						</select>
 						<i></i>

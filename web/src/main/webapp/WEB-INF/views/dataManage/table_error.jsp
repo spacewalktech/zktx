@@ -59,11 +59,7 @@
 	</style>
 	<body class="desktop-detected pace-done smart-style-2">
 
-		<form action="" id="smartForm">
-			<input id="table_id" type="hidden" name="table_type" value="${table_type }" />
-			<input type="hidden" id="pageNum" name="pageNum" value="1">
-			<input type="hidden" id="perNum" name="perNum" value="10">
-		</form>
+			<input id="table_type" type="hidden" name="table_type" value="${table_type }" />
 		<!-- HEADER -->
 		<header id="header">
 			<div id="logo-group">
@@ -73,49 +69,6 @@
 				<!-- END LOGO PLACEHOLDER -->
 				
 			</div>
-			<div class="project-context ">
-			<span id="activity" class="activity-dropdown"> <i class="fa fa-user isize"></i> <b class="badge"> 21 </b> </span>
-
-				<!-- AJAX-DROPDOWN : control this dropdown height, look and feel from the LESS variable file -->
-				<div class="ajax-dropdown">
-
-					<!-- the ID links are fetched via AJAX to the ajax container "ajax-notifications" -->
-					<div class="btn-group btn-group-justified" data-toggle="buttons">
-						<label class="btn btn-default">
-							<input type="radio" name="activity" id="${root}/resources/ajax/notify/mail.html">
-							Msgs (14) </label>
-						<label class="btn btn-default">
-							<input type="radio" name="activity" id="${root}/resources/ajax/notify/notifications.html">
-							notify (3) </label>
-						<label class="btn btn-default">
-							<input type="radio" name="activity" id="${root}/resources/ajax/notify/tasks.html">
-							Tasks (4) </label>
-					</div>
-
-					<!-- notification content -->
-					<div class="ajax-notifications custom-scroll">
-
-						<div class="alert alert-transparent">
-							<h4>Click a button to show messages here</h4>
-							This blank page message helps protect your privacy, or you can show the first message here automatically.
-						</div>
-
-						<i class="fa fa-lock fa-4x fa-border"></i>
-
-					</div>
-					<!-- end notification content -->
-
-					<!-- footer: refresh area -->
-					<span> Last updated on: 12/12/2013 9:43AM
-						<button type="button" data-loading-text="<i class='fa fa-refresh fa-spin'></i> Loading..." class="btn btn-xs btn-default pull-right">
-							<i class="fa fa-refresh"></i>
-						</button> 
-					</span>
-					<!-- end footer -->
-
-				</div>
-				<!-- END AJAX-DROPDOWN -->
-			 </div>
 
 			<!-- pulled right: nav area -->
 			<div class="pull-right">
@@ -127,79 +80,13 @@
 				<!-- end collapse menu -->
 				
 				<!-- #MOBILE -->
-				<!-- Top menu profile link : this shows only when top menu is active -->
-				<ul id="mobile-profile-img" class="header-dropdown-list hidden-xs padding-5">
-					<li class="">
-						<a href="#" class="dropdown-toggle no-margin userdropdown" data-toggle="dropdown"> 
-							<img src="${root}/resources/img/avatars/sunny.png" alt="John Doe" class="online" />  
-						</a>
-						<ul class="dropdown-menu pull-right">
-							<li>
-								<a href="javascript:void(0);" class="padding-10 padding-top-0 padding-bottom-0"><i class="fa fa-cog"></i> Setting</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a href="profile.html" class="padding-10 padding-top-0 padding-bottom-0"> <i class="fa fa-user"></i> <u>P</u>rofile</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a href="javascript:void(0);" class="padding-10 padding-top-0 padding-bottom-0" data-action="toggleShortcut"><i class="fa fa-arrow-down"></i> <u>Shortcut</u></a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a href="javascript:void(0);" class="padding-10 padding-top-0 padding-bottom-0" data-action="launchFullscreen"><i class="fa fa-arrows-alt"></i>  <u>FullScreen</u></a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a href="login.html" class="padding-10 padding-top-5 padding-bottom-5" data-action="userLogout"><i class="fa fa-sign-out fa-lg"></i> <strong><u>Logout</u></strong></a>
-							</li>
-						</ul>
-					</li>
-				</ul>
+			
 
 				<!-- logout button -->
 				<div id="logout" class="btn-header transparent pull-right">
 					<span> <a href="login.html" title="Sign Out" data-action="userLogout" data-logout-msg="You can improve your security further after logging out by closing this opened browser"><i class="fa fa-sign-out"></i></a> </span>
 				</div>
-				<!-- end logout button -->
-
-				<!-- search mobile button (this is hidden till mobile view port) -->
-				<div id="search-mobile" class="btn-header transparent pull-right">
-					<span> <a href="javascript:void(0)" title="Search"><i class="fa fa-search"></i></a> </span>
-				</div>
-				<!-- end search mobile button -->
-
-				<!-- input: search field -->
-				<form action="search.html" class="header-search pull-right">
-					<input id="search-fld"  type="text" name="param" placeholder="Find reports and more" data-autocomplete='[
-					"ActionScript",
-					"AppleScript",
-					"Asp",
-					"BASIC",
-					"C",
-					"C++",
-					"Clojure",
-					"COBOL",
-					"ColdFusion",
-					"Erlang",
-					"Fortran",
-					"Groovy",
-					"Haskell",
-					"Java",
-					"JavaScript",
-					"Lisp",
-					"Perl",
-					"PHP",
-					"Python",
-					"Ruby",
-					"Scala",
-					"Scheme"]'>
-					<button type="submit">
-						<i class="fa fa-search"></i>
-					</button>
-					<a href="javascript:void(0);" id="cancel-search-js" title="Cancel Search"><i class="fa fa-times"></i></a>
-				</form>
-				<!-- end input: search field -->
+				
 
 				<!-- fullscreen button -->
 				<div id="fullscreen" class="btn-header transparent pull-right">
@@ -252,8 +139,8 @@
 						<a><i class="fa fa-lg fa-fw fa-desktop"></i> <span class="menu-item-parent">任务管理</span></a>
 						<ul>
 							<li><a href="mrTaskList">任务列表</a></li>
-							<li><a href="task_wait.html">待运行任务列表</a></li>
-							<li><a href="task_error.html">任务运行预警</a></li>
+							<li><a href="mrTaskWait">待运行任务列表</a></li>
+							<li><a href="mrTaskError">任务运行预警</a></li>
 							
 							
 						</ul>	
@@ -287,83 +174,12 @@
 				<ol class="breadcrumb">
 					<li>首页</li><li>数据管理</li><li>${table_type==1?"派生表预警":"导入表预警" }</li>
 				</ol>
-				
-
 			</div>
 			<!-- END RIBBON -->
 
 			<!-- MAIN CONTENT -->
 			<div id="content">
-				<section id="widget-grid" class="">
-
-					<!-- row -->
-					<div class="row">
-						<article class="col-sm-12">
-							<!-- new widget -->
-							<div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
-
-								<div class="widget-body no-padding bordertop">
-									<!-- content -->
-									<div id="dt_basic_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
-									<table id="dt_basic" class="table table-striped table-bordered table-hover dataTable no-footer" width="100%" role="grid" aria-describedby="dt_basic_info" style="width: 100%;">
-											<thead>			                
-												<tr role="row">
-													<th data-hide="phone" class="sorting_asc" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-sort="ascending" aria-label="ID: activate to sort column descending">ID</th>
-													<th data-class="expand" class="expand sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label=" Name: activate to sort column ascending"> 导入表ID</th>
-													<th data-hide="phone" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label=" Phone: activate to sort column ascending">stage_ID</th>
-													<th class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="Company: activate to sort column ascending">导入类型</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label=" Zip: activate to sort column ascending"> 增加的记录数</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">更新的记录数</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label=" Date: activate to sort column ascending">删除的记录数</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">记录条数</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">失败信息</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">是否触发任务</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">创建时间</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">更新时间</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">开始执行时间</th>
-													<th data-hide="phone,tablet" class="sorting" tabindex="0" aria-controls="dt_basic" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">执行结束时间</th>
-												</tr>
-											</thead>
-											<tbody>
-											
-											</tbody>
-										</table>
-										<div class="dt-toolbar-footer">
-											<div class="col-sm-5 col-xs-12 hidden-xs">
-												<div class="dataTables_info" id="dt_basic_info" role="status" aria-live="polite">Showing <span id="fromRowid"></span> to <span id="toRowid"></span> of <span id="rowCount"></span> entries</div>
-											</div>
-											<div class="col-xs-12 col-sm-7">
-												<div class="dataTables_paginate paging_simple_numbers" id="dt_basic_paginate">
-													<ul class="pagination">
-														
-													</ul>
-												</div>
-											</div>
-										</div>
-									</div>
-									
-									
-									<!-- end content -->
-								</div>
-
-						
-								<!-- end widget div -->
-							</div>
-							<!-- end widget -->
-
-						</article>
-					</div>
-
-					<!-- end row -->
-
-					
-
-				</section>
-				<!-- end widget grid -->
-
-				
-				<!-- end widget grid -->
-
+				<table id="task_list"></table>
 			</div>
 			<!-- END MAIN CONTENT -->
 
@@ -371,82 +187,8 @@
 		<!-- END MAIN PANEL -->
 
 				<!-- PAGE FOOTER -->
-		<div class="page-footer">
-			<div class="row">
-				<div class="col-xs-12 col-sm-6">
-					<span class="txt-color-white">SmartAdmin 1.8.2 <span class="hidden-xs"> - Web Application Framework</span> © 2014-2015</span>
-				</div>
 
-				<div class="col-xs-6 col-sm-6 text-right hidden-xs">
-					<div class="txt-color-white inline-block">
-						<i class="txt-color-blueLight hidden-mobile">Last account activity <i class="fa fa-clock-o"></i> <strong>52 mins ago &nbsp;</strong> </i>
-						<div class="btn-group dropup">
-							<button class="btn btn-xs dropdown-toggle bg-color-blue txt-color-white" data-toggle="dropdown">
-								<i class="fa fa-link"></i> <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu pull-right text-left">
-								<li>
-									<div class="padding-5">
-										<p class="txt-color-darken font-sm no-margin">Download Progress</p>
-										<div class="progress progress-micro no-margin">
-											<div class="progress-bar progress-bar-success" style="width: 50%;"></div>
-										</div>
-									</div>
-								</li>
-								<li class="divider"></li>
-								<li>
-									<div class="padding-5">
-										<p class="txt-color-darken font-sm no-margin">Server Load</p>
-										<div class="progress progress-micro no-margin">
-											<div class="progress-bar progress-bar-success" style="width: 20%;"></div>
-										</div>
-									</div>
-								</li>
-								<li class="divider"></li>
-								<li>
-									<div class="padding-5">
-										<p class="txt-color-darken font-sm no-margin">Memory Load <span class="text-danger">*critical*</span></p>
-										<div class="progress progress-micro no-margin">
-											<div class="progress-bar progress-bar-danger" style="width: 70%;"></div>
-										</div>
-									</div>
-								</li>
-								<li class="divider"></li>
-								<li>
-									<div class="padding-5">
-										<button class="btn btn-block btn-default">refresh</button>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
 		<!-- END PAGE FOOTER -->
-
-		<div id="shortcut">
-			<ul>
-				<li>
-					<a href="inbox.html" class="jarvismetro-tile big-cubes bg-color-blue"> <span class="iconbox"> <i class="fa fa-envelope fa-4x"></i> <span>Mail <span class="label pull-right bg-color-darken">14</span></span> </span> </a>
-				</li>
-				<li>
-					<a href="calendar.html" class="jarvismetro-tile big-cubes bg-color-orangeDark"> <span class="iconbox"> <i class="fa fa-calendar fa-4x"></i> <span>Calendar</span> </span> </a>
-				</li>
-				<li>
-					<a href="gmap-xml.html" class="jarvismetro-tile big-cubes bg-color-purple"> <span class="iconbox"> <i class="fa fa-map-marker fa-4x"></i> <span>Maps</span> </span> </a>
-				</li>
-				<li>
-					<a href="invoice.html" class="jarvismetro-tile big-cubes bg-color-blueDark"> <span class="iconbox"> <i class="fa fa-book fa-4x"></i> <span>Invoice <span class="label pull-right bg-color-darken">99</span></span> </span> </a>
-				</li>
-				<li>
-					<a href="gallery.html" class="jarvismetro-tile big-cubes bg-color-greenLight"> <span class="iconbox"> <i class="fa fa-picture-o fa-4x"></i> <span>Gallery </span> </span> </a>
-				</li>
-				<li>
-					<a href="profile.html" class="jarvismetro-tile big-cubes selected bg-color-pinkDark"> <span class="iconbox"> <i class="fa fa-user fa-4x"></i> <span>My Profile </span> </span> </a>
-				</li>
-			</ul>
-		</div>
 		<!-- END SHORTCUT AREA -->
 
 		<!--================================================== -->
@@ -543,6 +285,10 @@
 		<script src="${root}/resources/js/plugin/moment/moment.min.js"></script>
 		<script src="${root}/resources/js/plugin/fullcalendar/jquery.fullcalendar.min.js"></script>
 -->
+<script src="${root }/resources/js/moment.js" type="text/javascript"></script>
+<script src="${root}/resources/layer/layer.js"></script>
+	<script src="${root }/resources/js/bootstrap-table/bootstrap-table.js" type="text/javascript"></script>
+	<script src="${root }/resources/js/bootstrap-table/bootstrap-table-zh-CN.js" type="text/javascript"></script>
 		<script src="${root }/resources/js/except.js"></script>	
 		<script type="text/javascript">
 		
@@ -743,80 +489,131 @@
 				}
 			});	
 			
-			orgTableSubmit(1);
+			var oTable = new TableInit();
+			oTable.Init();
+			Date.prototype.format =function(format){
+				var o = {
+					"M+" : this.getMonth()+1, //month
+					"d+" : this.getDate(), //day
+					"h+" : this.getHours(), //hour
+					"m+" : this.getMinutes(), //minute
+					"s+" : this.getSeconds(), //second
+					"q+" : Math.floor((this.getMonth()+3)/3), //quarter
+					"S" : this.getMilliseconds() //millisecond
+				}
+				if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
+				(this.getFullYear()+"").substr(4- RegExp.$1.length));
+				for(var k in o)if(new RegExp("("+ k +")").test(format))
+				format = format.replace(RegExp.$1,
+				RegExp.$1.length==1? o[k] :
+				("00"+ o[k]).substr((""+ o[k]).length));
+				return format;
+			}
 		})
-		function orgTableSubmit(pageNum){
-			$("#pageNum").val(pageNum);
-			$.post("stage/queryStageOri.do",$("#smartForm").serialize(),function(msg){
-				pagefen(pageNum,msg);
-				var htmlval=new StringBuffer();
-				$.each(msg.list,function(index,val){
-					htmlval.append('<tr role="row" class='+(index%2==0?"odd":"even")+' aria-selected="false">'); 
-					htmlval.append('<td class="sorting_1">'+(val.id!=undefined?val.id:"")+'</td>');
-					htmlval.append('<td class=" expand"><span class="responsiveExpander">'+(val.import_table_id!=undefined?val.import_table_id:"")+'</span></td>');
-					htmlval.append('<td>'+(val.stage_id!=undefined?val.stage_id:"")+'</td>');
-					htmlval.append('<td>'+(val.import_type!=undefined&&val.import_type?"增量":"全量")+'</td>');
-					htmlval.append('<td>'+(val.inserted_num!=undefined?val.inserted_num:"")+'</td>');
-					htmlval.append('<td>'+(val.updated_num!=undefined?val.updated_num:"")+'</td>');
-					htmlval.append('<td>'+(val.deleted_num!=undefined?val.deleted_num:"")+'</td>');
-					htmlval.append('<td>'+(val.record_num!=undefined?val.record_num:"")+'</td>');
-					htmlval.append('<td>'+(val.fail_info!=undefined?val.fail_info:"")+'</td>');
-					htmlval.append('<td>'+(val.process_status!=undefined?val.process_status:"")+'</td>');
-					htmlval.append('<td>'+(val.create_time!=undefined?new Date(val.create_time).toLocaleString():"")+'</td>');
-					htmlval.append('<td>'+(val.update_time!=undefined?new Date(val.update_time).toLocaleString():"")+'</td>');
-					htmlval.append('<td>'+(val.begin_time!=undefined?new Date(val.begin_time).toLocaleString():"")+'</td>');
-					htmlval.append('<td>'+(val.end_time!=undefined?new Date(val.end_time).toLocaleString():"")+'</td>');
-				})
-				
-				$("table tbody").html(htmlval.toString());
-			});
-        }
-		function pagefen(pageNum,msg){
-			
-			var perNum = $("#perNum").val();
-			var count = msg.countRows;//总行数
-			var perCount =msg.list.length;//一次返回的行数
-			var pageCount = parseInt(count/perNum)+1;//总页数
-			$("#rowCount").html(count);
-			$("#fromRowid").html(perNum*(pageNum-1)+(count==0?0:1));
-			$("#toRowid").html(perNum*(pageNum-1)+perCount);
-			var pageval=new StringBuffer();
-			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0" onclick="PreviousQuery('+(pageNum-1)+','+pageCount+')">Previous</a></li>');
-			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="1" tabindex="0" onclick="PreviousQuery(1,'+pageCount+')">first</a></li>');
-			if(pageNum<=3){
-				for(var i=1;i<=(Math.min(pageCount,6));i++){
-					pageval.append('<li class='+((pageNum==i)?"paginate_button active":"paginate_button")+'><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
-				}
-				if(pageCount>=6){
-					pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="'+pageCount+'" tabindex="0">…</a></li>');
-				}
-			}else if(pageNum>(pageCount-3)){
-				if(pageCount>=6){
-					pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0">…</a></li>');
-				}
-				for(var i=(pageCount-4);i<=pageCount;i++){
-					pageval.append('<li class='+((pageNum==i)?"paginate_button active":"paginate_button")+'><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
-				}
-			}else{
-				pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="0" tabindex="0">…</a></li>');
-				for(var i=(pageNum-2);i<=(pageNum+2);i++){
-					pageval.append('<li class="paginate_button"><a href="#" aria-controls="dt_basic" data-dt-idx="'+i+'" tabindex="0" onclick="PreviousQuery('+i+','+pageCount+')">'+i+'</a></li>');
-				}
-				pageval.append('<li class="paginate_button disabled" id="dt_basic_ellipsis"><a href="#" aria-controls="dt_basic" data-dt-idx="'+pageCount+'" tabindex="0">…</a></li>');
-			}
-			pageval.append('<li class="paginate_button previous" id="dt_basic_previous"><a href="#" aria-controls="dt_basic" data-dt-idx="1" tabindex="0" onclick="PreviousQuery('+pageCount+','+pageCount+')">last</a></li>');
-			pageval.append('<li class="paginate_button next" id="dt_basic_next"><a href="#" aria-controls="dt_basic" data-dt-idx="'+(pageCount+1)+'" tabindex="0" onclick="PreviousQuery('+(pageNum+1)+','+pageCount+')">Next</a></li>');
-			$("#dt_basic_paginate ul").html(pageval.toString());
-		}
-		function PreviousQuery(pageNum,pageCount){
-			if(pageNum==0){
-				alert("已经是第一页");
-			}else if(pageNum>pageCount){
-				alert("已是最后一页");
-			}else{
-				doSubmit(pageNum);
-			}
-		}
+
+
+		var TableInit = function() {
+			var oTableInit = new Object();
+			//初始化Table
+			oTableInit.Init = function() {
+				$('#task_list').bootstrapTable({
+					url : 'stage/queryStageOri.do', //请求后台的URL（*）
+					method : 'get', //请求方式（*）
+					toolbar : '#toolbar', //工具按钮用哪个容器
+					striped : true, //是否显示行间隔色
+					cache : false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+					pagination : true, //是否显示分页（*）
+					sortable : false, //是否启用排序
+					sortOrder : "asc", //排序方式
+					queryParams : oTableInit.queryParams,//传递参数（*）
+					sidePagination : "server", //分页方式：client客户端分页，server服务端分页（*）
+					pageNumber : 1, //初始化加载第一页，默认第一页
+					pageSize : 10, //每页的记录行数（*）
+					pageList : [ 10, 25, 50, 100 ], //可供选择的每页的行数（*）
+					search : false, //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+					strictSearch : true,
+					showColumns : true, //是否显示所有的列
+					showRefresh : true, //是否显示刷新按钮
+					minimumCountColumns : 2, //最少允许的列数
+					clickToSelect : false, //是否启用点击选中行
+					// height : 500, //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+					uniqueId : "ID", //每一行的唯一标识，一般为主键列
+					showToggle : true, //是否显示详细视图和列表视图的切换按钮
+					cardView : false, //是否显示详细视图
+					detailView : false, //是否显示父子表
+					columns : [{
+						field : 'id',
+						title : 'ID'
+					}, {
+						field : 'import_table_id',
+						title : '导入表ID'
+					}, {
+						field : 'stage_id',
+						title : 'stage_ID'
+					}, {
+						field : 'import_type',
+						title : '导入类型',
+						formatter : function (value, row, index){
+					    	return value?"增量":"全量";
+					    }
+					}, {
+						field : 'inserted_num',
+						title : '增加的记录数'
+					}, {
+						field : 'updated_num',
+						title : '更新的记录数'
+					}, {
+						field : 'deleted_num',
+						title : '删除的记录数'
+					}, {
+						field : 'record_num',
+						title : '记录条数'
+					}, {
+						field : 'fail_info',
+						title : '失败信息'
+					}, {
+						field : 'process_status',
+						title : '是否触发任务'
+					},{
+						field : 'create_time',
+						title : '创建时间',
+						formatter : function (value, row, index){
+					    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+					    }
+					},{
+						field : 'update_time',
+						title : '更新时间',
+						formatter : function (value, row, index){
+					    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+					    }
+					},{
+						field : 'begin_time',
+						title : '开始执行时间',
+						formatter : function (value, row, index){
+					    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+					    }
+					},{
+						field : 'end_time',
+						title : '执行结束时间',
+						formatter : function (value, row, index){
+					    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+					    }
+					}]
+				});
+			};
+			//得到查询的参数
+			oTableInit.queryParams = function(params) {
+			    
+				var temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+						limit : params.limit, //页面大小
+						offset : params.offset, //页码
+					table_type : $("#table_type").val()
+					
+				};
+				return temp;
+			};
+			return oTableInit;
+		};
 		</script>
 
 	</body>

@@ -47,6 +47,8 @@ public class ImportTables implements Serializable{
     private Boolean export_to_es_index_warehouse;
 
     private Integer creator_id;
+    
+    private String creator_username;
 
     private Boolean flag=false;
 
@@ -213,4 +215,13 @@ public class ImportTables implements Serializable{
     public void setUpdate_time(Date update_time) {
         this.update_time = update_time;
     }
+
+	public String getCreator_username() {
+		return creator_username;
+	}
+
+	public void setCreator_username(String creator_username) {
+		this.creator_username = creator_username;
+	}
+    
 }
