@@ -1,6 +1,9 @@
 package com.zktx.platform.service.importtable;
 
 import java.util.List;
+
+import com.zktx.platform.entity.tb.ImportTables;
+import com.zktx.platform.entity.tb.ImportTablesWithBLOBs;
 import com.zktx.platform.entity.tb.MrTaskWithBLOBs;
 
 public interface MrTaskService {
@@ -30,4 +33,10 @@ public interface MrTaskService {
 	void deleteQueueByid(Integer id);
 
 	int findCountByProper();
+
+	List<String> findDistintDBType();
+
+	List<ImportTablesWithBLOBs> findTableByDBName(String dbname);
+	
+	List<ImportTables> findAllTables();
 }

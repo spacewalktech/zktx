@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en-us">
@@ -182,16 +183,16 @@ select.input-sm {
 					</a>
 					<ul style="display: block;">
 						<li>
-							<a href="import_tables.html">导入表</a>
+							<a href="orgTableList">导入表</a>
 						</li>
 						<li>
-							<a href="logic_tables.html">派生表</a>
+							<a href="perTableList">派生表</a>
 						</li>
 						<li>
-							<a href=" import_tables_error.html">导入表预警</a>
+							<a href="orgWarnTable">导入表预警</a>
 						</li>
 						<li>
-							<a href="logic_tables_error.html">派生表预警</a>
+							<a href="perWarnTable">派生表预警</a>
 						</li>
 					</ul>
 				</li>
@@ -568,8 +569,11 @@ select.input-sm {
 
 
 
+	<%-- <script src="${root }/resources/js/moment.js" type="text/javascript"></script> --%>
 	<script src="${root }/resources/js/moment.js" type="text/javascript"></script>
 	<script src="${root }/resources/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+	<%-- <script src="${root }/resources/js/bootstrap-datepicker.zh-CN.js" type="text/javascript"></script> --%>
+	<%-- <script src="${root }/resources/js/bootstrap-datetimepicker.zh-CN.js" type="text/javascript"></script> --%>
 
 	<script src="${root }/resources/js/bootstrap-table/bootstrap-table.js" type="text/javascript"></script>
 	<script src="${root }/resources/js/bootstrap-table/bootstrap-table-zh-CN.js" type="text/javascript"></script>
@@ -734,7 +738,7 @@ select.input-sm {
 						field : 'create_time',
 						title : '创建时间',
 						formatter : function (value, row, index){
-					    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+					    	return value == null ? null : new Date(value).format('yyyy-MM-dd hh:mm:ss');
 					    }
 					},{
 					    title : '操作',

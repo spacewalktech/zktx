@@ -1,10 +1,13 @@
 package com.zktx.platform.service.importtable.impl;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.zktx.platform.dao.tb.MrTaskMapper;
+import com.zktx.platform.entity.tb.ImportTables;
+import com.zktx.platform.entity.tb.ImportTablesWithBLOBs;
 import com.zktx.platform.entity.tb.MrTaskWithBLOBs;
 import com.zktx.platform.service.importtable.MrTaskService;
 
@@ -87,6 +90,21 @@ public class MrTaskServiceImple implements MrTaskService {
 	@Override
 	public int findCountByProper() {
 		return mapper.findCountByProper();
+	}
+
+	@Override
+	public List<String> findDistintDBType() {
+		return mapper.findDistintDBType();
+	}
+
+	@Override
+	public List<ImportTablesWithBLOBs> findTableByDBName(String dbname) {
+		return mapper.findTableByDBName(dbname);
+	}
+
+	@Override
+	public List<ImportTables> findAllTables() {
+		return mapper.findAllTables();
 	}
 
 }

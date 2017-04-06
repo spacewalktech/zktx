@@ -1,4 +1,3 @@
-
 <link href="${root }/resources/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="${root }/resources/js/bootstrap-table/bootstrap-table.css">
 <link href="${root }/resources/css/home.css" rel="stylesheet">
@@ -26,6 +25,7 @@
 <script src="${root }/resources/js/bootstrap-table/bootstrap-table-zh-CN.js" type="text/javascript"></script>
 <script data-pace-options='{ "restartOnRequestAfter": true }' src="${root }/resources/js/plugin/pace/pace.min.js"></script>
 <script src="${root }/resources/js/jquery.min.js"></script>
+<script src="${root }/resources/js/jquery.validate.min.js"></script>
 <script src="${root }/resources/js/libs/jquery-ui-1.10.3.min.js"></script>
 <script src="${root }/resources/js/app.config.js"></script>
 <script src="${root }/resources/js/bootstrap/bootstrap.min.js"></script>
@@ -33,3 +33,5 @@
 <script src="${root }/resources/js/demo.min.js"></script>
 <script src="${root }/resources/js/app.min.js"></script>
 <script src="${root}/resources/layer/layer.js"></script>
+<script src="${root }/resources/js/jquery.fileupload.js"></script>
+

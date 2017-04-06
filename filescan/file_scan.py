@@ -4,9 +4,10 @@
 import common.dao.import_tables as tb_import_tables
 import common.dao.table_schema as tb_table_schema
 import common.db.db_config as db
-import common.dao.stage as stage
+from common.dao.import_tables import Stage
 import os, re, shutil, json, time
 import merge, common.config.config as config, common.util.util as util
+import create_dir
 from sqlalchemy import desc
 
 setting = None
@@ -102,7 +103,7 @@ def do_schema(schema_path, id):
 
 # 修改stage信息
 def do_stage(stage_id, table_id, import_type="full", inserted_num=0, updated_num=0, deleted_num=0, record_num=0):
-    StagePoJo = stage.Stage
+    StagePoJo = Stage
     table_stage = db.session.query(StagePoJo).filter_by(id=stage_id).first()
     table_stage.inserted_num = 0 if inserted_num is None else inserted_num
     table_stage.updated_num = 0 if updated_num is None else updated_num
@@ -114,7 +115,7 @@ def do_stage(stage_id, table_id, import_type="full", inserted_num=0, updated_num
 # 先创建stage_id
 def create_stage(table_id, import_type):
     # 查询出最新一条stage信息
-    StagePoJo = stage.Stage
+    StagePoJo = Stage
     table_stage = db.session.query(StagePoJo).filter_by(import_table_id=table_id).order_by(desc(StagePoJo.id)).first()
 
     # 添加stage判断为空和上一次的stage_id
@@ -148,7 +149,7 @@ def do_check_schema(data_path, table_id, stage_id):
 
     # 做对比，schema与数据库存的schema信息不一致，记录信息
     if schema.schema != schema_str:
-        Stage = stage.Stage
+        Stage = Stage
         new_stage = db.session.query(Stage).filter_by(id=stage_id).first()
         new_stage.status = 1
         new_stage.fail_info = "增量更新时发现schema不一致"
@@ -257,4 +258,6 @@ def load():
                 shutil.move(processing_path, processed_path)
 
 
-load()
+while True:
+    load()
+    time.sleep(60 * 10)

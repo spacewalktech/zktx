@@ -46,6 +46,25 @@
     from tb_import_tables
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="findDistintSRCDBType" resultType="java.lang.String">
+		select distinct src_db from tb_import_tables
+	</select>
+	<select id="findDistintDBType" resultType="java.lang.String">
+		select distinct dbname from tb_import_tables
+	</select>
+	
+	<select id="queryCountTable" resultType="java.lang.Integer">
+		select count(*) from tb_import_tables  
+		<where>
+		flag=0 
+		<if test="id!=null">
+			and id!=#{id,jdbcType=INTEGER}
+		</if>
+		and ((table_name =  #{table_name,jdbcType=VARCHAR} and dbname=#{dbname,jdbcType=VARCHAR}) or (src_table = #{src_table,jdbcType=VARCHAR} and src_db=#{src_db,jdbcType=VARCHAR}))
+		</where>
+		
+		
+	</select>
   <select id="findByPagination" parameterType="com.zktx.platform.entity.tb.ImportTablesPo" resultType="com.zktx.platform.entity.tb.ImportTablesWithBLOBs">
   	select t.id,t.src_db,t.src_table,t.src_db_type,t.dbname,t.table_name,t.create_time,t.update_time,t.active,u.name creator_username,t.creator_id
   	from tb_import_tables t,tb_user u
