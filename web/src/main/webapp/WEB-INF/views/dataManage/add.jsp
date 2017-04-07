@@ -50,6 +50,7 @@
 </script>
 </head>
 <body style='width: 99.5%'>
+
 	<form class="smart-form" id="smartForm">
 		<input id="table_type" name="table_type" value="${table_type }" type="hidden"/>
 		<input id="creator_id" name="creator_id" value="1" type="hidden">
@@ -148,5 +149,6 @@
 		<button type="reset" class="btn btn-default">重置</button>
 		</footer>
 	</form>
+	</center>
 </body>
 </html>

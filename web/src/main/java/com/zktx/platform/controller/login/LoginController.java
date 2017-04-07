@@ -1,5 +1,7 @@
 package com.zktx.platform.controller.login;
 
+import java.io.UnsupportedEncodingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,9 +20,16 @@ public class LoginController {
 	@ResponseBody
 	public String login(String username , String password) {
 		
-		String msg = userService.login(username , password);
+		try {
+			String msg = userService.login(username , password);
+			String result =new String(msg.getBytes("GBK"),"UTF-8");
+			return result;
+		} catch (UnsupportedEncodingException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+			return null;
+		}
 		
-		return msg;
 	}
 	
 }

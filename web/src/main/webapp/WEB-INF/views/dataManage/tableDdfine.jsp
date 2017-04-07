@@ -5,9 +5,6 @@
 <head>
 <title>添加任务</title>
 <%@ include file="../header.jsp"%>
-<script src="${root }/resources/js/except.js"></script>	
-<script src="${root }/resources/js/bootstrap-table/bootstrap-table.js" type="text/javascript"></script>
-		<script src="${root }/resources/js/bootstrap-table/bootstrap-table-zh-CN.js" type="text/javascript"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
 		var oTable = new TableInit();
@@ -104,41 +101,40 @@
 	};
 	
 	function querySchema(src_schema,sparkSchema){
+		if(null!=src_schema&&src_schema.length>0){
+			var src =eval('('+src_schema+')');
+			var htmlval=new StringBuffer();
+			$.each(src.schema,function(index,val){
+				htmlval.append('<tr class='+(index%2==0?"odd":"even")+'>'); 
+				htmlval.append('<td class="sorting_1">'+index+'</td>');
+				htmlval.append('<td>'+(val.name!=undefined?val.name:"")+'</td>');
+				htmlval.append('<td>'+(val.type!=undefined?val.type:"")+'</td>');
+				htmlval.append('<td>'+(val.unique!=undefined?(val.unique==1?"是":"否"):"")+'</td>');
+				htmlval.append('<td>'+(val.primary!=undefined?(val.primary==1?"是":"否"):"")+'</td></tr>');
+			})
+			$("#dt_src tbody").html(htmlval.toString());
+			
+		}
+		if(null!=sparkSchema&&sparkSchema.length>0){
+			var spark = eval('('+sparkSchema+')');
+			var  sparkvl = new StringBuffer();
+			$.each(spark.schema,function(index,val){
+				sparkvl.append('<tr class='+(index%2==0?"odd":"even")+'>'); 
+				sparkvl.append('<td class="sorting_1">'+index+'</td>');
+				sparkvl.append('<td>'+(val.name!=undefined?val.name:"")+'</td>');
+				sparkvl.append('<td>'+(val.type!=undefined?val.type:"")+'</td>');
+				sparkvl.append('<td>'+(val.unique!=undefined?(val.unique==1?"是":"否"):"")+'</td>');
+				sparkvl.append('<td>'+(val.primary!=undefined?(val.primary==1?"是":"否"):"")+'</td></tr>');
+			})
+			$("#dt_spark tbody").html(sparkvl.toString());
+		}
 		
-		var src =eval('('+src_schema+')');
-		var htmlval=new StringBuffer();
-		$.each(src.schema,function(index,val){
-			htmlval.append('<tr class='+(index%2==0?"odd":"even")+'>'); 
-			htmlval.append('<td class="sorting_1">'+index+'</td>');
-			htmlval.append('<td>'+(val.name!=undefined?val.name:"")+'</td>');
-			htmlval.append('<td>'+(val.type!=undefined?val.type:"")+'</td>');
-			htmlval.append('<td>'+(val.unique!=undefined?(val.unique==1?"是":"否"):"")+'</td>');
-			htmlval.append('<td>'+(val.primary!=undefined?(val.primary==1?"是":"否"):"")+'</td></tr>');
-		})
-		$("#dt_src tbody").html(htmlval.toString());
-		
-		var spark = eval('('+sparkSchema+')');
-		var  sparkvl = new StringBuffer();
-		$.each(spark.schema,function(index,val){
-			sparkvl.append('<tr class='+(index%2==0?"odd":"even")+'>'); 
-			sparkvl.append('<td class="sorting_1">'+index+'</td>');
-			sparkvl.append('<td>'+(val.name!=undefined?val.name:"")+'</td>');
-			sparkvl.append('<td>'+(val.type!=undefined?val.type:"")+'</td>');
-			sparkvl.append('<td>'+(val.unique!=undefined?(val.unique==1?"是":"否"):"")+'</td>');
-			sparkvl.append('<td>'+(val.primary!=undefined?(val.primary==1?"是":"否"):"")+'</td></tr>');
-		})
-		$("#dt_spark tbody").html(sparkvl.toString());
 	}
 
 </script>
 </head>
 <body style='width: 99.5%'>
 			<input id="table_id" type="hidden" name="table_id" value="${table_id }" />
-		<!-- MAIN PANEL -->
-		<div id="main" role="main">
-
-			<!-- RIBBON -->
-			<!-- END RIBBON -->
 
 			<!-- MAIN CONTENT -->
 			<div id="content">
@@ -273,8 +269,5 @@
 				
 			</div>
 			<!-- END MAIN CONTENT -->
-
-		</div>
-		<!-- END MAIN PANEL -->
 </body>
 </html>

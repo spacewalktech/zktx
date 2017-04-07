@@ -3,7 +3,7 @@
 <html lang="en-us" id="extr-page">
 	<head>
 		<meta charset="utf-8">
-		<title>中坤天行</title>
+		<title> SmartAdmin</title>
 		<meta name="description" content="">
 		<meta name="author" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -23,14 +23,14 @@
 
 		<!-- We recommend you use "your_style.css" to override SmartAdmin
 		     specific styles this will also ensure you retrain your customization with each SmartAdmin update.
-		<link rel="stylesheet" type="text/css" media="screen" href="css/your_style.css"> -->
+		<link rel="stylesheet" type="text/css" media="screen" href="${root }/resources/css/your_style.css"> -->
 
 		<!-- Demo purpose only: goes with demo.js, you can delete this css when designing your own WebApp -->
 		<link rel="stylesheet" type="text/css" media="screen" href="${root }/resources/css/demo.min.css">
 
 		<!-- #FAVICONS -->
 		<link rel="shortcut icon" href="${root }/resources/img/favicon/favicon.ico" type="image/x-icon">
-		<link rel="icon" href="${root }/resources/img/favicon/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="${root }/resources/img/favicon/faviconnn.ico" type="image/x-icon">
 
 		<!-- #GOOGLE FONT -->
 		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
@@ -51,17 +51,28 @@
 		<link rel="apple-touch-startup-image" href="${root }/resources/img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
 		<link rel="apple-touch-startup-image" href="${root }/resources/img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
 		<link rel="apple-touch-startup-image" href="${root }/resources/img/splash/iphone.png" media="screen and (max-device-width: 320px)">
-
+		<script type="text/javascript">
+				
+				
+				function doSubmit(){
+					$.post("login/login",$("#login-form").serialize(),function(msg){
+						alert(msg);
+					});	
+				}
+		</script>
 	</head>
-	
-	<body class="animated fadeInDown">               
+	<style type="text/css">
+		.backgroundimg{ background:url(img/login_bg.jpg) no-repeat top left;}
+		.bgno{ background: none;}
+		.padding-30{ padding: 30px;}
+	</style>
+	<body class="animated fadeInDown">
 
 		<header id="header">
 
 			<div id="logo-group">
+				<span id="logo"><img src="${root }/resources/img/logo.png" /></span>
 			</div>
-
-			<span id="extr-page-header-space"> <span class="hidden-mobile hiddex-xs">Need an account?</span> <a id="doregister" href="javascript:void(0);" class="btn btn-danger">Create account</a> </span>
 
 		</header>
 
@@ -71,28 +82,56 @@
 			<div id="content" class="container">
 
 				<div class="row">
-					<div class="col-xs-12 col-sm-12 col-md-7 col-lg-8 hidden-xs hidden-sm">
-					
+					<div class="col-xs-12 col-sm-12 col-md-7 col-lg-8 hidden-xs hidden-sm padding-30 backgroundimg">
+						<h1 class="txt-color-red login-header-big">大数据分析管理平台</h1>
+						<div class="hero bgno">
+
+							<div class="pull-left login-desc-box-l">
+								<h4 class="paragraph-header">It's Okay to be Smart. Experience the simplicity of SmartAdmin, everywhere you go!</h4>
+								<!--<div class="login-app-icons">
+									<a href="javascript:void(0);" class="btn btn-danger btn-sm">Frontend Template</a>
+									<a href="javascript:void(0);" class="btn btn-danger btn-sm">Find out more</a>
+								</div>-->
+							</div>
+							
+							<img src="${root }/resources/img/demo/iphoneview.png" class="pull-right display-image" alt="" style="width:210px">
+
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+								<h5 class="about-heading">关于平台 </h5>
+								<p>
+									Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa.
+								</p>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+								<h5 class="about-heading">大数据分析管理平台!</h5>
+								<p>
+									Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi voluptatem accusantium!
+								</p>
+							</div>
+						</div>
 
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
 						<div class="well no-padding">
-							<form action="index" id="login-form" class="smart-form client-form">
+							<form action="index.do" id="login-form" class="smart-form client-form">
 								<header>
-									Sign In
+									登录
 								</header>
 
 								<fieldset>
 									
 									<section>
-										<label class="label">E-mail</label>
+										<label class="label">用户名</label>
 										<label class="input"> <i class="icon-append fa fa-user"></i>
-											<input type="email" name="username">
+											<input type="username" name="username">
 											<b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> Please enter email address/username</b></label>
 									</section>
 
 									<section>
-										<label class="label">Password</label>
+										<label class="label">密码</label>
 										<label class="input"> <i class="icon-append fa fa-lock"></i>
 											<input type="password" name="password">
 											<b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Enter your password</b> </label>
@@ -104,31 +143,17 @@
 									<section>
 										<label class="checkbox">
 											<input type="checkbox" name="remember" checked="">
-											<i></i>Stay signed in</label>
+											<i></i>记住密码</label>
 									</section>
 								</fieldset>
 								<footer>
 									<button type="submit" class="btn btn-primary">
-										Sign in
+										登录
 									</button>
 								</footer>
 							</form>
 
 						</div>
-						
-						<h5 class="text-center"> - Or sign in using -</h5>
-															
-							<ul class="list-inline text-center">
-								<li>
-									<a href="javascript:void(0);" class="btn btn-primary btn-circle"><i class="fa fa-facebook"></i></a>
-								</li>
-								<li>
-									<a href="javascript:void(0);" class="btn btn-info btn-circle"><i class="fa fa-twitter"></i></a>
-								</li>
-								<li>
-									<a href="javascript:void(0);" class="btn btn-warning btn-circle"><i class="fa fa-linkedin"></i></a>
-								</li>
-							</ul>
 						
 					</div>
 				</div>
@@ -139,29 +164,29 @@
 		<!--================================================== -->	
 
 		<!-- PACE LOADER - turn this on if you want ajax loading to show (caution: uses lots of memory on iDevices)-->
-		<script src="js/plugin/pace/pace.min.js"></script>
+		<script src="${root }/resources/js/plugin/pace/pace.min.js"></script>
 
 	    <!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
 	    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-		<script> if (!window.jQuery) { document.write('<script src="js/libs/jquery-2.1.1.min.js"><\/script>');} </script>
+		<script> if (!window.jQuery) { document.write('<script src="${root }/resources/js/libs/jquery-2.1.1.min.js"><\/script>');} </script>
 
 	    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-		<script> if (!window.jQuery.ui) { document.write('<script src="js/libs/jquery-ui-1.10.3.min.js"><\/script>');} </script>
+		<script> if (!window.jQuery.ui) { document.write('<script src="${root }/resources/js/libs/jquery-ui-1.10.3.min.js"><\/script>');} </script>
 
 		<!-- IMPORTANT: APP CONFIG -->
-		<script src="js/app.config.js"></script>
+		<script src="${root }/resources/js/app.config.js"></script>
 
 		<!-- JS TOUCH : include this plugin for mobile drag / drop touch events 		
-		<script src="js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script> -->
+		<script src="${root }/resources/js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script> -->
 
 		<!-- BOOTSTRAP JS -->		
-		<script src="js/bootstrap/bootstrap.min.js"></script>
+		<script src="${root }/resources/js/bootstrap/bootstrap.min.js"></script>
 
 		<!-- JQUERY VALIDATE -->
-		<script src="js/plugin/jquery-validate/jquery.validate.min.js"></script>
+		<script src="${root }/resources/js/plugin/jquery-validate/jquery.validate.min.js"></script>
 		
 		<!-- JQUERY MASKED INPUT -->
-		<script src="js/plugin/masked-input/jquery.maskedinput.min.js"></script>
+		<script src="${root }/resources/js/plugin/masked-input/jquery.maskedinput.min.js"></script>
 		
 		<!--[if IE 8]>
 			
@@ -170,9 +195,10 @@
 		<![endif]-->
 
 		<!-- MAIN APP JS FILE -->
-		<script src="js/app.min.js"></script>
-		<script src="${root}/resources/layer/layer.js"></script>
+		<script src="${root }/resources/js/app.min.js"></script>
+
 		<script type="text/javascript">
+			runAllForms();
 
 			$(function() {
 				// Validation
@@ -207,7 +233,6 @@
 					}
 				});
 			});
-			
 		</script>
 
 	</body>

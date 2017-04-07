@@ -34,7 +34,6 @@ public class ImportTablesPo implements Serializable{
 	
 	private Integer offset;
 	 
-	private Integer fromRowId;
 	
 	public Date getCreate_time_from() {
 		return create_time_from;
@@ -117,14 +116,6 @@ public class ImportTablesPo implements Serializable{
 
 	public void setOffset(Integer offset) {
 		this.offset = offset;
-	}
-
-	public Integer getFromRowId() {
-		return fromRowId;
-	}
-
-	public void setFromRowId(Integer fromRowId) {
-		this.fromRowId = this.offset;
 	}
 
 	

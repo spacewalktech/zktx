@@ -31,12 +31,9 @@ public class StageController {
 	@RequestMapping("/queryStageOri.do")
 	public @ResponseBody Map<String, Object>  queryByTableType(Integer table_type,Integer offset,Integer limit){
 		try {
-			System.out.println("tableType:"+table_type+','+offset+","+limit);
 			int count =stageService.queryCountByTableType(table_type);
-			System.out.println(count);
 			List<Stage> list =stageService.queryStageByTableType(table_type,offset,limit);
 			Map<String, Object> map = new HashMap<String, Object>();
-			System.out.println(list.toArray().toString()+":"+list.size());
 			map.put("total", count);
 			map.put("rows", list);
 			return map;
@@ -48,11 +45,9 @@ public class StageController {
 	@RequestMapping("/queryTable.do")
 	public @ResponseBody Map<String, Object> queryByTableId(Integer table_id,Integer limit,Integer offset){
 		try {
-			System.out.println("table_id:"+table_id+",limit:"+limit+",offset:"+offset);
 			int count = stageService.queryCountByTableId(table_id);
 			List<Stage> list = stageService.queryStageByTableId(table_id, offset, limit);
 			Map<String, Object> map =new HashMap<String, Object>();
-			System.out.println(count);
 			map.put("total", count);
 			map.put("rows", list);
 			return map;
