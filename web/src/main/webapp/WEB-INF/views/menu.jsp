@@ -182,14 +182,14 @@ select.input-sm {
 				</a>
 				<ul>
 					<li>
-						<a href="mrTaskList">任务列表</a>
-					</li>
-					<li>
-						<a href="task_wait.html">待运行任务列表</a>
-					</li>
-					<li>
-						<a href="task_error.html">任务运行预警</a>
-					</li>
+							<a href="mrTaskList">任务列表</a>
+						</li>
+						<li>
+							<a href="mrTaskWait">待运行任务列表</a>
+						</li>
+						<li>
+							<a href="mrTaskError">任务运行预警</a>
+						</li>
 				</ul>
 			</li>
 		</ul>

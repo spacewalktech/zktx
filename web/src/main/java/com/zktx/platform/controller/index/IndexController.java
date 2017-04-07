@@ -7,48 +7,56 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class IndexController {
 
-	@RequestMapping("index")
+	@RequestMapping("/index.do")
 	public String index() {
 		return "/index";
 	}
-
-	@RequestMapping("mrTaskList")
+	@RequestMapping("/logout.do")
+	public String logout() {
+		return "/login";
+	}
+	@RequestMapping("/mrTaskList.do")
 	public String mrTaskList() {
-		return "/task/task_list";
+		return "/task/task_list_";
+	}
+	@RequestMapping("/mrTaskWait.do")
+	public String waitTask(){
+		return "/task/task_wait_";
 	}
 
-	@RequestMapping("orgTableList")
+	@RequestMapping("/mrTaskError.do")
+	public String mrTaskError(){
+		return "/task/task_error_";
+	}
+	@RequestMapping("/orgTableList.do")
 	public String orgTableList(ModelMap map) {
 		map.put("table_type", 0);
-		return "/dataManage/orgTableList";
+		return "/dataManage/list";
 
 	}
 
 	@RequestMapping("perTableList")
 	public String perTableList(ModelMap map) {
 		map.put("table_type", 1);
-		return "/dataManage/orgTableList";
+		return "/dataManage/list";
 	}
 
 	@RequestMapping("orgWarnTable")
 	public String orgWarnTable(ModelMap map) {
-		System.out.println("orgWarnTable^");
 		map.put("table_type", 0);
-		return "/dataManage/table_error";
+		return "/dataManage/table_error_";
 	}
 
 	@RequestMapping("perWarnTable")
 	public String perWarnTable(ModelMap map) {
-		System.out.println("perWarnTable^");
 		map.put("table_type", 1);
-		return "/dataManage/table_error";
+		return "/dataManage/table_error_";
 	}
 
 	@RequestMapping("toQueryTable")
 	public String toTueryTable(Integer table_id, ModelMap map) {
-		System.out.println("table_id:" + table_id);
 		map.put("table_id", table_id);
 		return "/dataManage/tableQuery";
 	}
-
+	
 }

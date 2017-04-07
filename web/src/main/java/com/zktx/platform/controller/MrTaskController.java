@@ -53,10 +53,8 @@ public class MrTaskController {
 		List<String> list = mrTaskService.findDistintDBType();
 		List<ImportTables> tables =mrTaskService.findAllTables();
 		request.setAttribute("task", task);
-		
 		String StrList =JSON.toJSONString(list, true);
 		String tableList =JSON.toJSONString(tables, true);
-		System.out.println(tableList+"----");
 		request.setAttribute("srcdbs", StrList);
 		request.setAttribute("tableList", tableList);
 		return "task/update";
@@ -188,6 +186,7 @@ public class MrTaskController {
 		try {
 			List<MrTaskWithBLOBs> list = mrTaskService.findByProper(offset, limit);
 			int count = mrTaskService.findCountByPagination(0, null, null, null, null, null, null);
+			System.out.println(count+","+list.size());
 			Map<String, Object> map = new HashMap<>();
 			map.put("total", count);
 			map.put("rows", list);

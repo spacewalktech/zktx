@@ -3,62 +3,9 @@
 <!DOCTYPE html>
 <html lang="en-us">
 	<head>
-		<meta charset="utf-8">
-		<!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
-
-		<title> SmartAdmin </title>
-		<meta name="description" content="">
-		<meta name="author" content="">
-			
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-		<!-- Basic Styles -->
-		<link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/bootstrap.min.css">
-		<link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/font-awesome.min.css">
-
-		<!-- SmartAdmin Styles : Caution! DO NOT change the order -->
-		<link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/smartadmin-production-plugins.min.css">
-		<link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/smartadmin-production.min.css">
-		<link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/smartadmin-skins.min.css">
-
-		<!-- SmartAdmin RTL Support -->
-		<link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/smartadmin-rtl.min.css"> 
-
-		<!-- We recommend you use "your_style.css" to override SmartAdmin
-		     specific styles this will also ensure you retrain your customization with each SmartAdmin update.
-		<link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/your_style.css"> -->
-
-		<!-- Demo purpose only: goes with demo.js, you can delete this css when designing your own WebApp -->
-		<link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/demo.min.css">
-
-		<!-- FAVICONS -->
-		<link rel="shortcut icon" href="${root}/resources/img/favicon/favicon.ico" type="image/x-icon">
-		<link rel="icon" href="${root}/resources/img/favicon/favicon.ico" type="image/x-icon">
-
-		<!-- GOOGLE FONT -->
-		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
-
-		<!-- Specifying a Webpage Icon for Web Clip 
-			 Ref: https://developer.apple.com/library/ios/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html -->
-		<link rel="apple-touch-icon" href="${root}/resources/img/splash/sptouch-icon-iphone.png">
-		<link rel="apple-touch-icon" sizes="76x76" href="${root}/resources/img/splash/touch-icon-ipad.png">
-		<link rel="apple-touch-icon" sizes="120x120" href="${root}/resources/img/splash/touch-icon-iphone-retina.png">
-		<link rel="apple-touch-icon" sizes="152x152" href="${root}/resources/img/splash/touch-icon-ipad-retina.png">
-		
-		<!-- iOS web-app metas : hides Safari UI Components and Changes Status Bar Appearance -->
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		
-		<!-- Startup image for web apps -->
-		<link rel="apple-touch-startup-image" href="${root}/resources/img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
-		<link rel="apple-touch-startup-image" href="${root}/resources/img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
-		<link rel="apple-touch-startup-image" href="${root}/resources/img/splash/iphone.png" media="screen and (max-device-width: 320px)">
-		<script src="${root }/resources/js/jquery.min.js"></script>	
-		<script src="${root }/resources/js/except.js"></script>	
-		<script src="${root }/resources/js/moment.js" type="text/javascript"></script>
-		<script src="${root}/resources/layer/layer.js"></script>
-		<script src="${root }/resources/js/bootstrap-table/bootstrap-table.js" type="text/javascript"></script>
-		<script src="${root }/resources/js/bootstrap-table/bootstrap-table-zh-CN.js" type="text/javascript"></script>
+	<title>表查询</title>
+	<%@ include file="../header.jsp"%>
+	
 		<script type="text/javascript">
 			$(document).ready(function(){
 				var oTable = new TableInit();
@@ -105,7 +52,7 @@
 						showColumns : true, //是否显示所有的列
 						showRefresh : true, //是否显示刷新按钮
 						minimumCountColumns : 2, //最少允许的列数
-						clickToSelect : false, //是否启用点击选中行
+						clickToSelect : true, //是否启用点击选中行
 						// height : 500, //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
 						uniqueId : "ID", //每一行的唯一标识，一般为主键列
 						showToggle : true, //是否显示详细视图和列表视图的切换按钮
@@ -167,12 +114,12 @@
 			
 		</script>
 	</head>
-	<body class="">
-			<input id="table_id" type="hidden" name="table_id" value="${table_id }" />
-
-				<!-- 由主表滑出的表 -->
+	<body class="style='width: 99.5%'">
+			<div id="content">
+				<input id="table_id" type="hidden" name="table_id" value="${table_id }" />
 					<table id="task_list_"></table>
-				<!-- 由主表滑出的表 -->
+			</div>
+
 	</body>
 
 </html>

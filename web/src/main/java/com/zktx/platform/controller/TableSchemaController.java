@@ -25,10 +25,8 @@ public class TableSchemaController {
 	@RequestMapping("/query.do")
 	public @ResponseBody Map<String, Object> queryTableSchemaByTableId(Integer table_id,Integer limit,Integer offset){
 		try {
-			System.out.println("table_id:"+table_id+",limit:"+limit+",offset:"+offset+"------");
 			int count =service.selectCountBytId(table_id);
 			List<TableSchemaPo> list =service.selectByImportTableId(table_id,offset,limit);
-			System.out.println(count);
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("total", count);
 			map.put("rows", list);
@@ -41,7 +39,6 @@ public class TableSchemaController {
 	
 	@RequestMapping("/tableDdf.do")
 	public String toTableDefine(Integer id , ModelMap map){
-		System.out.println("table_id:"+id);
 		map.put("table_id", id);
 		return "dataManage/tableDdfine";
 	}
