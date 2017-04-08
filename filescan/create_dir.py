@@ -37,9 +37,9 @@ def get_table():
 # 在每次import这个表的时候去查询和创建目录
 def load():
     for i in get_table():
-        src_db = i[0]
-        src_table = i[1]
-        create_dir(src_db, src_table)
+        dbname = i[0]
+        table_name = i[1]
+        create_dir(dbname, table_name)
 
 
 load()
