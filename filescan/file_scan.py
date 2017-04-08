@@ -259,7 +259,7 @@ def load():
                 shutil.move(processing_path, processed_path)
 
         if table.export_to_sql_warehouse == 1:
-            trigger_servers.thrift_server(1, table.dbname, table.table_name)
+            trigger_servers.thrift_server(table.id, table.dbname, table.table_name)
 
         if table.export_to_es_index_warehouse == 1:
             print "export_to_es_index_warehouse"
