@@ -56,7 +56,7 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
     fields = [StructField(field_name, StringType(), False) for field_name in schema_str.split(",")]
     schema_df = StructType(fields)
 
-    #
+    # hdfs的client
     client = Client('http://hadoop01:50070')
 
     # 全量更新
@@ -75,9 +75,10 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
             except Exception, e:
                 client.upload(hdfs_path, data_path, overwrite=True)
             # 读取数据
-            df = spark.read.load(hdfs_path + data_path.split('processing')[1] + "/data_full.csv", format="csv", schema=schema_df)
+            df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(hdfs_path + data_path.split('processing')[1] + "/data_full.txt")
         else:
-            df = spark.read.load(data_path + "/data_full.csv", format="csv", encoding="gbk", schema=schema_df)
+            # df = spark.read.load(data_path + "/data_full.csv", format="csv", encoding="gbk", schema=schema_df)
+            df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(data_path + "/data_full.txt")
 
         count = df.count()
 
@@ -149,9 +150,10 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
                 except Exception, e:
                     client.upload(hdfs_path, data_path, overwrite=True)
                 # 读取数据
-                update_df = spark.read.load(hdfs_path + data_path.split('processing')[1] + "/data_insert_updated.csv", format="csv", schema=schema_df)
+                # update_df = spark.read.load(hdfs_path + data_path.split('processing')[1] + "/data_insert_updated.csv", format="csv", schema=schema_df)
+                update_df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(hdfs_path + data_path.split('processing')[1] + "/data_insert_updated.txt")
             else:
-                update_df = spark.read.load(data_path + "/data_insert_updated.csv", format="csv", encoding="gbk", schema=schema_df)
+                update_df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(data_path + "/data_insert_updated.txt")
 
             # 总的数量
             update_insert_count = update_df.count()
@@ -200,9 +202,11 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
                 except Exception, e:
                     client.upload(hdfs_path, data_path, overwrite=True)
                 # 读取数据
-                delete_df = spark.read.load(hdfs_path + data_path.split('processing')[1] + "/data_deleted.csv", format="csv", schema=schema_df)
+                # delete_df = spark.read.load(hdfs_path + data_path.split('processing')[1] + "/data_deleted.csv", format="csv", schema=schema_df)
+                delete_df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(hdfs_path + data_path.split('processing')[1] + "/data_deleted.txt")
             else:
-                delete_df = spark.read.load(data_path + "/data_deleted.csv", format="csv", encoding="gbk", schema=schema_df)
+                # delete_df = spark.read.load(data_path + "/data_deleted.csv", format="csv", encoding="gbk", schema=schema_df)
+                delete_df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(data_path + "/data_deleted.txt")
 
             # 构建多个unique的列
             delete_df.createOrReplaceTempView(src_db + "_" + src_table + "_delete")

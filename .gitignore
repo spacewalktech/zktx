@@ -105,3 +105,4 @@ web/target/
 web/.DS_Store
 web/.classpath
 web/.settings/
+web/.project
