@@ -117,7 +117,12 @@ var TableInit = function() {
 				title : '失败信息'
 			}, {
 				field : 'create_time',
-				title : '创建时间'
+				title : '创建时间',
+				formatter : function (value, row, index){
+					if (value != null) {
+			    		return new Date(value).format('yyyy-MM-dd hh:mm:ss')
+					}
+			    }
 			}, {
 				field : '',
 				title : '操作',

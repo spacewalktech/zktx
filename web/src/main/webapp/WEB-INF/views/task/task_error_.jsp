@@ -166,7 +166,7 @@ $(document).ready(function(){
 			</ol>
 		</div>
 
-		<div id="">
+		<div id="content">
 			<table id="task_wait"></table>
 		</div>
 		
