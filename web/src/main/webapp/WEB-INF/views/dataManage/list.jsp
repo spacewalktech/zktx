@@ -4,6 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
+
 <script type="text/javascript">
 
 function tableQuery(id){
@@ -36,10 +37,27 @@ function tableDefine(id){
 		  content: 'tableSchema/tableDdf.do?id='+id
 		}); 
 }
+//删除
 function tableDelete(id){
-	$.post("importTables/delete.do?id="+id,function(msg){
-		alert(msg);
-		$('#task_list').bootstrapTable('refresh')
+    layer.confirm('确认删除?', {
+	  btn: ['删除','取消'], //按钮
+	  icon: 3
+	}, function(){
+	    $.ajax({
+			type : 'post',
+			url : 'importTables/delete.do',
+			data : {
+			    id : id
+			},
+	    	success : function(result){
+	    	    if(result == 'success'){
+	    			layer.msg('删除成功', {icon: 1});
+	    			$('#task_list').bootstrapTable('refresh');
+	    	    }else{
+	    			layer.msg('删除失败', {icon: 5});
+	    	    }
+	    	}
+	    })
 	});
 }
 $("#add_table").bind("click",function(){
@@ -204,7 +222,7 @@ $(document).ready(function(){
 			<div id="ribbon">
 				<!-- breadcrumb -->
 				<ol class="breadcrumb">
-					<li>首页</li><li>数据管理</li><li>${table_type==1?"派生表":"导入表" }</li>
+					<li>首页</li><li>数据管理</li><li>${table_type==1?"派生表":"导入表"}</li>
 				</ol>
 			</div>
 			<!-- END RIBBON -->
@@ -306,16 +324,12 @@ $(document).ready(function(){
 
 							<!-- widget grid -->
 				<!-- end widget grid -->
-				<div class="panel">
-				<div>
-					<div id="toolbar" class="btn-group">
-						<button id="add_table" type="button" class="btn btn-primary">
-							<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-							创建表
-						</button>
-					</div>
-				</div>
-			</div>
+						<div id="toolbar" class="btn-group">
+							<button id="add_table" type="button" class="btn btn-primary">
+								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+								创建表
+							</button>
+						</div>
 				<table id="task_list"></table>
 			</div>
 			<!-- END MAIN CONTENT -->

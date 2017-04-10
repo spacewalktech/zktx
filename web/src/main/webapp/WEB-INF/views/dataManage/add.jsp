@@ -84,7 +84,7 @@
 				</section>
 				<section class="col col-5">
 					<label class="input">
-						<input type="text" list="list_dbname"  id="dbname" name="dbname" /> 
+						<input type="text" list="list_dbname"  id="dbname" name="dbname"/> 
 						<datalist id="list_dbname">
 							<c:forEach var="i" items="${dbList}">
 								<option value="${i}">${i }</option>

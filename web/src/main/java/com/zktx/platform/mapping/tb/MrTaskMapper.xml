@@ -125,6 +125,7 @@
 		m.latest_running_time, m.latest_running_status, m.create_time, m.update_time
 		from tb_mr_task m,tb_task_queue q
 		where m.id = q.mr_task_id and m.flag=0 and q.has_processed=#{has_processed,jdbcType=INTEGER}
+		order by q.id desc
 		limit #{offset,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
 	</select>
 	<select id="findCountByToRun" resultType="Integer">

@@ -33,15 +33,15 @@ public class StageServiceImpl implements StageService {
 
 //表预警
 	@Override
-	public List<Stage> queryStageByTableType(Integer tableType,Integer fromRowId,Integer num) {
-		List<Stage> lists =mapper.queryStageByTableType(tableType,fromRowId,num);
+	public List<Stage> queryStageByTableType(Integer tableType,Integer offset,Integer limit) {
+		List<Stage> lists =mapper.queryStageByTableType(tableType,offset,limit);
 		return lists;
 	}
 
 
 	@Override
-	public List<Stage> queryStageByTableId(Integer import_table_id,	Integer fromRowId, Integer num) {
-		return mapper.queryStageByTableId(import_table_id, fromRowId, num);
+	public List<Stage> queryStageByTableId(Integer import_table_id,	Integer offset, Integer limit) {
+		return mapper.queryStageByTableId(import_table_id, offset, limit);
 	}
 
 

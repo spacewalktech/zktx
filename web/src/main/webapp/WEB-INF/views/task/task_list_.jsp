@@ -13,7 +13,7 @@ $("#btn_add").bind('click' , function(){
 	  shadeClose: true,
 	  shade: 0.2,
 	  area: ['65%', '60%'],
-	  content: 'mrTask/addPage'
+	  content: 'mrTask/addPage.do'
 	}); 
 })	
 
@@ -25,7 +25,7 @@ function upd_task(id){
 	  shadeClose: true,
 	  shade: 0.2,
 	  area: ['65%', '60%'],
-	  content: 'mrTask/updatePage?id='+id
+	  content: 'mrTask/updatePage.do?id='+id
 	}); 
 }
 
@@ -37,7 +37,7 @@ function del_task(id){
 	}, function(){
 	    $.ajax({
 			type : 'post',
-			url : 'mrTask/deleteByid',
+			url : 'mrTask/deleteByid.do',
 			data : {
 			    id : id
 			},
@@ -60,7 +60,7 @@ function show_task_queue(id){
 	  shadeClose: true,
 	  shade: 0.2,
 	  area: ['65%', '50%'],
-	  content: 'mrTask/addPage' //iframe的url
+	  content: 'mrTask/addPage.do' //iframe的url
 	}); 
 }
 

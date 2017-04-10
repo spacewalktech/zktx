@@ -14,7 +14,7 @@ var TableInit = function() {
 		  shadeClose: true,
 		  shade: 0.2,
 		  area: ['60%', '50%'],
-		  content: 'mrTask/addPage' //iframe的url
+		  content: 'mrTask/addPage.do' //iframe的url
 		}); 
 	})	
 	
@@ -25,7 +25,7 @@ var TableInit = function() {
 		  shadeClose: true,
 		  shade: 0.2,
 		  area: ['60%', '50%'],
-		  content: 'mrTask/addPage' //iframe的url
+		  content: 'mrTask/addPage.do' //iframe的url
 		}); 
 	}
 	

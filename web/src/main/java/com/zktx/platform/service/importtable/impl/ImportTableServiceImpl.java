@@ -1,14 +1,9 @@
 package com.zktx.platform.service.importtable.impl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.zktx.platform.dao.tb.ImportTablesMapper;
-import com.zktx.platform.entity.tb.ImportTables;
 import com.zktx.platform.entity.tb.ImportTablesPo;
 import com.zktx.platform.entity.tb.ImportTablesWithBLOBs;
 import com.zktx.platform.service.importtable.ImportTableService;
@@ -28,7 +23,6 @@ public class ImportTableServiceImpl implements ImportTableService{
 	//分页查询
 	@Override
 	public List<ImportTablesWithBLOBs> findByPagination(ImportTablesPo record) {
-		// TODO Auto-generated method stub.
 		List<ImportTablesWithBLOBs> lists =mapper.findByPagination(record);
 		return lists;
 	}

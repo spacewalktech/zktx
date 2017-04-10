@@ -36,7 +36,7 @@ public class ImportTablesController {
 		}
 		
 	}
-	@RequestMapping("toAddPage")
+	@RequestMapping("/toAddPage.do")
 	public String toAddPage(Integer table_type,ModelMap map){
 		List<String> src_dbList = tableService.findDistintSRCDBType();
 		List<String> dbList = tableService.findDistintDBType();
@@ -51,14 +51,14 @@ public class ImportTablesController {
 		try {
 			Date date = new Date(System.currentTimeMillis());
 			record.setCreate_time(date);
-			int row = tableService.insertSelective(record);
+			tableService.insertSelective(record);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "error";
 		}
 		return "success";
 	}
-	@RequestMapping("toUpdatePage")
+	@RequestMapping("/toUpdatePage.do")
 	public String toUpdatePage(Integer id,ModelMap map){
 		ImportTablesWithBLOBs bloBs = tableService.selectByPrimaryKey(id);
 		List<String> src_dbList = tableService.findDistintSRCDBType();

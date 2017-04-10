@@ -45,7 +45,8 @@
     		and t.table_type =#{table_type,jdbcType=INTEGER}
     	</if>
     </where>
-    limit #{fromRowId,jdbcType=INTEGER} , #{num,jdbcType=INTEGER}
+    order by s.id desc
+    limit #{offset,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
   </select>
   <select id="queryCountByTableType" resultType="java.lang.Integer">
   	select count(*)  from tb_stage s, tb_import_tables t
@@ -63,7 +64,8 @@
     <include refid="Blob_Column_List" />
     from tb_stage
     where import_table_id = #{import_table_id,jdbcType=INTEGER}
-    limit #{fromRowId,jdbcType=INTEGER} , #{num,jdbcType=INTEGER}
+    order by id desc
+    limit #{offset,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
   </select>
   <select id="queryCountByTableId" resultType="java.lang.Integer">
   	select count(*) from tb_stage where import_table_id = #{import_table_id,jdbcType=INTEGER}
