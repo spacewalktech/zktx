@@ -152,10 +152,10 @@ var TableInit = function() {
 					+	'<a class="btn btn-default" href="javascript:void(0);">操作</a>'
 					+	'<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"><span class="caret"></span></a>'
 					+	'<ul class="dropdown-menu">'
-					+      '<li><a href="javascript:void(0);" onclick="tableQuery('+row.id+')">查看表</a></li>'
-					+	   '<li><a href="javascript:void(0);" onclick="tableDefine('+row.id+')">查看表定义</a></li>'
-					+		'<li><a href="javascript:void(0);" onclick="tableUpdate('+row.id+')">编辑</a></li>'
-					+      '<li><a href="javascript:void(0);" onclick="tableDelete('+row.id+')">删除表</a></li>'
+					+      '<li style="height: 20px"><a href="javascript:void(0);" onclick="tableQuery('+row.id+')">查看表</a></li>'
+					+	   '<li style="height: 20px"><a href="javascript:void(0);" onclick="tableDefine('+row.id+')">查看表定义</a></li>'
+					+		'<li style="height: 20px"><a href="javascript:void(0);" onclick="tableUpdate('+row.id+')">编辑</a></li>'
+					+      '<li style="height: 20px"><a href="javascript:void(0);" onclick="tableDelete('+row.id+')">删除表</a></li>'
 					+	'</ul></div>'
 			    }
 			}]
