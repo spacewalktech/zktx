@@ -146,7 +146,7 @@
 		father_select = $("#trigger_db_999").html()
 		
 		$("#file").fileupload({
-		    url: '${root}' + "/mrTask/upload",
+		    url: '${root}' + "/mrTask/upload.do",
 		    done:function(e,result){
 				var file_name = result.result
 		        $("#file_lable").html("<input type='hidden' name='bin_file_uri' id='bin_file_uri' value='" + file_name + "' />" + file_name)
@@ -158,7 +158,7 @@
     function onchange_select(id) {
 		var val = $("#trigger_db_" + id).val()
 		$.ajax({
-			    url : '${root}' + '/mrTask/getTableByDB',
+			    url : '${root}' + '/mrTask/getTableByDB.do',
 			    type : 'post',
 			    data : {
 					dbname : val
@@ -180,7 +180,7 @@
 		var val = $("#trigger_db_999").val()
 		
 		$.ajax({
-		    url : '${root}' + '/mrTask/getTableByDB',
+		    url : '${root}' + '/mrTask/getTableByDB.do',
 		    type : 'post',
 		    data : {
 				dbname : val
@@ -200,7 +200,7 @@
     
 </script>
 <body style='width: 99.5%'>
-	<form class="smart-form" action="mrTask/insertSelective">
+	<form class="smart-form" action="mrTask/insertSelective.do">
 		<fieldset id="div_row_trigger_parent">
 		
 			<div class="row">
@@ -212,16 +212,16 @@
 						<input type="text" placeholder="任务名称" id="name" name="name">
 					</label> 
 				</section>
+				
 				<section class="col col-2 text-right"> 
 					<label class="text">运行文件</label> 
 				</section>
 				<section class="col col-3">
-					<label class="input" id="file_lable">
-						<input type="file" name="file" id="file">
+					<label class="file" id="file_lable">
+						<input type="file" name="file" id="file"  />
 					</label>
 				</section>
 			</div>
-
 			<div class="row">
 				<section class="col col-2 text-right"> 
 					<label class="text">任务描述</label> 

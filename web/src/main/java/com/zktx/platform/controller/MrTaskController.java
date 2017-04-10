@@ -38,7 +38,7 @@ public class MrTaskController {
 	@Autowired
 	MrTaskService mrTaskService;
 
-	@RequestMapping("addPage")
+	@RequestMapping("/addPage.do")
 	public String addPage(HttpServletRequest request) {
 
 		// 查询出数据库与表
@@ -47,7 +47,7 @@ public class MrTaskController {
 		return "task/add";
 	}
 
-	@RequestMapping("updatePage")
+	@RequestMapping("/updatePage.do")
 	public String updatePage(Integer id, HttpServletRequest request) {
 		MrTaskWithBLOBs task = mrTaskService.findById(id);
 		List<String> list = mrTaskService.findDistintDBType();
@@ -60,7 +60,7 @@ public class MrTaskController {
 		return "task/update";
 	}
 
-	@RequestMapping("getTableByDB")
+	@RequestMapping("/getTableByDB.do")
 	@ResponseBody
 	public List<ImportTablesWithBLOBs> getTableByDB(String dbname) {
 		List<ImportTablesWithBLOBs> list = mrTaskService.findTableByDBName(dbname);
@@ -106,7 +106,7 @@ public class MrTaskController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping("/deleteByid")
+	@RequestMapping("/deleteByid.do")
 	@ResponseBody
 	public boolean deleteByPrimaryKey(Integer id) {
 		try {
@@ -118,7 +118,7 @@ public class MrTaskController {
 		return false;
 	}
 
-	@RequestMapping("deleteQueueByid")
+	@RequestMapping("/deleteQueueByid.do")
 	@ResponseBody
 	public boolean deleteQueueByid(Integer id) {
 		try {
@@ -130,7 +130,7 @@ public class MrTaskController {
 		return false;
 	}
 
-	@RequestMapping("upload")
+	@RequestMapping("/upload.do")
 	@ResponseBody
 	public String upload(MultipartFile file, HttpServletRequest request) {
 		try {
@@ -186,7 +186,6 @@ public class MrTaskController {
 		try {
 			List<MrTaskWithBLOBs> list = mrTaskService.findByProper(offset, limit);
 			int count = mrTaskService.findCountByPagination(0, null, null, null, null, null, null);
-			System.out.println(count+","+list.size());
 			Map<String, Object> map = new HashMap<>();
 			map.put("total", count);
 			map.put("rows", list);

@@ -1,6 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page language="java" contentType="text/html; charset=UTF-8"   pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
 <html>
 <head>
 <title>添加任务</title>
@@ -144,29 +144,14 @@
 
 					<!-- row -->
 					<div class="row">
-						<article class="col-sm-12">
-							<!-- new widget -->
-							<div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
-								
-								<div class="widget-body no-padding bordertop">
-									<!-- content -->
-									
-									<div id="dt_basic_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+									<div id="content">
 									<table id="dt_basic">
 
 									</table>
 									</div>
 									
-									
-									<!-- end content -->
-								</div>
-
-						
-								<!-- end widget div -->
-							</div>
 							<!-- end widget -->
 
-						</article>
 					</div>
 					
 					<!-- end row -->

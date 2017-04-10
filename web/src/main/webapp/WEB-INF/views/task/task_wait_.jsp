@@ -12,7 +12,7 @@ $("#task_add").bind('click' , function(){
 	  shadeClose: true,
 	  shade: 0.2,
 	  area: ['60%', '50%'],
-	  content: 'mrTask/addPage' //iframe的url
+	  content: 'mrTask/addPage.do' //iframe的url
 	}); 
 })	
 
@@ -23,7 +23,7 @@ function show_task_queue(id){
 	  shadeClose: true,
 	  shade: 0.2,
 	  area: ['60%', '50%'],
-	  content: 'mrTask/addPage' //iframe的url
+	  content: 'mrTask/addPage.do' //iframe的url
 	}); 
 }
 
@@ -35,7 +35,7 @@ function del_queue(id){
 	}, function(){
 	    $.ajax({
 			type : 'post',
-			url : 'mrTask/deleteQueueByid',
+			url : 'mrTask/deleteQueueByid.do',
 			data : {
 			    id : id
 			},

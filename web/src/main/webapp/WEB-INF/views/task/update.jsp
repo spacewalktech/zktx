@@ -25,7 +25,7 @@
 	   });
 	 
 	    $("#file").fileupload({
-		    url: '${root}' + "/mrTask/upload",
+		    url: '${root}' + "/mrTask/upload.do",
 		    done:function(e,result){
 				var file_name = result.result
 		        $("#file_lable").html("<input type='hidden' name='bin_file_uri' id='bin_file_uri' value='" + file_name + "' />" + file_name)
@@ -124,7 +124,7 @@
 	  function onchange_select(id) {
 			var val = $("#trigger_db_" + id).val()
 			$.ajax({
-				    url : '${root}' + '/mrTask/getTableByDB',
+				    url : '${root}' + '/mrTask/getTableByDB.do',
 				    type : 'post',
 				    data : {
 						dbname : val
@@ -180,7 +180,7 @@
 				+ '</span>'
 				+ '</section>' + '</div>'
 		
-				$("#div_row_trigger_parent").append(str)
+				$("#triger_List").append(str)
 				onchange_select(n);
 			
 	    }
@@ -188,6 +188,7 @@
 	function update_triger(){
 		vartriggleTables = $("#triggle_tables").val();
 		var src =eval('('+vartriggleTables+')');
+		$("#triger_List").empty();
 		$.each(src,function(index,val){
 			$.each(val,function(index_,val_){
 				n=index;
@@ -228,7 +229,7 @@
 					+ '</section>' + '</div>';
 				}
 				
-				$("#div_row_trigger_parent").append(str);
+				$("#triger_List").append(str);
 				$("#trigger_db_"+n).val(sessionStorage.getItem("db_"+index_));
 				$("#trigger_type"+n).val(val_);
 				onchange_select(n);
@@ -256,10 +257,10 @@
 					<label class="text">运行文件</label> 
 				</section>
 				<section class="col col-3"> 
-					<label class="input">
+					<label class="file">
+						<input type="file" placeholder="选择文件" id="file" name="file">
 						<div class="input input-file" id="file_lable">
 							${task.bin_file_uri }
-							<input type="file" placeholder="选择文件" id="file" name="file">
 							<input type="hidden" placeholder="选择文件" id="bin_file_uri" name="bin_file_uri" value="${task.bin_file_uri }">
 						</div>
 					</label> 
@@ -347,6 +348,8 @@
 					<input type="hidden" placeholder="触发条件" id="triggle_tables" value='${task.triggle_tables}'>
 				</label> </section>
 			</div>
+			<DIV id="triger_List">
+			</DIV>
 		</fieldset>
 		<footer>
 		<button type="button" class="btn btn-primary" onclick="subimtForm()">确定</button>
