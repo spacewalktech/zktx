@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" id="extr-page">
 	<head>
@@ -71,7 +72,7 @@
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
 						<div class="well no-padding">
-							<form action="index.do" id="login-form" class="smart-form client-form">
+							<form action="${root}/login" method="post" id="login-form" class="smart-form client-form">
 								<header>
 									登录
 								</header>
@@ -82,16 +83,24 @@
 										<label class="label">用户名</label>
 										<label class="input"> <i class="icon-append fa fa-user"></i>
 											<input type="username" name="username">
-											<b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> Please enter email address/username</b></label>
+											<input type="hidden" name="redirectUrl" value="${redirectUrl }">
+											<b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> 请输入登录名</b></label>
 									</section>
 
 									<section>
 										<label class="label">密码</label>
 										<label class="input"> <i class="icon-append fa fa-lock"></i>
 											<input type="password" name="password">
-											<b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Enter your password</b> </label>
+											<b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> 请输入密码 </b> </label>
 									</section>
-
+									
+									<c:if test="${errorMsg != null }">
+										<section>
+											<label class="label">登录失败
+												<font color="red">${errorMsg}</font>
+											</label>
+										</section>
+									</c:if>
 								</fieldset>
 								<footer>
 									<button type="submit" class="btn btn-primary">
@@ -116,7 +125,7 @@
 					rules : {
 						email : {
 							required : true,
-							email : true
+							email : false
 						},
 						password : {
 							required : true,
@@ -128,11 +137,11 @@
 					// Messages for form validation
 					messages : {
 						email : {
-							required : 'Please enter your email address',
-							email : 'Please enter a VALID email address'
+							required : '请输入邮箱',
+							email : '请输入正确的邮箱'
 						},
 						password : {
-							required : 'Please enter your password'
+							required : '请输入密码'
 						}
 					},
 

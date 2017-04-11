@@ -9,10 +9,23 @@
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="salt" jdbcType="VARCHAR" property="salt" />
     <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="token" jdbcType="VARCHAR" property="token" />
+    <result column="token_invalid_time" jdbcType="VARCHAR" property="token_invalid_time" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, pwd, emial, phone, salt, status
+    id, name, pwd, emial, phone, salt, status, token, token_invalid_time
   </sql>
+  <sql id="Column_without_pwd_List">
+    id, name, emial, phone, status, token, token_invalid_time
+  </sql>
+  <select id="findByToken" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select
+  	<include refid="Column_without_pwd_List" /> 
+  	from tb_user where token = #{token}
+  </select>
+  <update id="updateToken">
+  	update tb_user set token = #{token}, token_invalid_time = #{time} where id = #{id}
+  </update>
   <select id="findByName" parameterType="java.lang.String" resultMap="BaseResultMap">
   	select 
     <include refid="Base_Column_List" />
@@ -32,10 +45,10 @@
   <insert id="insert" parameterType="com.zktx.platform.entity.tb.User">
     insert into tb_user (id, name, pwd, 
       emial, phone, salt, 
-      status)
+      status, token, token_invalid_time)
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, 
       #{emial,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR}, 
-      #{status,jdbcType=TINYINT})
+      #{status,jdbcType=TINYINT}, #{token}, #{token_invalid_time})
   </insert>
   <insert id="insertSelective" parameterType="com.zktx.platform.entity.tb.User">
     insert into tb_user
@@ -61,6 +74,12 @@
       <if test="status != null">
         status,
       </if>
+      <if test="token != null">
+        token,
+      </if>
+      <if test="token_invalid_time != null">
+        token_invalid_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -83,6 +102,12 @@
       </if>
       <if test="status != null">
         #{status,jdbcType=TINYINT},
+      </if>
+      <if test="token != null">
+        #{token},
+      </if>
+      <if test="token_invalid_time != null">
+        #{token_invalid_time},
       </if>
     </trim>
   </insert>
@@ -107,6 +132,12 @@
       <if test="status != null">
         status = #{status,jdbcType=TINYINT},
       </if>
+      <if test="token != null">
+        token = #{token},
+      </if>
+      <if test="token_invalid_time != null">
+        token_invalid_time = #{token_invalid_time},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -117,7 +148,9 @@
       emial = #{emial,jdbcType=VARCHAR},
       phone = #{phone,jdbcType=VARCHAR},
       salt = #{salt,jdbcType=VARCHAR},
-      status = #{status,jdbcType=TINYINT}
+      status = #{status,jdbcType=TINYINT},
+      token = #{token},
+      token_invalid_time = #{token_invalid_time},
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

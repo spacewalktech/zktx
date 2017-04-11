@@ -1,73 +1,96 @@
 package com.zktx.platform.entity.tb;
 
+import java.util.Date;
+
 public class User {
-    private Integer id;
+	private Integer id;
 
-    private String name;
+	private String name;
 
-    private String pwd;
+	private String pwd;
 
-    private String emial;
+	private String emial;
 
-    private String phone;
+	private String phone;
 
-    private String salt;
+	private String salt;
 
-    private Byte status;
+	private Byte status;
 
-    public Integer getId() {
-        return id;
-    }
+	private String token;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	private Date token_invalid_time;
 
-    public String getName() {
-        return name;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public String getPwd() {
-        return pwd;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setPwd(String pwd) {
-        this.pwd = pwd;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getEmial() {
-        return emial;
-    }
+	public String getPwd() {
+		return pwd;
+	}
 
-    public void setEmial(String emial) {
-        this.emial = emial;
-    }
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
 
-    public String getPhone() {
-        return phone;
-    }
+	public String getEmial() {
+		return emial;
+	}
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+	public void setEmial(String emial) {
+		this.emial = emial;
+	}
 
-    public String getSalt() {
-        return salt;
-    }
+	public String getPhone() {
+		return phone;
+	}
 
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
-    public Byte getStatus() {
-        return status;
-    }
+	public String getSalt() {
+		return salt;
+	}
 
-    public void setStatus(Byte status) {
-        this.status = status;
-    }
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
+
+	public Byte getStatus() {
+		return status;
+	}
+
+	public void setStatus(Byte status) {
+		this.status = status;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public Date getToken_invalid_time() {
+		return token_invalid_time;
+	}
+
+	public void setToken_invalid_time(Date token_invalid_time) {
+		this.token_invalid_time = token_invalid_time;
+	}
+
 }

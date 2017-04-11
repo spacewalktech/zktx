@@ -16,6 +16,14 @@
 	
 	<!-- 对静态资源文件的访问 -->
 	<mvc:resources mapping="/resources/**" location="/resources/" />
+	
+	<!-- 自定义拦截器 -->
+	<mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean id="loginInterceptor" class="com.zktx.platform.intercepter.LoginInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
 	<!-- 定义JSP文件的位置 -->
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">

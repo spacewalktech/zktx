@@ -1,5 +1,9 @@
 package com.zktx.platform.dao.tb;
 
+import java.util.Date;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.zktx.platform.entity.tb.User;
 
 public interface UserMapper {
@@ -16,4 +20,8 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
 
 	User findByName(String username);
+
+	void updateToken(@Param("id") Integer id,@Param("token")  String token,@Param("time")  Date date);
+
+	User findByToken(String token);
 }
