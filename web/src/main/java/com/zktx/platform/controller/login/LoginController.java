@@ -23,6 +23,9 @@ public class LoginController {
 	public String login(String username, String password, String redirectUrl, HttpServletRequest request) {
 		try {
 			String msg = userService.login(username, password);
+			
+					int a = 2;
+			
 			if ("SUCCESS".equals(msg)) {
 				request.getSession().setAttribute("userName", username);
 				if (null == redirectUrl || "".equals(redirectUrl)) {

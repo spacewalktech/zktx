@@ -30,7 +30,7 @@ def create_dir(db_name, table_name):
 # 查询出的是我们自己库和表的名称
 def get_table():
     ImportTable = import_tables.ImportTable
-    importtable = db.session.query(ImportTable.dbname, ImportTable.table_name).distinct().all()
+    importtable = db.session.query(ImportTable.dbname, ImportTable.table_name).filter(ImportTable.flag == 0).filter(ImportTable.active == 0).distinct().all()
     return importtable
 
 

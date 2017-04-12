@@ -163,7 +163,7 @@ def do_check_schema(data_path, table_id, stage_id):
 
 def load():
     # 获取数据库中存储的表的信息
-    for table in db.session.query(tb_import_tables.ImportTable).all():
+    for table in db.session.query(tb_import_tables.ImportTable).filter(tb_import_tables.ImportTable.flag == 0).filter(tb_import_tables.ImportTable.active == 0).all():
 
         # 主键，可能是多个，按分号分割的
         src_keys = table.src_keys
@@ -176,7 +176,9 @@ def load():
         keys_array = src_keys.split(";")
 
         # 获取表路径
-        path = prefix + table.src_db + "/" + table.src_table
+        path = prefix + table.dbname + "/" + table.table_name
+
+        this_table_change = False
 
         # -----------------------------------------------------全量-----------------------------------------------------
 
@@ -212,6 +214,8 @@ def load():
 
                 # 将 processing 目录下面的东西移动到 processed目录下
                 shutil.move(processing_path, processed_path)
+
+                this_table_change = True
 
         # -----------------------------------------------------增量-----------------------------------------------------
 
@@ -258,10 +262,12 @@ def load():
                 # 将 processing 目录下面的东西移动到 processed目录下
                 shutil.move(processing_path, processed_path)
 
-        if table.export_to_sql_warehouse == 1:
+                this_table_change = True
+
+        if table.export_to_sql_warehouse == 1 and this_table_change is True:
             trigger_servers.thrift_server(table.id, table.dbname, table.table_name)
 
-        if table.export_to_es_index_warehouse == 1:
+        if table.export_to_es_index_warehouse == 1 and this_table_change is True:
             print "export_to_es_index_warehouse"
 
 

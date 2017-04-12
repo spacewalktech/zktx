@@ -8,12 +8,15 @@ from pyspark.sql.types import *
 from hdfs import *
 from impala.dbapi import connect
 
-# spark = SparkSession.builder.appName(" python test ").config("spark.master", "spark://LZFdeMacBook-Pro.local:7077").config("spark.sql.warehouse.dir", "/opt/spacewalk/data").getOrCreate()
-# schema_str = "usercode,username,comcodetype,companyname,comcode,manorgcode,manorgname,groupusercode,newusercode,idtypecode,idtypename,identifynumber,articlecode,phonenumber,faxnumber,mobilephone,email,postaddress,postcode,remark,tcol1,tcol2,tcol3,tcol4,tcol5,validstatus,flag"
-# fields = [StructField(field_name, StringType(), False) for field_name in schema_str.split(",")]
-# schema_df = StructType(fields)
-# df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load("/Users/lzf/ZKTX/utiisales.txt")
-# df.show()
+spark = SparkSession.builder.appName(" python test ").config("spark.master", "spark://LZFdeMacBook-Pro.local:7077").config("spark.sql.warehouse.dir", "/opt/spacewalk/data").getOrCreate()
+schema_str = "usercode,username,comcodetype,companyname,comcode,manorgcode,manorgname,groupusercode,newusercode,idtypecode,idtypename,identifynumber,articlecode,phonenumber,faxnumber,mobilephone,email,postaddress,postcode,remark,tcol1,tcol2,tcol3,tcol4,tcol5,validstatus,flag"
+fields = [StructField(field_name, StringType(), False) for field_name in schema_str.split(",")]
+schema_df = StructType(fields)
+df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load("/Users/lzf/ZKTX/utiisales.txt")
+df.select("username").limit(10).show()
+df.createOrReplaceTempView("utiisales")
+df2 = spark.sql('select username,comcodetype,companyname,comcode from utiisales limit 10')
+df2.write.format("csv").mode("overwrite").save("/Users/lzf/data/test111.csv")
 
 
 # client = Client('http://hadoop01:50070')

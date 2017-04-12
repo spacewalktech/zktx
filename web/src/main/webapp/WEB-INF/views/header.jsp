@@ -8,7 +8,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="${root }/resources/css/smartadmin-skins.min.css">
 <link rel="stylesheet" type="text/css" media="screen" href="${root }/resources/css/smartadmin-rtl.min.css">
 <link rel="stylesheet" type="text/css" media="screen" href="${root }/resources/css/demo.min.css">
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
 <link rel="apple-touch-icon" href="${root }/resources/img/splash/sptouch-icon-iphone.png">
 <link rel="apple-touch-icon" sizes="76x76" href="${root }/resources/img/splash/touch-icon-ipad.png">
 <link rel="apple-touch-icon" sizes="120x120" href="${root }/resources/img/splash/touch-icon-iphone-retina.png">
@@ -43,15 +42,6 @@
 
 	</style>
 <script data-pace-options='{ "restartOnRequestAfter": true }' src="${root }/resources/js/plugin/pace/pace.min.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-		<script>
-			if (!window.jQuery) {
-				document.write('<script src="${root}/resources/js/libs/jquery-2.1.1.min.js"><\/script>');
-			}
-			if (!window.jQuery.ui) {
-				document.write('<script src="${root}/resources/js/libs/jquery-ui-1.10.3.min.js"><\/script>');
-			}
-</script>
 <script src="${root }/resources/js/jquery.min.js" type="text/javascript"></script>
 <script src="${root }/resources/js/libs/jquery-ui-1.10.3.min.js"></script>
 <script src="${root }/resources/js/jquery.validate.min.js"></script>
