@@ -22,7 +22,7 @@
 		</script>
 	</head>
 	<style type="text/css">
-		.backgroundimg{ background:url(img/login_bg.jpg) no-repeat top left;}
+		.backgroundimg{ background:url('${root}/resources/img/login_bg.jpg') no-repeat top left;}
 		.bgno{ background: none;}
 		.padding-30{ padding: 30px;}
 	</style>
