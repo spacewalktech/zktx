@@ -47,10 +47,10 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="findDistintSRCDBType" resultType="java.lang.String">
-		select distinct src_db from tb_import_tables
+		select distinct src_db from tb_import_tables where flag=0
 	</select>
 	<select id="findDistintDBType" resultType="java.lang.String">
-		select distinct dbname from tb_import_tables
+		select distinct dbname from tb_import_tables where flag =0
 	</select>
 	
 	<select id="queryCountTable" resultType="java.lang.Integer">

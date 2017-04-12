@@ -10,7 +10,7 @@
 function tableQuery(id){
 	layer.open({
 		  type: 2,
-		  title: '查看表',
+		  title: '查看表信息',
 		  shadeClose: true,
 		  shade: 0.8,
 		  area: ['70%', '70%'],
@@ -20,17 +20,17 @@ function tableQuery(id){
 function tableUpdate(id){
 	layer.open({
 		  type: 2,
-		  title: '跟新任务',
+		  title: '更新表信息',
 		  shadeClose: true,
 		  shade: 0.8,
-		  area: ['60%', '90%'],
+		  area: ['60%', '70%'],
 		  content: 'importTables/toUpdatePage.do?id='+id //iframe的url
 		}); 
 }
 function tableDefine(id){
 	layer.open({
 		  type: 2,
-		  title: '表定义',
+		  title: '查看表定义',
 		  shadeClose: true,
 		  shade: 0.8,
 		  area: ['60%', '80%'],
@@ -63,10 +63,10 @@ function tableDelete(id){
 $("#add_table").bind("click",function(){
 	layer.open({
 		  type: 2,
-		  title: '新建任务',
+		  title: '新建表',
 		  shadeClose: true,
 		  shade: 0.8,
-		  area: ['60%', '90%'],
+		  area: ['60%', '70%'],
 		  content: "importTables/toAddPage.do?table_type="+$("#table_type").val()
 		}); 
 });
@@ -148,10 +148,10 @@ var TableInit = function() {
 			},{
 			    title : '操作',
 			    formatter : function(value,row,index){
-					return '<div class="btn-group" style="width: 100px;">'
+					return '<div class="btn-group">'
 					+	'<a class="btn btn-default" href="javascript:void(0);">操作</a>'
 					+	'<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"><span class="caret"></span></a>'
-					+	'<ul class="dropdown-menu">'
+					+	'<ul class="dropdown-menu" >'
 					+      '<li style="height: 20px"><a href="javascript:void(0);" onclick="tableQuery('+row.id+')">查看表</a></li>'
 					+	   '<li style="height: 20px"><a href="javascript:void(0);" onclick="tableDefine('+row.id+')">查看表定义</a></li>'
 					+		'<li style="height: 20px"><a href="javascript:void(0);" onclick="tableUpdate('+row.id+')">编辑</a></li>'
@@ -330,7 +330,7 @@ $(document).ready(function(){
 								创建表
 							</button>
 						</div>
-				<table id="task_list"></table>
+						<table id="task_list"></table>
 			</div>
 			<!-- END MAIN CONTENT -->
 	
