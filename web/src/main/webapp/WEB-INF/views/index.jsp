@@ -3,7 +3,7 @@
 <html lang="en-us">
 	<head>
 		<meta charset="utf-8">
-		<title> 中坤天行数据平台 </title>
+		<title>健康医疗大数据</title>
 		<meta name="description" content="">
 		<meta name="author" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -18,7 +18,7 @@
 		<!-- HEADER -->
 		<header id="header">
 			<div id="logo-group">
-				<span id="titlogo"><img src="${root }/resources/img/log_zhongkun.png" height="32px"/></span>
+				<span id="titlogo">健康医疗大数据</span>
 			</div>
 			<!-- pulled right: nav area -->
 			<div class="pull-right">
@@ -33,7 +33,20 @@
 				<div id="fullscreen" class="btn-header transparent pull-right">
 					<span> <a href="javascript:void(0);" data-action="launchFullscreen" title="Full Screen"><i class="fa fa-arrows-alt"></i></a> </span>
 				</div>
-
+				<div id="" class="btn-header transparent pull-right">
+				<span> <!-- User image size is adjusted inside CSS, it should stay as it --> 
+					
+					<a>
+						<img src="${root}/resources/img/avatars/sunny.png" alt="me" class="online" style="height: 32px"> 
+						<span>
+							admin
+						</span>
+						<!--<i class="fa fa-angle-down"></i>-->
+					</a> 
+					
+				</span>
+			</div>
+				
 			</div>
 
 		</header>
@@ -59,31 +72,40 @@
 			<!-- NAVIGATION : This navigation is also responsive-->
 			<nav>
 				<ul>
-					<li class="open">
-						<a><i class="fa fa-lg fa-fw fa-database"></i> <span class="menu-item-parent">数据管理</span></a>
-						<ul style="display: block;">
+					<li>
+						<a href="javascript:void(0);" onclick="testList('initList')"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">总览</span></a>
+							
+					</li>
+					
+					<li>
+						<a><i class="fa fa-lg fa-fw fa-database"></i> <span class="menu-item-parent">结构化数据管理</span></a>
+						<ul>
 							<li>
 								<a href="javascript:void(0);" onclick="testList('orgTableList')">导入表</a>
 							</li>
-							<li>
-								<a href="javascript:void(0);" onclick="testList('perTableList')">派生表</a>
-							</li>
+							
 							<li>
 								<a href="javascript:void(0);" onclick="testList('orgWarnTable')">导入表预警</a>
 							</li>
-							<li>
-								<a href="javascript:void(0);" onclick="testList('perWarnTable')">派生表预警</a>
-							</li>
+							
 						</ul>
 					</li>
 					<li  class="top-menu-invisible">
-						<a><i class="fa fa-lg fa-fw fa-desktop"></i> <span class="menu-item-parent">任务管理</span></a>
+						<a><i class="fa fa-lg fa-fw fa-picture-o"></i> <span class="menu-item-parent">非结构化数据</span></a>
 						<ul>
-							<li><a href="javascript:void(0);" onclick="testList('mrTaskList')">任务列表</a></li>
-							<li><a href="javascript:void(0);" onclick="testList('mrTaskWait')">待运行任务列表</a></li>
-							<li><a href="javascript:void(0);" onclick="testList('mrTaskError')">任务运行预警</a></li>
+							<li><a href="javascript:void(0);" onclick="testList('healthImg')">医学图像</a></li>
+							<li><a href="javascript:void(0);" onclick="testList('uploadRcord')">批量上传记录</a></li>
+							<li><a href="javascript:void(0);" onclick="testList('inlineIdentify')">非结构化数据在线识别</a></li>
+							<li><a href="javascript:void(0);" onclick="testList('annotationList')">已识别非结构化数据</a></li>
 						</ul>	
 					</li>
+					<li  class="top-menu-invisible">
+						<a href="javascript:void(0);" onclick="testList('sysSet')"><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent">系统设置</span></a>
+					</li>
+					<li  class="top-menu-invisible">
+						<a href="javascript:void(0);" onclick="testList('logList')"><i class="fa fa-lg fa-fw fa-list-alt"></i> <span class="menu-item-parent">日志管理</span></a>
+					</li>
+					
 				</ul>
 			</nav>	
 
@@ -109,7 +131,7 @@
 				$("#content_").load(index+".do");
 			}
 			$(document).ready(function(){
-				$("#content_").load('orgTableList.do');
+				$("#content_").load('initList.do');
 			});
 		</script>
 	</body>

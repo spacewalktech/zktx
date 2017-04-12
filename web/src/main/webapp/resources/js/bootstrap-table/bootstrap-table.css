@@ -22,8 +22,8 @@
 }
 
 .fixed-table-body {
-    overflow-x: auto;
-    overflow-y: auto;
+    overflow-x: inherit;
+    overflow-y: inherit;
 }
 
 .fixed-table-container table {
