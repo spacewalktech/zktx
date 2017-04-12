@@ -70,7 +70,6 @@ $("#add_table").bind("click",function(){
 		  content: "importTables/toAddPage.do?table_type="+$("#table_type").val()
 		}); 
 });
-
 var TableInit = function() {
 	var oTableInit = new Object();
 	//初始化Table
@@ -187,24 +186,6 @@ function doSubmit(){
 $(document).ready(function(){
 	var oTable = new TableInit();
 	oTable.Init();
-	Date.prototype.format =function(format){
-		var o = {
-			"M+" : this.getMonth()+1, //month
-			"d+" : this.getDate(), //day
-			"h+" : this.getHours(), //hour
-			"m+" : this.getMinutes(), //minute
-			"s+" : this.getSeconds(), //second
-			"q+" : Math.floor((this.getMonth()+3)/3), //quarter
-			"S" : this.getMilliseconds() //millisecond
-		}
-		if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
-		(this.getFullYear()+"").substr(4- RegExp.$1.length));
-		for(var k in o)if(new RegExp("("+ k +")").test(format))
-		format = format.replace(RegExp.$1,
-		RegExp.$1.length==1? o[k] :
-		("00"+ o[k]).substr((""+ o[k]).length));
-		return format;
-	}
 	$("#create_time_from").datetimepicker({
 	    format: 'YYYY-MM-DD HH:mm:ss',
 	    locale:  'zh-cn'
@@ -330,7 +311,7 @@ $(document).ready(function(){
 								创建表
 							</button>
 						</div>
-						<table id="task_list"></table>
+						<table id="task_list" class="table-responsive"></table>
 			</div>
 			<!-- END MAIN CONTENT -->
 	
