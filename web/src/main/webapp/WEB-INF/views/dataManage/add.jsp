@@ -15,7 +15,22 @@
 		});
 	});
 	function doSubmit(){
-		$("#smartForm").validate();
+		var src_keys =$("#src_keys").val();
+		if(null == src_keys || src_keys.length == 0){
+		    layer.msg("源表的unique键不能为空！")
+		    return
+		}
+		var  src_db_version =$("#src_db_version").val();
+		if(null == src_db_version || src_db_version.length == 0){
+		    layer.msg("源库版本不能为空！")
+		    return
+		}
+		var v =$("input[name='export_to_es_index_warehouse']:checked").val();
+		var es_index_schema =$("#es_index_schema").val();
+		if(v==1&&(null==es_index_schema||es_index_schema.length==0)){
+			layer.msg("es索引设置json格式不能为空！")
+		    return
+		}
 		var data ={src_table:$("#src_table").val(),src_db:$("#src_db").val(),table_name:$("#table_name").val(),dbname:$("#dbname").val()};
 		$.post("queryCountTable.do",data,function(msg){
 			if(msg>0){
@@ -180,6 +195,13 @@
 						</label>
 					</div>
 				</section>
+				<section class="col col-2 text-right">
+				<label class="text">源表的unique键</label></section>
+				<section class="col col-4">
+				<label class="input"><input type="text" placeholder="源表的unique键，可能多个   key1;key2;" id="src_keys" name="src_keys"></label></section>
+			
+			</div>
+			<div class="row">
 				<div id="index_div" style="display: none;">
 					<section class="col col-2 text-right">
 				<label class="text">es索引设置json格式</label></section>
