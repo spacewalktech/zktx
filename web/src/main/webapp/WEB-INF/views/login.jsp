@@ -3,7 +3,7 @@
 <html lang="en-us" id="extr-page">
 	<head>
 		<meta charset="utf-8">
-		<title>中坤天行数据平台</title>
+		<title>健康医疗大数据</title>
 		<meta name="description" content="">
 		<meta name="author" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -30,7 +30,7 @@
 		<header id="header">
 
 			<div id="logo-group">
-				<span id="logo"><img src="${root }/resources/img/logo.png" /></span>
+				<span id="titlogo">健康医疗大数据</span>
 			</div>
 
 		</header>

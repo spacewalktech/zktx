@@ -117,7 +117,7 @@
 	<body class="style='width: 99.5%'">
 			<div id="content">
 				<input id="table_id" type="hidden" name="table_id" value="${table_id }" />
-					<table id="task_list_"></table>
+				<table id="task_list_"></table>
 			</div>
 
 	</body>

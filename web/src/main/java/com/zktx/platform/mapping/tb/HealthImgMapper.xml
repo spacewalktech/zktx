@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktx.platform.dao.tb.HealthImgMapper">
+
+	<select id="queryCount" resultType="java.lang.Integer">
+		select count(*) from jkx_health_img
+	</select>
+	
+	<select id="queryList" resultType="com.zktx.platform.entity.tb.HealthImg">
+		select * from jkx_health_img limit #{offset,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
+	</select>
+  	<insert id="insert" parameterType="com.zktx.platform.entity.tb.HealthImg">
+  		insert into jkx_health_img
+  		<trim prefix="(" suffix=")" suffixOverrides=",">
+  			<if test="guid!=null">
+  				guid,
+  			</if>
+  			<if test="uri!=null">
+  				uri,
+  			</if>
+  			<if test="type!=null">
+  				type,
+  			</if>
+  			<if test="size!=null">
+  				size,
+  			</if>
+  			<if test="upload_time!=null">
+  				upload_time,
+  			</if>
+  			<if test="bus_sys!=null">
+  				bus_sys,
+  			</if>
+  		</trim>
+  		<trim prefix="values (" suffix=")" suffixOverrides=",">
+  			<if test="guid!=null">
+  				#{guid,jdbcType=VARCHAR},
+  			</if>
+  			<if test="uri!=null">
+  				#{uri,jdbcType=VARCHAR},
+  			</if>
+  			<if test="type!=null">
+  				#{type,jdbcType=BIT},
+  			</if>
+  			<if test="size!=null">
+  				#{size,jdbcType=INTEGER},
+  			</if>
+  			<if test="upload_time!=null">
+  				#{upload_time,jdbcType=TIMESTAMP},
+  			</if>
+  			<if test="bus_sys!=null">
+  				#{bus_sys,jdbcType=VARCHAR},
+  			</if>
+  		</trim>
+  	</insert>
+</mapper>

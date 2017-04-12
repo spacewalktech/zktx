@@ -1,7 +1,6 @@
 <link href="${root }/resources/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="${root }/resources/js/bootstrap-table/bootstrap-table.css">
 <link href="${root }/resources/css/home.css" rel="stylesheet">
-<link rel="stylesheet" type="text/css" media="screen" href="${root }/resources/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" media="screen" href="${root }/resources/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" media="screen" href="${root }/resources/css/smartadmin-production-plugins.min.css">
 <link rel="stylesheet" type="text/css" media="screen" href="${root }/resources/css/smartadmin-production.min.css">
@@ -29,7 +28,7 @@
 		  .table>thead>tr>th {vertical-align: inherit;}
 		 #ico{font-size: 4em;padding-bottom: 15px;}
 		.fontsize{ display: block; float: left;; line-height: 24px;font-size: 16px; padding-left: 5px;}
-		 .fontsize i{ font-size: 1.8em; font-style: normal;}
+		 .fontsize i{ font-size: 1.5em; font-style: normal;}
 		 .numcon{border-top: 1px solid #ccc!important; }
 		 .numcon i{ display: block; float: left; }
 		 .widget-body.no-padding { margin: 0;}
@@ -68,5 +67,35 @@
 <script src="${root }/resources/js/moment.js" type="text/javascript"></script>
 <script src="${root }/resources/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="${root }/resources/js/jquery.fileupload.js"></script>
-<script src="${root }/resources/js/bootstrap-table/bootstrap-table.js" type="text/javascript"></script><script src="${root }/resources/js/bootstrap-table/bootstrap-table-zh-CN.js" type="text/javascript"></script>
+<script src="${root }/resources/js/bootstrap-table/bootstrap-table.js" type="text/javascript"></script>
+<script src="${root }/resources/js/bootstrap-table/bootstrap-table-zh-CN.js" type="text/javascript"></script>
+
+<script src="${root }/resources/js/echarts2/echarts.js"></script>  
+<script src="${root }/resources/js/echarts2/dark.js"></script>  
+<script src="${root }/resources/js/echarts2/echarts.min.js"></script>  
+<script src="${root }/resources/js/echarts2/macarons.js"></script>  
+<script src="${root }/resources/js/echarts2/roma.js"></script>  
+<script src="${root }/resources/js/echarts2/shine.js"></script>  
+<script src="${root }/resources/js/echarts2/vintage.js"></script>  
+<script type="text/javascript">
+Date.prototype.format =function(format){
+	var o = {
+		"M+" : this.getMonth()+1, //month
+		"d+" : this.getDate(), //day
+		"h+" : this.getHours(), //hour
+		"m+" : this.getMinutes(), //minute
+		"s+" : this.getSeconds(), //second
+		"q+" : Math.floor((this.getMonth()+3)/3), //quarter
+		"S" : this.getMilliseconds() //millisecond
+	}
+	if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
+	(this.getFullYear()+"").substr(4- RegExp.$1.length));
+	for(var k in o)if(new RegExp("("+ k +")").test(format))
+	format = format.replace(RegExp.$1,
+	RegExp.$1.length==1? o[k] :
+	("00"+ o[k]).substr((""+ o[k]).length));
+	return format;
+}
+</script>
+
 		
