@@ -9,7 +9,10 @@
 <script type="text/javascript">
 	
 	$(document).ready(function(){
-		
+		$("[name='export_to_es_index_warehouse']").bind('change',function(){
+			var val =this.value
+			$("#index_div").css('display',(val==0?'none':'block'));
+		});
 	});
 	function doSubmit(){
 		$("#smartForm").validate();
@@ -56,10 +59,10 @@
 		<input id="creator_id" name="creator_id" value="1" type="hidden">
 		<fieldset>
 			<div class="row">
-				<section class="col col-1 text-right">
+				<section class="col col-2 text-right">
 					<label class="text">源库</label>
 				</section>
-				<section class="col col-5"> 
+				<section class="col col-4"> 
 					<label class="input">
 						<input type="text" list="list_src_db"  id="src_db" name="src_db" /> 
 						<datalist id="list_src_db">
@@ -71,18 +74,18 @@
 					</label>
 				</section>
 				
-				<section class="col col-1 text-right">
+				<section class="col col-2 text-right">
 					<label class="text">源表</label>
 				</section>
-				<section class="col col-5"> 
+				<section class="col col-4"> 
 					<label class="input"><input type="text" placeholder="表名" id="src_table" name="src_table">
 					</label>
 				</section>
 				
-				<section class="col col-1 text-right">
+				<section class="col col-2 text-right">
 					<label class="text">库名</label>
 				</section>
-				<section class="col col-5">
+				<section class="col col-4">
 					<label class="input">
 						<input type="text" list="list_dbname"  id="dbname" name="dbname"/> 
 						<datalist id="list_dbname">
@@ -94,17 +97,17 @@
 					</label>
 				</section>
 				
-				<section class="col col-1 text-right">
+				<section class="col col-2 text-right">
 					<label class="text">表名</label>
 				</section>
-				<section class="col col-5">
+				<section class="col col-4">
 					<label class="input"><input type="text" placeholder="表名" id="table_name" name="table_name">
 					</label>
 				</section>
 				
-				<section class="col col-1 text-right">
+				<section class="col col-2 text-right">
 				<label class="text">源库类型</label></section>
-				<section class="col col-5"> 
+				<section class="col col-4"> 
 					<label class="select">
 						<select id="src_db_type" name="src_db_type">
 							<option value="Oracle">Oracle</option>
@@ -118,10 +121,10 @@
 						<i></i>
 					</label> 
 				</section>
-				<section class="col col-1 text-right">
+				<section class="col col-2 text-right">
 					<label class="text">是否激活</label>
 				</section>
-				<section class="col col-5">
+				<section class="col col-4">
 
 				<div class="inline-group">
 						<label class="radio">
@@ -138,10 +141,52 @@
 				</section>
 			</div>
 			<div class="row">
-				<section class="col col-1 text-right">
+				<section class="col col-2 text-right">
 				<label class="text">源库版本</label></section>
-				<section class="col col-5">
+				<section class="col col-4">
 				<label class="input"><input type="text" placeholder="源库版本"	id="src_db_version" name="src_db_version"  class="{required:true}"></label></section>
+			
+				<section class="col col-2 text-right">
+				<label class="text">是否同步到数据仓库</label></section>
+				<section class="col col-4">
+					<div class="inline-group">
+						<label class="radio">
+							<input type="radio" name="export_to_sql_warehouse" value="0" checked>
+							<i></i>
+							不同步
+						</label>
+						<label class="radio">
+							<input type="radio" name="export_to_sql_warehouse" value="1">
+							<i></i>
+							同步
+						</label>
+					</div>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-2 text-right">
+				<label class="text">是否同步到ES索引</label></section>
+				<section class="col col-4">
+					<div class="inline-group">
+						<label class="radio">
+							<input type="radio" name="export_to_es_index_warehouse" value="0" checked>
+							<i></i>
+							不同步
+						</label>
+						<label class="radio">
+							<input type="radio" name="export_to_es_index_warehouse" value="1">
+							<i></i>
+							同步
+						</label>
+					</div>
+				</section>
+				<div id="index_div" style="display: none;">
+					<section class="col col-2 text-right">
+				<label class="text">es索引设置json格式</label></section>
+				<section class="col col-4">
+				<label class="input"><input type="text" placeholder="es索引设置json格式" id="es_index_schema" name="es_index_schema"></label></section>
+			
+				</div>
 			</div>
 		</fieldset>
 		<footer>
