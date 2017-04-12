@@ -136,22 +136,10 @@
 					</label> 
 				</section>
 				<section class="col col-2 text-right">
-				<label class="text">是否激活</label></section>
+				<label class="text">源表的unique键</label></section>
 				<section class="col col-4">
-				
-				<div class="inline-group">
-						<label class="radio">
-							<input type="radio" name="active" value="0" <c:if test='${bloBs.active == false }'>checked</c:if> >
-							<i></i>
-							是
-						</label>
-						<label class="radio">
-							<input type="radio" name="active" value="1" <c:if test='${bloBs.active == true }'>checked</c:if> >
-							<i></i>
-							否
-						</label>
-					</div>
-				</section>
+				<label class="input"><input type="text" placeholder="源表的unique键，可能多个   key1;key2;" id="src_keys" name="src_keys" value="${bloBs.src_keys }"></label></section>
+			
 			</div>
 			<div class="row">
 				<section class="col col-2 text-right">
@@ -194,16 +182,28 @@
 					</div>
 				</section>
 				<section class="col col-2 text-right">
-				<label class="text">源表的unique键</label></section>
+				<label class="text">是否激活</label></section>
 				<section class="col col-4">
-				<label class="input"><input type="text" placeholder="源表的unique键，可能多个   key1;key2;" id="src_keys" name="src_keys" value="${bloBs.src_keys }"></label></section>
-			
+				
+				<div class="inline-group">
+						<label class="radio">
+							<input type="radio" name="active" value="0" <c:if test='${bloBs.active == false }'>checked</c:if> >
+							<i></i>
+							是
+						</label>
+						<label class="radio">
+							<input type="radio" name="active" value="1" <c:if test='${bloBs.active == true }'>checked</c:if> >
+							<i></i>
+							否
+						</label>
+					</div>
+				</section>
 			</div>
 			<div class="row">
 				<div id="index_div">
 					<section class="col col-2 text-right">
 				<label class="text">es索引设置json格式</label></section>
-				<section class="col col-4">
+				<section class="col col-10">
 				<label class="input"><input type="text" placeholder="es索引设置json格式" id="es_index_schema" name="es_index_schema" value="${bloBs.es_index_schema }"></label></section>
 			
 				</div>
