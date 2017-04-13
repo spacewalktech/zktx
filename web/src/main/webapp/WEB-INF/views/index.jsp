@@ -3,7 +3,7 @@
 <html lang="en-us">
 	<head>
 		<meta charset="utf-8">
-		<title>健康医疗大数据</title>
+		<title>健康医疗保险大数据</title>
 		<meta name="description" content="">
 		<meta name="author" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -18,7 +18,7 @@
 		<!-- HEADER -->
 		<header id="header">
 			<div id="logo-group">
-				<span id="titlogo">健康医疗大数据</span>
+				<span id="titlogo" style="height: 32px;font-size: 22px">健康医疗保险大数据</span>
 			</div>
 			<!-- pulled right: nav area -->
 			<div class="pull-right">
@@ -93,10 +93,12 @@
 					<li  class="top-menu-invisible">
 						<a><i class="fa fa-lg fa-fw fa-picture-o"></i> <span class="menu-item-parent">非结构化数据</span></a>
 						<ul>
-							<li><a href="javascript:void(0);" onclick="testList('healthImg')">医学图像</a></li>
+							
 							<li><a href="javascript:void(0);" onclick="testList('uploadRcord')">批量上传记录</a></li>
-							<li><a href="javascript:void(0);" onclick="testList('inlineIdentify')">非结构化数据在线识别</a></li>
 							<li><a href="javascript:void(0);" onclick="testList('annotationList')">已识别非结构化数据</a></li>
+							<li><a href="javascript:void(0);" onclick="testList('healthImg')">医学图像</a></li>
+							<li><a href="javascript:void(0);" onclick="testList('inlineIdentify')">非结构化数据在线识别</a></li>
+							
 						</ul>	
 					</li>
 					<li  class="top-menu-invisible">
@@ -104,6 +106,12 @@
 					</li>
 					<li  class="top-menu-invisible">
 						<a href="javascript:void(0);" onclick="testList('logList')"><i class="fa fa-lg fa-fw fa-list-alt"></i> <span class="menu-item-parent">日志管理</span></a>
+					</li>
+					<li  class="top-menu-invisible">
+						<a href="javascript:void(0);" onclick="testList('userList')"><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent">用户管理</span></a>
+					</li>
+					<li  class="top-menu-invisible">
+						<a href="javascript:void(0);" onclick=""><i class="fa fa-lg fa-fw fa-list-alt"></i> <span class="menu-item-parent">慢病模型</span></a>
 					</li>
 					
 				</ul>

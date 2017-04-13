@@ -10,24 +10,7 @@
 			$(document).ready(function(){
 				var oTable = new TableInit();
 				oTable.Init();
-				Date.prototype.format =function(format){
-					var o = {
-						"M+" : this.getMonth()+1, //month
-						"d+" : this.getDate(), //day
-						"h+" : this.getHours(), //hour
-						"m+" : this.getMinutes(), //minute
-						"s+" : this.getSeconds(), //second
-						"q+" : Math.floor((this.getMonth()+3)/3), //quarter
-						"S" : this.getMilliseconds() //millisecond
-					}
-					if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
-					(this.getFullYear()+"").substr(4- RegExp.$1.length));
-					for(var k in o)if(new RegExp("("+ k +")").test(format))
-					format = format.replace(RegExp.$1,
-					RegExp.$1.length==1? o[k] :
-					("00"+ o[k]).substr((""+ o[k]).length));
-					return format;
-				}
+				
 			});
 			var TableInit = function() {
 				var oTableInit = new Object();
@@ -40,7 +23,7 @@
 						striped : true, //是否显示行间隔色
 						cache : false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
 						pagination : true, //是否显示分页（*）
-						sortable : false, //是否启用排序
+						sortable : true, //是否启用排序
 						sortOrder : "asc", //排序方式
 						queryParams : oTableInit.queryParams,//传递参数（*）
 						sidePagination : "server", //分页方式：client客户端分页，server服务端分页（*）
@@ -48,7 +31,7 @@
 						pageSize : 10, //每页的记录行数（*）
 						pageList : [ 10, 25, 50, 100 ], //可供选择的每页的行数（*）
 						search : false, //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
-						strictSearch : true,
+						smartDisplay:false,//分页完全显示
 						showColumns : true, //是否显示所有的列
 						showRefresh : true, //是否显示刷新按钮
 						minimumCountColumns : 2, //最少允许的列数
@@ -58,7 +41,13 @@
 						showToggle : true, //是否显示详细视图和列表视图的切换按钮
 						cardView : false, //是否显示详细视图
 						detailView : false, //是否显示父子表
-						columns : [{
+						columns : [{  
+						    field: 'Number',  
+						    title: '序号',  
+						    formatter: function (value, row, index) {  
+						    return index+1;  
+						    }  
+						} ,{
 							field : 'stage_id',
 							title : 'STAGE_ID'
 						},{

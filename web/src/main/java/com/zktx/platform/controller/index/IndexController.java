@@ -105,4 +105,10 @@ public class IndexController {
 		return "/logList";
 	}
 
+	@RequestMapping("/userList.do")
+	public String userList() {
+		System.out.println("userList------");
+		return "/userManager/userList";
+	}
+
 }

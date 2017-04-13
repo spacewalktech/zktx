@@ -3,7 +3,7 @@
 <html lang="en-us" id="extr-page">
 	<head>
 		<meta charset="utf-8">
-		<title>健康医疗大数据</title>
+		<title>健康医疗保险大数据</title>
 		<meta name="description" content="">
 		<meta name="author" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -13,15 +13,10 @@
 		<script type="text/javascript">
 				
 				
-				function doSubmit(){
-					$.post("login/login",$("#login-form").serialize(),function(msg){
-						alert(msg);
-					});	
-				}
 		</script>
 	</head>
 	<style type="text/css">
-		.backgroundimg{ background:url(img/login_bg.jpg) no-repeat top left;}
+		.backgroundimg{ background:url(${root }/resources/img/login_bg.jpg) no-repeat top left;}
 		.bgno{ background: none;}
 		.padding-30{ padding: 30px;}
 	</style>
@@ -30,7 +25,7 @@
 		<header id="header">
 
 			<div id="logo-group">
-				<span id="titlogo">健康医疗大数据</span>
+				<span id="titlogo">健康医疗保险大数据</span>
 			</div>
 
 		</header>
@@ -71,7 +66,7 @@
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
 						<div class="well no-padding">
-							<form action="index.do" id="login-form" class="smart-form client-form">
+							<form action="index.do" method="post" id="login-form" class="smart-form client-form">
 								<header>
 									登录
 								</header>
@@ -81,15 +76,15 @@
 									<section>
 										<label class="label">用户名</label>
 										<label class="input"> <i class="icon-append fa fa-user"></i>
-											<input type="username" name="username">
-											<b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> Please enter email address/username</b></label>
+											<input type="email" name="username">
+											<b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> 请输入邮箱地址或用户名</b></label>
 									</section>
 
 									<section>
 										<label class="label">密码</label>
 										<label class="input"> <i class="icon-append fa fa-lock"></i>
 											<input type="password" name="password">
-											<b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Enter your password</b> </label>
+											<b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> 请输入密码</b> </label>
 									</section>
 
 								</fieldset>
@@ -116,7 +111,7 @@
 					rules : {
 						email : {
 							required : true,
-							email : true
+							email : false
 						},
 						password : {
 							required : true,
@@ -128,11 +123,11 @@
 					// Messages for form validation
 					messages : {
 						email : {
-							required : 'Please enter your email address',
-							email : 'Please enter a VALID email address'
+							required : '请输入你的邮箱',
+							email : '请输入有效的邮件地址'
 						},
 						password : {
-							required : 'Please enter your password'
+							required : '请输入密码'
 						}
 					},
 
