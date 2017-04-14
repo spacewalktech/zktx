@@ -10,6 +10,10 @@ import merge, common.config.config as config, common.util.util as util
 import create_dir
 import trigger_servers
 from sqlalchemy import desc
+import sys
+
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 setting = None
 
@@ -207,7 +211,7 @@ def load():
                 stageid = create_stage(table.id, "full")
 
                 # 全量更新
-                count_info = merge.merge(processing_path, "full", table.src_db, table.src_table, keys_array, schema_str, stageid)
+                count_info = merge.merge(processing_path, "full", table.dbname, table.table_name, keys_array, schema_str, stageid)
 
                 # 更新此次录入的数据信息,只插入count的信息就行了
                 do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), record_num=count_info.get("record_num"))
@@ -244,10 +248,11 @@ def load():
                 # 检查schema文件是否一致
                 flag = do_check_schema(processing_path, table.id, stageid)
                 if flag == False:
+                    print 'schema is not same as old !'
                     break
 
                 # 增量更新
-                count_info = merge.merge(processing_path, "incremental", table.src_db, table.src_table, keys_array, flag, stageid)
+                count_info = merge.merge(processing_path, "incremental", table.dbname, table.table_name, keys_array, flag, stageid)
 
                 # 更新此次录入的数据信息,只插入count的信息就行了
                 do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), updated_num=count_info.get("updated_num"), deleted_num=count_info.get("deleted_num"), record_num=count_info.get("record_num"))
@@ -265,6 +270,7 @@ def load():
                 this_table_change = True
 
         if table.export_to_sql_warehouse == 1 and this_table_change is True:
+            print '--->begin export to thrift server '
             trigger_servers.thrift_server(table.id, table.dbname, table.table_name)
 
         if table.export_to_es_index_warehouse == 1 and this_table_change is True:
