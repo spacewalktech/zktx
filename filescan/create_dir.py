@@ -40,6 +40,3 @@ def load():
         dbname = i[0]
         table_name = i[1]
         create_dir(dbname, table_name)
-
-
-load()
