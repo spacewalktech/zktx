@@ -8,17 +8,14 @@ from pyspark.sql.types import *
 from hdfs import *
 from impala.dbapi import connect
 
-spark = SparkSession.builder.appName(" python test ").config("spark.master", "spark://LZFdeMacBook-Pro.local:7077").config("spark.sql.warehouse.dir", "/opt/spacewalk/data").getOrCreate()
-schema_str = "usercode,username,comcodetype,companyname,comcode,manorgcode,manorgname,groupusercode,newusercode,idtypecode,idtypename,identifynumber,articlecode,phonenumber,faxnumber,mobilephone,email,postaddress,postcode,remark,tcol1,tcol2,tcol3,tcol4,tcol5,validstatus,flag"
-fields = [StructField(field_name, StringType(), False) for field_name in schema_str.split(",")]
-schema_df = StructType(fields)
-df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load("/Users/lzf/ZKTX/utiisales.txt")
-df.select("username").limit(10).show()
-df.createOrReplaceTempView("utiisales")
-df2 = spark.sql('select username,comcodetype,companyname,comcode from utiisales limit 10')
-df2.write.format("csv").mode("overwrite").save("/Users/lzf/data/test111.csv")
-
-
+spark = SparkSession.builder.appName(" python test ").config("spark.master", "yarn").config("spark.sql.warehouse.dir", "hdfs://hadoop01:9000/user/spark-with-hive/warehouse").getOrCreate()
+# schema_str = "usercode,username,comcodetype,companyname,comcode,manorgcode,manorgname,groupusercode,newusercode,idtypecode,idtypename,identifynumber,articlecode,phonenumber,faxnumber,mobilephone,email,postaddress,postcode,remark,tcol1,tcol2,tcol3,tcol4,tcol5,validstatus,flag,resvd_stage_id,resvd_flag,resvd_create_time,resvd_latest_update_time"
+# fields = [StructField(field_name, StringType(), False) for field_name in schema_str.split(",")]
+# schema_df = StructType(fields)
+# df = spark.read.format('json').schema(schema_df).load("hdfs://hadoop01:9000/spacewalk/hdfs/parquet_file/spark/utiisales.json")
+# df.filter("resvd_flag = 1").limit(10).show()
+df = spark.read.load('/spacewalk/hdfs/parquet_file/spark/utiisales.parquet')
+df.filter('resvd_flag = 1').show()
 # client = Client('http://hadoop01:50070')
 # print(client.list('/'))
 
