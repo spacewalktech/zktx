@@ -11,13 +11,13 @@ class Logger(object):
         logger.setLevel(logging.DEBUG)
         formatter = logging.Formatter('%(asctime)s %(levelname)s:%(name)s %(message)s')
         if not logger.handlers:
-            if not os.path.exists(config.LOGGING_DIR):
-                os.mkdir(config.LOGGING_DIR, 0o755)
-            file_name = os.path.join(config.LOGGING_DIR, '%s.log' % name)
+            if not os.path.exists(config.logging_dir):
+                os.mkdir(config.logging_dir, 0o755)
+            file_name = os.path.join(config.logging_dir, '%s.log' % name)
             handler = logging.FileHandler(file_name)
             handler.setFormatter(formatter)
             logger.addHandler(handler)
-        if config.LOGGING_STDOUT:
+        if config.logging_stdout:
             stdHanddler = logging.StreamHandler(sys.stdout)
             stdHanddler.setFormatter(formatter)
             logger.addHandler(stdHanddler)

@@ -33,7 +33,10 @@ pro_path = {
     # warehouse的位置
     "spark_warehouse": "hdfs://spacewalk/spacewalk/hdfs/ware_house"
 }
-LOGGING_DIR = "../logs"
-LOGGING_STDOUT = True
+logging_dir = "../logs"
+logging_stdout = True
 stage_scan_interval = 600
 task_queue_scan_interval = 600
+
+# es服务列表
+es_hosts = ["192.168.56.101:9200"]
