@@ -3,8 +3,21 @@
 
 import common.dao.table_schema as tb_table_schema
 import common.db.db_config as db
+from pyspark.sql import SparkSession
 import json
+import common.config.config as common_config, common.util.util as common_util
 from impala.dbapi import connect
+from es.es_client import ESClient
+
+env = common_util.get_param("env")
+
+if env == "pro":
+    setting = common_config.pro_path
+else:
+    setting = common_config.dev_path
+
+# 存放parquet文件的地址
+parquet_path = setting.get("parquet_path")
 
 
 def get_cursor():
@@ -36,6 +49,16 @@ def get_parquet_sql(schema, db_name, table_name):
     return sql
 
 
+def es_server(table_id, db_name, table_name):
+    spark = SparkSession.builder.appName(" python update table [ " + db_name + "_" + table_name + " ]") \
+        .config("spark.master", "yarn") \
+        .config("spark.sql.warehouse.dir", "hdfs://hadoop01:9000/user/spark-with-hive/warehouse").getOrCreate()
+    path = parquet_path + db_name + "/" + table_name + ".json"
+    df = spark.read.json(path)
+    esClient = ESClient(index="db_people", type="tb_people")
+    esClient.writeDF2ES(df)
+
+
 def thrift_server(table_id, db_name, table_name):
     try:
         # 获取schema
@@ -61,7 +84,8 @@ def thrift_server(table_id, db_name, table_name):
     except Exception, e:
         print e
 
+
 def load():
     thrift_server(1, 'spark', 'utiisales')
 
-#load()
+# load()
