@@ -31,7 +31,10 @@ pro_path = {
     # master 的地址
     "spark_master_ip": "yarn"
 }
-LOGGING_DIR = "../logs"
-LOGGING_STDOUT = True
+logging_dir = "../logs"
+logging_stdout = True
 stage_scan_interval = 600
 task_queue_scan_interval = 600
+
+# es服务列表
+es_hosts = ["192.168.56.101:9200"]
