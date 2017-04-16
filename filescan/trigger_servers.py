@@ -61,7 +61,7 @@ def thrift_server(table_id, db_name, table_name):
     except Exception, e:
         print e
 
-        # def load():
-        # thrift_server(1, 'spark', 'utiisales')
+def load():
+    thrift_server(1, 'spark', 'utiisales')
 
-# load()
+#load()

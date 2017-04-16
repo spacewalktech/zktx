@@ -1,282 +1,280 @@
 # -*- coding: utf-8 -*-：
-# 文件扫描程序
+# 合并上传完成的文件
 
-import common.dao.import_tables as tb_import_tables
-import common.dao.table_schema as tb_table_schema
-import common.db.db_config as db
-from common.dao.import_tables import Stage
-import os, re, shutil, json, time
-import merge, common.config.config as config, common.util.util as util
-import create_dir
-import trigger_servers
-from sqlalchemy import desc
-import sys
-
-reload(sys)
-sys.setdefaultencoding("utf-8")
+import os
+import time
+import common.config.config as common_config, common.util.util as common_util
+from pyspark.sql import SparkSession
+from pyspark.sql.types import *
+from hdfs import *
 
 setting = None
 
-env = util.get_param("env")
+env = common_util.get_param("env")
 
 if env == "pro":
-    setting = config.pro_path
+    setting = common_config.pro_path
 else:
-    setting = config.dev_path
+    setting = common_config.dev_path
 
-# 系统配置的前缀
-prefix = setting.get("prefix")
+# master 的地址
+spark_master_ip = setting.get("spark_master_ip")
+
+# parquet文件的隐藏列
+hidden_colum = "resvd_stage_id,resvd_flag,resvd_create_time,resvd_latest_update_time"
+
+# 隐藏列数组
+hidden_colum_array = ["resvd_stage_id", "resvd_flag", "resvd_create_time", "resvd_latest_update_time"]
 
 # 存放parquet文件的地址
 parquet_path = setting.get("parquet_path")
-
-pattern = re.compile(r'^\d{8}_\d{2}_\d{2}_\d{2}$')
 
 
 # 获取当前的时间
 def get_time_format():
     return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 
+# 更新parquet文件
+def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage_id):
+    # 多个键位的联合主键
+    union_key = "concat(" + ",_,".join(keys_array) + ") as union_key ,"
+    print '--->table union_key is : ' + union_key
+    # 用来记录更新的数据信息
+    count_info = {}
 
-# 判断目录中文件是否上传完成
-def upload_completed(file_path):
-    if "upload_completed" in '|'.join(os.listdir(file_path)):
-        return True
-    return False
+    # 启动spark任务
+    spark = SparkSession.builder.appName(" python update table [ " + src_db + "_" + src_table + " ]").config("spark.master", spark_master_ip).config("spark.sql.warehouse.dir", "hdfs://hadoop01:9000/user/spark-with-hive/warehouse").getOrCreate()
 
+    # 表的schema
+    schema_string = schema_str + "," + hidden_colum
 
-# 获取删除标志
-def get_delete_flag(id, str):
-    if str is None:
-        return 0
-    if id in str:
-        return 1
-    return 0
+    # 构建DF的schema
+    fields = [StructField(field_name, StringType(), False) for field_name in schema_str.split(",")]
+    schema_df = StructType(fields)
 
+    # hdfs的client
+    client = Client('http://hadoop01:50070')
 
-# 转换类型 TODO
-def get_stand_type(old_type):
-    if "char" in old_type:
-        return "string"
-    return old_type
+    # 全量更新
+    if data_type == "full":
 
+        # 如果是正式环境需要从hdfs上读取
+        df = None
+        print '-----------------开始全量更新--------------------' + get_time_format()
+        if env == "pro":
+            # 将文件加载到hdfs上   /opt/spacewalk/data/orgin_file/test_db/test_table/processing/20170901_12_09_30
+            hdfs_path = '/spacewalk/hdfs/orgin_file/' + src_db + '/' + src_table
+            # 修改path，开始读取
+            try:
+                print '--->开始创建hdfs文件夹'
+                client.makedirs(hdfs_path)
+                print '--->开始上传源文件到hdfs目录'
+                client.upload(hdfs_path, data_path)
+                print '--->上传完成'
+            except Exception, e:
+                print '--->上传异常，开始采用覆盖模式'
+                client.upload(hdfs_path, data_path, overwrite=True)
+            # 读取数据
+            print '--->开始读取hdfs上源文件'
+            df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(hdfs_path + data_path.split('processing')[1] + "/data_full.txt")
+        else:
+            df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(data_path + "/data_full.txt")
 
-# 获取schema描述
-def get_schema(schema_path):
-    file_object = open(schema_path + "/schema.json")
-    schema_str = ""
-    try:
-        for line in file_object.readlines():
-            schema_str += line.strip("\n")
-    finally:
-        file_object.close()
-    return schema_str
+        count = df.count()
+        print '--->从hdfs上读取到的数据的记录数为 : ' + str(count)
+        # 创建4个隐藏列
+        print '--->开始创建隐藏列'
+        hidden_cloum = [(stage_id, 0, get_time_format(), get_time_format())]
+        hidden_df = spark.createDataFrame(hidden_cloum, hidden_colum_array)
 
+        # 创建新的datafeame
+        print '--->开始创建带有隐藏列的DataFrame'
+        new_data = df.crossJoin(hidden_df)
 
-# 获取schema的string
-def get_schema_str(schema_str):
-    schema = json.loads(schema_str)
-    array = []
-    for i in schema.get("schema"):
-        array.append(i.get("name"))
-    return ",".join(array)
+        # 需要对列进行排序，不然会按照schema的字典顺序排列
+        new_data.createOrReplaceTempView(src_db + "_" + src_table + "_temp")
+        new_schema_org_df = spark.sql("select " + schema_string + " from " + src_db + "_" + src_table + "_temp")
 
+        # 写成parquet文件
+        print "--->准备将DataFrame写成pqrquet文件,文件路径 : " + parquet_path + src_db + "/" + src_table + ".parquet"
+        new_schema_org_df.write.format("parquet").mode("overwrite").save(parquet_path + src_db + "/" + src_table + ".parquet")
+        print "--->准备将DataFrame写成json文件,文件路径 : " + parquet_path + src_db + "/" + src_table + ".json"
+        new_schema_org_df.write.format("json").mode("overwrite").save(parquet_path + src_db + "/" + src_table + ".json")
+        print '--->写成文件成功'
+        if env == "pro":
+            # 删除hdfs临时目录
+            client.delete('/spacewalk/hdfs/orgin_file/' + src_db + "/" + src_table, recursive=True)
 
-# 处理schema
-def do_schema(schema_path, id):
-    # 没对应的schema信息就添加，有的话就把version+1
-    schema_str = get_schema(schema_path)
-    TableSchema = tb_table_schema.TableSchema
-    schema = db.session.query(TableSchema).filter_by(table_id=id).first()
-
-    if schema is None:
-        schema = TableSchema()
-        schema.table_id = id
-        schema.version = 1
-        schema.schema = schema_str
-        schema.create_time = get_time_format()
-        schema.update_time = get_time_format()
-        db.session.add(schema)
+        # 返回统计信息
+        count_info["inserted_num"] = count
+        count_info["record_num"] = count
+        print '---------------------全量更新完成,全量更新数目 : ' + str(count) + '-----------------' + get_time_format()
+        return count_info
+    # 增量更新
     else:
-        schema.version = int(schema.version) + 1
-        schema.schema = schema_str
-        schema.update_time = get_time_format()
-    db.session.commit()
+        print '----------------开始进行增量更新-------------------' + get_time_format()
+        # 加载原有parquet文件
+        org_parquet_df = spark.read.load(parquet_path + src_db + "/" + src_table + ".parquet", format='parquet')
+        print '--->源文件加载完毕,源文件记录数 ：' + str(org_parquet_df.count())
+        # 创建表
+        org_parquet_df.createOrReplaceTempView(src_db + "_" + src_table)
 
-    return get_schema_str(schema_str)
+        # 创建带有唯一列的dataframe
+        org_parquet_df = spark.sql(" select " + union_key + schema_string + " from " + src_db + "_" + src_table)
 
+        # 修改和添加的 dataframe
+        update_df = None
 
-# 修改stage信息
-def do_stage(stage_id, table_id, import_type="full", inserted_num=0, updated_num=0, deleted_num=0, record_num=0):
-    StagePoJo = Stage
-    table_stage = db.session.query(StagePoJo).filter_by(id=stage_id).first()
-    table_stage.inserted_num = 0 if inserted_num is None else inserted_num
-    table_stage.updated_num = 0 if updated_num is None else updated_num
-    table_stage.deleted_num = 0 if deleted_num is None else deleted_num
-    table_stage.record_num = 0 if record_num is None else record_num
-    db.session.commit()
+        # 用来记录变化的数据的主键，如果是联合的主键需要转化
+        id_arry = []
 
+        # 更新的数量
+        update_count = 0
 
-# 先创建stage_id
-def create_stage(table_id, import_type):
-    # 查询出最新一条stage信息
-    StagePoJo = Stage
-    table_stage = db.session.query(StagePoJo).filter_by(import_table_id=table_id).order_by(desc(StagePoJo.id)).first()
+        # 添加的数量
+        insert_count = 0
+        print '--->开始创建隐藏列'
+        # 构建额外的4个隐藏字段dataframe : resvd_stage_id,resvd_flag,resvd_create_time,resvd_latest_update_time
+        hidden_cloum = [(stage_id, 0, get_time_format(), get_time_format())]
+        hidden_df = spark.createDataFrame(hidden_cloum, hidden_colum_array)
 
-    # 添加stage判断为空和上一次的stage_id
-    new_stage = StagePoJo()
-    new_stage.import_table_id = table_id
-    new_stage.import_type = 0 if import_type == "full" else 1
-    new_stage.inserted_num = 0
-    new_stage.updated_num = 0
-    new_stage.deleted_num = 0
-    new_stage.record_num = 0
-    new_stage.create_time = get_time_format()
-    new_stage.update_time = get_time_format()
-    new_stage.process_status = 0
-    if table_stage is None:
-        new_stage.stage_id = 1
-    else:
-        new_stage.stage_id = table_stage.stage_id + 1
-    db.session.add(new_stage)
-    db.session.commit()
-    return new_stage.id
+        fields = [StructField(field_name, StringType(), False) for field_name in schema_str.split(",")]
+        schema_df = StructType(fields)
 
+        # 有 data_insert_updated.txt 文件
+        if os.path.exists(data_path + "/data_insert_updated.txt"):
+            print "--->开始增量更新"
+            if env == "pro":
+                # 将文件加载到hdfs上   /opt/spacewalk/data/orgin_file/test_db/test_table/processing/20170901_12_09_30
+                hdfs_path = '/spacewalk/hdfs/orgin_file/' + src_db + '/' + src_table
+                # 修改path，开始读取
+                try:
+                    print '--->开始创建hdfs目录'
+                    client.makedirs(hdfs_path)
+                    print '--->开始上传源数据文件到hdfs'
+                    client.upload(hdfs_path, data_path)
+                    print '--->上传完成'
+                except Exception, e:
+                    print '--->上传异常,开始采用覆盖模式'
+                    client.upload(hdfs_path, data_path, overwrite=True)
+                # 读取数据
+                print '--->开始读取hdfs上的源文件'
+                update_df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(hdfs_path + data_path.split('processing')[1] + "/data_insert_updated.txt")
+            else:
+                update_df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(data_path + "/data_insert_updated.txt")
 
-# 更新数据的时候检查表的schema信息是不是一致
-def do_check_schema(data_path, table_id, stage_id):
-    # 获取上传的目录里面的schame
-    schema_str = get_schema(data_path)
+            # 总的数量
+            update_insert_count = update_df.count()
+            print '--->此次增量更新的数据总量为 : ' + str(update_insert_count)
+            # 创建表
+            update_df.createOrReplaceTempView(src_db + "_" + src_table + "_insert_update")
 
-    # 查询数据库存的schema
-    TableSchema = tb_table_schema.TableSchema
-    schema = db.session.query(TableSchema).filter_by(table_id=table_id).first()
+            # 创建带有唯一列的dataframe
+            print '--->开始创建带有唯一列的DataFrame'
+            update_df = spark.sql(" select " + union_key + schema_str + " from " + src_db + "_" + src_table + "_insert_update")
 
-    # 做对比，schema与数据库存的schema信息不一致，记录信息
-    if schema.schema != schema_str:
-        Stage = Stage
-        new_stage = db.session.query(Stage).filter_by(id=stage_id).first()
-        new_stage.status = 1
-        new_stage.fail_info = "增量更新时发现schema不一致"
-        new_stage.update_time = get_time_format()
-        db.session.commit()
-        return False
+            # 构造逗号分割的主键串
+            ids = update_df.select("union_key").collect()
+            for delete_id in ids:
+                id_arry.append("'" + str(delete_id.union_key) + "'")
+            update_ids = ",".join(id_arry)
 
-    return get_schema_str(schema_str)
+            # 查询在源数据里面的数据个数
+            update_count = org_parquet_df.filter("union_key in (" + update_ids + ")").count()
+            print '--->更新的数据数量 : ' + str(update_count)
+            # 减去得到添加的数据个数
+            insert_count = update_insert_count - update_count
+            print '--->添加的数据数量 : ' + str(insert_count)
+            # 构建带有隐藏列的df
+            print '--->开始构建带有隐藏列的DataFrame'
+            update_df = update_df.crossJoin(hidden_df)
 
+        # 删除的 dataframe
+        delete_df = None
 
-def load():
-    # 获取数据库中存储的表的信息
-    for table in db.session.query(tb_import_tables.ImportTable).filter(tb_import_tables.ImportTable.flag == 0).filter(tb_import_tables.ImportTable.active == 0).all():
+        # 删除的数据的个数
+        delete_count = 0
 
-        # 主键，可能是多个，按分号分割的
-        src_keys = table.src_keys
+        # 构建额外的4个隐藏字段
+        hidden_cloum = [(stage_id, 1, get_time_format(), get_time_format())]
+        hidden_df = spark.createDataFrame(hidden_cloum, hidden_colum_array)
 
-        # 需要去掉字段结尾的分号
-        if src_keys.endswith(";"):
-            src_keys = str[0:(len(src_keys) - 1)]
+        # 有 data_deleted.txt 文件
+        if os.path.exists(data_path + "/data_deleted.txt"):
+            print '--->开始删除的更新'
+            if env == "pro":
+                # 将文件加载到hdfs上   /opt/spacewalk/data/orgin_file/test_db/test_table/processing/20170901_12_09_30
+                hdfs_path = '/spacewalk/hdfs/orgin_file/' + src_db + '/' + src_table
+                # 修改path，开始读取
+                try:
+                    print '--->开始创建hdfs目录'
+                    client.makedirs(hdfs_path)
+                    print '--->开始上传删除数据的源文件到hdfs'
+                    client.upload(hdfs_path, data_path)
+                except Exception, e:
+                    print '--->上传失败。开始覆盖操作'
+                    client.upload(hdfs_path, data_path, overwrite=True)
+                # 读取数据
+                print '--->开始加载源文件'
+                delete_df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(hdfs_path + data_path.split('processing')[1] + "/data_deleted.txt")
+            else:
+                delete_df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(data_path + "/data_deleted.txt")
 
-        # 主键列,可能是多个列合并成主键列
-        keys_array = src_keys.split(";")
+            # 构建多个unique的列
+            delete_df.createOrReplaceTempView(src_db + "_" + src_table + "_delete")
 
-        # 获取表路径
-        path = prefix + table.dbname + "/" + table.table_name
+            # 创建带有唯一列的dataframe
+            print '--->开始创建带有唯一列的Dataframe'
+            delete_df = spark.sql(" select " + union_key + schema_str + " from " + src_db + "_" + src_table + "_delete")
 
-        this_table_change = False
+            # 删除的数据数量
+            delete_count = delete_df.count()
+            print '--->删除的数量 : ' + str(delete_count)
+            # 将id主键放入变化数据数组
+            ids = delete_df.select("union_key").collect()
+            for delete_id in ids:
+                id_arry.append("'" + delete_id.union_key + "'")
 
-        # -----------------------------------------------------全量-----------------------------------------------------
+            # 构建带有隐藏列的df
+            delete_df = delete_df.crossJoin(hidden_df)
 
-        #  获取full下面文件名
-        full_files = os.listdir(path + "/full")
+        # 获取没有变化的源dataframe concat(newusercode) as union_key
+        print '--->开始创建没有修改和删除记录的干净DataFrame'
+        clean_org_df = org_parquet_df.filter("union_key not in (" + ",".join(id_arry) + ")")
 
-        # 遍历每个文件夹
-        for full_file_name in full_files:
+        # 将修改的和删除的dataframe append到源数据dataframe上去
+        end_df = clean_org_df
+        print '--->开始将修改增加或删除的DataFrame union 在一起'
+        if update_df is not None:
+            end_df = end_df.union(update_df)
 
-            full_path = path + "/full/" + full_file_name
+        if delete_df is not None:
+            end_df = end_df.union(delete_df)
 
-            if pattern.match(full_file_name) and upload_completed(full_path):
-                # peocessing路径
-                processing_path = path + "/processing/" + full_file_name
+        # 写入到指定的文件位置
+        end_df.createOrReplaceTempView(src_db + "_" + src_table + "_temp")
+        new_schema_org_df = spark.sql("select " + schema_string + " from " + src_db + "_" + src_table + "_temp")
 
-                # processed路径
-                processed_path = path + "/processed/" + full_file_name
+        if env == 'pro':
+            print '--->开始将DataFrame写成temp文件'
+            new_schema_org_df.write.format("parquet").mode("overwrite").save(parquet_path + src_db + "/" + src_table + "_temp.parquet")
+            print '--->开始将DataFrame写成json文件'
+            new_schema_org_df.write.format("json").mode("overwrite").save(parquet_path + src_db + "/" + src_table + ".json")
 
-                # 转移文件
-                shutil.move(full_path, processing_path)
+            # 删除hdfs上原有数据
+            print '--->删除hdfs上原有的文件'
+            client.delete('/spacewalk/hdfs/parquet_file/' + src_db + "/" + src_table + ".parquet", recursive=True)
 
-                # 更新schema文件
-                schema_str = do_schema(processing_path, table.id)
+            # 将temp文件改名为正式文件
+            print '--->将temp文件命名为正式文件'
+            client.rename('/spacewalk/hdfs/parquet_file/' + src_db + "/" + src_table + "_temp.parquet", '/spacewalk/hdfs/parquet_file/' + src_db + "/" + src_table + ".parquet")
+        else:
+            new_schema_org_df.write.format("parquet").mode("overwrite").save(parquet_path + src_db + "/" + src_table + "_temp.parquet")
 
-                # 先创建stage_id
-                stageid = create_stage(table.id, "full")
+        # 返回统计信息
+        count_info["inserted_num"] = insert_count
+        count_info["updated_num"] = update_count
+        count_info["deleted_num"] = delete_count
+        count_info["record_num"] = insert_count + update_count + delete_count
 
-                # 全量更新
-                count_info = merge.merge(processing_path, "full", table.dbname, table.table_name, keys_array, schema_str, stageid)
-
-                # 更新此次录入的数据信息,只插入count的信息就行了
-                do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), record_num=count_info.get("record_num"))
-
-                # 将 processing 目录下面的东西移动到 processed目录下
-                shutil.move(processing_path, processed_path)
-
-                this_table_change = True
-
-        # -----------------------------------------------------增量-----------------------------------------------------
-
-        # 获取incremental下面的文件名称
-        full_files = os.listdir(path + "/incremental")
-
-        # 遍历文件家
-        for full_file_name in full_files:
-
-            full_path = path + "/incremental/" + full_file_name
-
-            if pattern.match(full_file_name) and upload_completed(full_path):
-
-                # processing路径
-                processing_path = path + "/processing/" + full_file_name
-
-                # processed路径
-                processed_path = path + "/processed/" + full_file_name
-
-                # 转移文件
-                shutil.move(full_path, processing_path)
-
-                # 先创建stage_id
-                stageid = create_stage(table.id, "incremental")
-
-                # 检查schema文件是否一致
-                flag = do_check_schema(processing_path, table.id, stageid)
-                if flag == False:
-                    print 'schema is not same as old !'
-                    break
-
-                # 增量更新
-                count_info = merge.merge(processing_path, "incremental", table.dbname, table.table_name, keys_array, flag, stageid)
-
-                # 更新此次录入的数据信息,只插入count的信息就行了
-                do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), updated_num=count_info.get("updated_num"), deleted_num=count_info.get("deleted_num"), record_num=count_info.get("record_num"))
-
-                # 将旧文件移除
-                if env != 'pro':
-                    shutil.rmtree(parquet_path + table.src_db + "/" + table.src_table + ".parquet")
-
-                    # 把新生成的 temp 文件 命名为正式文件
-                    os.rename(parquet_path + table.src_db + "/" + table.src_table + "_temp.parquet", parquet_path + table.src_db + "/" + table.src_table + ".parquet")
-
-                # 将 processing 目录下面的东西移动到 processed目录下
-                shutil.move(processing_path, processed_path)
-
-                this_table_change = True
-
-        if table.export_to_sql_warehouse == 1 and this_table_change is True:
-            print '--->begin export to thrift server '
-            trigger_servers.thrift_server(table.id, table.dbname, table.table_name)
-
-        if table.export_to_es_index_warehouse == 1 and this_table_change is True:
-            print "export_to_es_index_warehouse"
-
-
-while True:
-    load()
-    time.sleep(60 * 10)
+        return count_info
