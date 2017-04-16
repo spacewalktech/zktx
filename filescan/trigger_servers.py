@@ -26,6 +26,12 @@ def get_cursor():
     return cur
 
 
+def get_hive_cursor():
+    conn = connect(host='hadoop01', port=10001, auth_mechanism='PLAIN', user='hadoop', password='hadoop')
+    cur = conn.cursor()
+    return cur
+
+
 def get_schema(table_id):
     TableSchema = tb_table_schema.TableSchema
     schema = db.session.query(TableSchema).filter_by(table_id=table_id).first()
@@ -57,6 +63,32 @@ def es_server(table_id, db_name, table_name):
     df = spark.read.json(path)
     esClient = ESClient(index="db_people", type="tb_people")
     esClient.writeDF2ES(df)
+
+
+def hive_server(table_id, db_name, table_name):
+    try:
+        # 获取schema
+        schema = get_schema(table_id)
+        # 获取建表语句
+        sql = get_create_sql(schema.schema, db_name, table_name)
+        # 获取连接
+        cur = get_hive_cursor()
+        # 需要创建数据库
+        cur.execute('create database if not exists ' + db_name)
+        # 移除以前的旧表
+        cur.execute('drop table if exists ' + db_name + '.' + table_name + '_text')
+        # 创建外表
+        cur.execute(sql)
+        # 移除以前的parquet表
+        cur.execute('drop table if exists ' + db_name + '.' + table_name)
+        # 获取parquet表语句
+        sql = get_parquet_sql(schema.schema, db_name, table_name)
+        # 创建parquet表
+        cur.execute(sql)
+        # 移除text表
+        cur.execute('drop table if exists ' + db_name + '.' + table_name + '_text')
+    except Exception, e:
+        print e
 
 
 def thrift_server(table_id, db_name, table_name):
