@@ -18,6 +18,12 @@
   <sql id="Column_without_pwd_List">
     id, name, emial, phone, status, token, token_invalid_time
   </sql>
+  
+  <select id="findSSOAuthorityNumByUid" resultType="java.lang.Integer">
+	select sum(c.code) from tb_user a , tb_system_user_role b , tb_system_role c where a.id = b.uid and b.sys_role_id = c.id and a.id = #{uid} 
+	and c.system_id = #{system_id}
+  </select>
+  
   <select id="findByToken" parameterType="java.lang.String" resultMap="BaseResultMap">
   	select
   	<include refid="Column_without_pwd_List" /> 
