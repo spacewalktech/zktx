@@ -11,7 +11,7 @@ prefix = None
 env = util.get_param("env")
 
 if env == "pro":
-    prefix = "/opt/spacewalk/data/orgin_file/"
+    prefix = "/data/spacewalk/origin_file/"
 else:
     prefix = "/Users/lzf/data/"
 
@@ -40,3 +40,5 @@ def load():
         dbname = i[0]
         table_name = i[1]
         create_dir(dbname, table_name)
+
+load()

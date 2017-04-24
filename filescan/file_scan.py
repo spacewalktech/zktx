@@ -154,7 +154,6 @@ def do_check_schema(data_path, table_id, stage_id):
 
     # 做对比，schema与数据库存的schema信息不一致，记录信息
     if schema.schema != schema_str:
-        Stage = Stage
         new_stage = db.session.query(Stage).filter_by(id=stage_id).first()
         new_stage.status = 1
         new_stage.fail_info = "增量更新时发现schema不一致"
@@ -278,5 +277,7 @@ def load():
 
 
 while True:
+    print '--->开始此次扫描 : ' + get_time_format()
     load()
+    print '--->扫描完成 : ' + get_time_format()
     time.sleep(60 * 10)

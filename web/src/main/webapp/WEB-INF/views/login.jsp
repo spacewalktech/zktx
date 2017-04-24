@@ -72,7 +72,7 @@
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
 						<div class="well no-padding">
-							<form action="index.do” method="post" id="login-form" class="smart-form client-form">
+							<form action="${root }/login" method="post" id="login-form" class="smart-form client-form">
 								<header>
 									登录
 								</header>
