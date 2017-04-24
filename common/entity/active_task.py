@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-：
+# -*- coding: utf-8 -*-:
 class ActiveTask(object):
     def __init__(self, mr_task=None):
         if mr_task:
@@ -6,6 +6,7 @@ class ActiveTask(object):
             self.name = mr_task.name
             self.information = mr_task.information
             self.bin_file_uri = mr_task.bin_file_uri
+            self.has_derivative_table = mr_task.has_derivative_table
             self.type = mr_task.type
             self.export_dir_uri = mr_task.export_dir_uri
             self.priority = mr_task.priority
@@ -16,6 +17,7 @@ class ActiveTask(object):
             self.name = None
             self.information = None
             self.bin_file_uri = None
+            self.has_derivative_table = None
             self.type = None
             self.export_dir_uri = None
             self.priority = None

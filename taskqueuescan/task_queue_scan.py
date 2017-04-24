@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-：
+# -*- coding: utf-8 -*-:
 from common.db.db_config import session as sess
 from common.dao.mr_task import TaskQueue
 from common.entity.active_task import ActiveTask

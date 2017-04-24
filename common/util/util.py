@@ -1,10 +1,12 @@
-# -*- coding: utf-8 -*-：
+# -*- coding: utf-8 -*-:
 # 工具类
 
 import sys
 import json
+import subprocess
 from common.entity.triggle_cond import TriggleCond
 from common.entity.stage_to_process import StageToProcess
+from common.config import config
 
 def get_param(param_name=None):
     if (param_name == None):
@@ -49,3 +51,35 @@ def object_list_to_str(object_list):
         ret_str = "%s, %s" % (ret_str, obj)
     ret_str += "]"
     return ret_str
+
+class HDFSUtil(object):
+    def __init__(self, hdfs_bin=None):
+        if hdfs_bin == None:
+            if not config.hadoop_home:
+                raise RuntimeError("spark_home must be specified in config")
+            self.hdfs_bin = config.hadoop_home + "/bin/hdfs"
+
+    def copyMRResults2Local(self, src_path, dest_path):
+        cmd_exec = CommandExecutor(self.hdfs_bin, "dfs", "-getmerge", src_path, dest_path)
+        cmd_exec.execute()
+
+    def upload2HDFS(self, src_path, dest_path):
+        cmd_exec = CommandExecutor(self.hdfs_bin, "dfs", "-put", src_path, dest_path)
+        cmd_exec.execute()
+
+class CommandExecutor(object):
+
+    def __init__(self, bin_file, *args):
+        self.bin_file = bin_file
+        self.args = args
+
+    def execute(self):
+        cmd_with_args = [self.bin_file]
+        for arg in self.args:
+            cmd_with_args.append(arg)
+        try:
+            subprocess.call(cmd_with_args)
+        except:
+            self.logger.info("exec cmd: %s Error", cmd_with_args)
+            raise
+        return 0

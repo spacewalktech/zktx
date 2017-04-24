@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-：
+# -*- coding: utf-8 -*-:
 # 文件扫描程序
 
 import common.dao.import_tables as tb_import_tables

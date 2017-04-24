@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-：
+# -*- coding: utf-8 -*-:
 from sqlalchemy import desc
 
 from common.dao.mr_task import MRTask
@@ -187,14 +187,10 @@ class StageScan(object):
         self.logger.info("Begin to _update_stage_to_processed")
         # Get not-processed stages from the bottom of the table
         sq = sess.query(Stage).order_by(desc(Stage.id)).filter(Stage.process_status == 0)
-        print ("sq is: ", sq)
-        print("self.stages is: ", self.stages)
         processed_stages = set()
         for stage in self.stages:
-            print ("stage is: ", stage)
             processed_stages.add(stage.id)
         for s in sq:
-            print ("s is: ",s)
             if s.id in processed_stages:
                 self.logger.debug("Updating stage(stage_id=%s)" % s.id)
                 s.process_status = 1

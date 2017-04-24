@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-：
+# -*- coding: utf-8 -*-:
 
 from sqlalchemy import Column, Integer, TEXT, String, DateTime
 import common.db.db_config as db

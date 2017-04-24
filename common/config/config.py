@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-：
+# -*- coding: utf-8 -*-:
 # 配置信息
 
 mysql_db = {
@@ -28,6 +28,7 @@ pro_path = {
     "prefix": "/data/spacewalk/origin_file/",
     # 存放parquet文件的地址
     "parquet_path": "hdfs://hadoop01:9000/spacewalk/hdfs/parquet_file/",
+    #"parquet_path": "hdfs://192.168.56.101:9000/spacewalk/hdfs/parquet_file/",
     # master 的地址
     "spark_master_ip": "yarn"
 }
@@ -38,3 +39,7 @@ task_queue_scan_interval = 600
 
 # es服务列表
 es_hosts = ["192.168.56.101:9200"]
+
+spark_home = "/opt/spacewalk/spark-with-hive"
+hive_home = "/opt/spacewalk/apache-hive-2.3.0"
+hadoop_home = "/opt/spacewalk/hadoop"

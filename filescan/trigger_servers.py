@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-：
+# -*- coding: utf-8 -*-:
 # 扫描触发 thriftserver服务 ES 服务
 
 import common.dao.table_schema as tb_table_schema
@@ -113,8 +113,8 @@ def thrift_server(table_id, db_name, table_name):
         cur.execute(sql)
         # 移除text表
         cur.execute('drop table if exists ' + db_name + '.' + table_name + '_text')
-    except Exception, e:
-        print e
+    except Exception as e:
+        print (e)
 
 
 def load():

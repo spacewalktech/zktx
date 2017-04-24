@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-：
+# -*- coding: utf-8 -*-:
 # 提供thriftserver的功能
 
 from impala.dbapi import connect
