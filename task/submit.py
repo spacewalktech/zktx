@@ -20,19 +20,19 @@ class Submitter(object):
 
     def __init__(self, spark_submit_bin=None, hive_submit_bin=None):
         self.logger = Logger(self.__class__.__name__).get()
-        if spark_submit_bin == None:
+        if not spark_submit_bin:
             if not config.spark_home:
                 raise RuntimeError("spark_home must be specified in config")
             self.spark_submit_bin = config.spark_home + "/bin/spark-submit"
 
-        if hive_submit_bin == None:
+        if not hive_submit_bin:
             if not config.hive_home:
                 raise RuntimeError("spark_home must be specified in config")
             self.hive_submit_bin = config.hive_home + "/bin/hive"
 
     def submit(self, active_task):
         cmd_exec = None
-        if TASK_TYPE[active_task.task_type] == "HIVE":
+        if TASK_TYPE[active_task.type] == "HIVE":
             cmd_exec = CommandExecutor(self.hive_submit_bin, "-e")
         elif TASK_TYPE[active_task.type] == "SPARK":
             cmd_exec = CommandExecutor(self.spark_submit_bin, active_task.bin_file_uri, active_task.export_dir_uri)

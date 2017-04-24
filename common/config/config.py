@@ -6,7 +6,7 @@ mysql_db = {
     "port": 3306,
     "user": "root",
     "password": "passwd",
-    "db": "zktx_data_platform",
+    "db": "zktx_data_platform_test",
     "driver": "pymysql"
 }
 
@@ -38,7 +38,7 @@ stage_scan_interval = 600
 task_queue_scan_interval = 600
 
 # es服务列表
-es_hosts = ["192.168.56.101:9200"]
+es_hosts = ["hadoop01:9200", "hadoop02:9200", "hadoop03:9200", "hadoop04:9200"]
 
 spark_home = "/opt/spacewalk/spark-with-hive"
 hive_home = "/opt/spacewalk/apache-hive-2.3.0"
