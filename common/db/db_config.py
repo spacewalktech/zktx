@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-：
+# -*- coding: utf-8 -*-:
 # 数据库连接
 
 from sqlalchemy import create_engine

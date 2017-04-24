@@ -1,5 +1,5 @@
 #!/usr/local/bin/python2.7
-# -*- coding: utf-8 -*-：
+# -*- coding: utf-8 -*-:
 
 from sqlalchemy import Column, Integer, TEXT, DateTime, ForeignKey
 import common.db.db_config as db

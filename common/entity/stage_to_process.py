@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-：
+# -*- coding: utf-8 -*-:
 class StageToProcess(object):
     def __init__(self, table_id, stage_begin, stage_end):
         self.table_id = table_id

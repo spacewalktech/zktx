@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-：
+# -*- coding: utf-8 -*-:
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, ForeignKey
@@ -14,7 +14,8 @@ CREATE TABLE `tb_mr_task` (
 `name` varchar(50) NULL COMMENT '任务名称',
 `information` varchar(500) NULL COMMENT '任务说明',
 `bin_file_uri` varchar(255) NULL COMMENT '运行表jar、python 文件的位置',
-`type` tinyint(1) NULL COMMENT '是否是逻辑表创建任务（0：是；1：否）',
+`has_derivative_table` tinyint(1) NULL COMMENT '是否是逻辑表创建任务（0：否；1：是）',
+`type` int(11) NULL COMMENT '任务类型(HiveQL还是jar包，0：HiveQL，1：jar包)',
 `export_dir_uri` varchar(50) NULL COMMENT ' 导出文件的位置',
 `priority` int(11) NULL COMMENT '优先级',
 `table_stage_info` longtext NULL COMMENT 'json，需要执行的表的stage信息{“表a”：[1,5],”表b”：[5,7]}',
@@ -40,6 +41,7 @@ class MRTask(Base):
     name = Column('name', VARCHAR(50))
     information = Column('information', VARCHAR(500))
     bin_file_uri = Column('bin_file_uri', VARCHAR(255))
+    has_derivative_table = Column('has_derivative_table', INTEGER(11))
     type = Column('type', TINYINT(1))
     export_dir_uri = Column('export_dir_uri', VARCHAR(50))
     priority = Column('priority', INTEGER(11))

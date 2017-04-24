@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-：
+# -*- coding: utf-8 -*-:
 from common.db.db_config import Base
 from common.db.db_config import engine
 from common.dao.mr_task import MRTask # unsed import for table create

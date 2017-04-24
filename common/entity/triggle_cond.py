@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-：
+# -*- coding: utf-8 -*-:
 class TriggleCond(object):
     def __init__(self, table_id = -1, import_type = -1):
         self.table_id = table_id
