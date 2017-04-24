@@ -27,8 +27,8 @@ pro_path = {
     # 存储源文件的路径前缀
     "prefix": "/data/spacewalk/origin_file/",
     # 存放parquet文件的地址
-    #"parquet_path": "hdfs://hadoop01:9000/spacewalk/hdfs/parquet_file/",
-    "parquet_path": "hdfs://192.168.56.101:9000/spacewalk/hdfs/parquet_file/",
+    "parquet_path": "hdfs://hadoop01:9000/spacewalk/hdfs/parquet_file/",
+    #"parquet_path": "hdfs://192.168.56.101:9000/spacewalk/hdfs/parquet_file/",
     # master 的地址
     "spark_master_ip": "yarn"
 }
