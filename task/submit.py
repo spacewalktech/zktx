@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-:
 
 import subprocess
+import datetime
+from common.util import util
 from common.util.util import CommandExecutor, HDFSUtil
 from common.config import config
 from common.util.logger import Logger
@@ -39,4 +41,24 @@ class Submitter(object):
         cmd_exec.execute()
         if active_task.has_derivative_table:
             hUtil = HDFSUtil()
-            hUtil.copyMRResults2Local(active_task.bin_file_uri, config.pro_path["prefix"])
+            export_files = hUtil.extractFilesFromDir(active_task.export_dir_uri)
+            data_files = hUtil.getFilesBySuffix(export_files, ".parquet").sort()
+            schema_files = hUtil.getFilesBySuffix(export_files, "schema.json").sort()
+            for i in range(len(data_files)):
+                data_file = data_files[i]
+                schema_file = schema_files[i]
+                db_name, tb_name, is_full = hUtil.getExportProperties(data_file)
+                if is_full:
+                    full_str = "full"
+                else:
+                    full_str = "incremental"
+                cur_time = datetime.datetime.now()
+                date_str = util.paddingTimeNum(cur_time.year) + util.paddingTimeNum(cur_time.month) + util.paddingTimeNum(cur_time.day) + "_" \
+                           + util.paddingTimeNum(cur_time.hour) + "_" + util.paddingTimeNum(cur_time.minute) + "_" + util.paddingTimeNum(cur_time.second)
+                dest_dir = config.pro_path["prefix"] + "/" + db_name + "/" + tb_name + "/" + full_str + "/" + date_str
+                data_file_dest = dest_dir  + "/" + "data_full.parquet"
+                schema_file_dest = dest_dir + "/" + "schema.json"
+                hUtil.copyMRResults2Local(data_file, data_file_dest)
+                hUtil.copyMRResults2Local(data_file, schema_file_dest)
+
+

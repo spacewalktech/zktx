@@ -67,6 +67,32 @@ class HDFSUtil(object):
         cmd_exec = CommandExecutor(self.hdfs_bin, "dfs", "-put", src_path, dest_path)
         cmd_exec.execute()
 
+    def extractFilesFromDir(self, dir_path):
+        cmd_exec = CommandExecutor(self.hdfs_bin, "dfs", "-ls", dir_path)
+        output = cmd_exec.execute_output()
+        outputs = output.split("\n")
+        files = []
+        for line in outputs:
+            line_arr = line.split()
+            files.append(line_arr[-1])
+        return files
+
+    def getFilesBySuffix(self, files, suffix):
+        ret_files = []
+        slen = len(suffix)
+        for fname in files:
+            if suffix == fname[-slen:]:
+                ret_files.append(fname)
+        return ret_files
+
+    def getExportProperties(self, data_file):
+        file_name = os.path.basename(data_file)
+        name_splits = file_name.split("--")
+        db_name = name_splits[0]
+        tb_name = name_splits[1]
+        is_full = 1 if name_splits[2] == "full" else 1
+        return db_name, tb_name, is_full
+
 class CommandExecutor(object):
 
     def __init__(self, bin_file, *args):
@@ -85,3 +111,21 @@ class CommandExecutor(object):
             self.logger.info("exec cmd: %s Error", cmd_with_args)
             raise
         return 0
+
+    def execute_output(self):
+        cmd_with_args = [self.bin_file]
+        local_env = os.environ.copy()
+        local_env["SPARK_HOME"] = config.spark_home
+        for arg in self.args:
+            cmd_with_args.append(arg)
+        try:
+            output = subprocess.check_output(cmd_with_args, env=local_env)
+        except:
+            self.logger.info("exec cmd: %s Error", cmd_with_args)
+            raise
+        return output
+
+def paddingTimeNum(num):
+    if num < 10:
+        return "0" + str(num)
+    return str(num)

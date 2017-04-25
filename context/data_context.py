@@ -26,18 +26,18 @@ class DataContext(object):
         if len(sys.argv) < 2:
             raise Exception("Export destination path should be given as an argument")
         export_dir_path = sys.argv[1]
-        export_base_path = export_dir_path + "/" + db_name + "/" + table_name
+        export_base_path = export_dir_path + "/" + db_name + "--" + table_name
         if is_full:
-            export_file_path = export_base_path + "/full/data.parquet"
+            export_file_path = export_base_path + "--full--data.parquet"
         else:
-            export_file_path = export_base_path + "/incremental/data.parquet"
+            export_file_path = export_base_path + "--incremental--data.parquet"
         try:
             df.write.parquet(export_file_path)
         except:
             self.logger.error("Write parquet %s Error" % export_file_path)
             raise
 
-        export_schema_path = export_base_path + "/schema.json"
+        export_schema_path = export_base_path + "--schema.json"
         destSchema = {}
         destSchema["db_type"] = "derivative"
         destSchema["db_version"] = None
