@@ -7,6 +7,7 @@ import subprocess
 from common.entity.triggle_cond import TriggleCond
 from common.entity.stage_to_process import StageToProcess
 from common.config import config
+from common.util.logger import Logger
 
 def get_param(param_name=None):
     if (param_name == None):
@@ -54,6 +55,7 @@ def object_list_to_str(object_list):
 
 class HDFSUtil(object):
     def __init__(self, hdfs_bin=None):
+        self.logger = Logger(self.__class__.__name__).get()
         if hdfs_bin == None:
             if not config.hadoop_home:
                 raise RuntimeError("spark_home must be specified in config")
@@ -74,13 +76,15 @@ class HDFSUtil(object):
         files = []
         for line in outputs:
             line_arr = line.split()
-            files.append(line_arr[-1])
+            if len(line_arr) > 5:
+                files.append(line_arr[-1])
         return files
 
     def getFilesBySuffix(self, files, suffix):
         ret_files = []
         slen = len(suffix)
         for fname in files:
+            self.logger.debug("suffix is: (%s), fname is: (%s)" % (suffix, fname))
             if suffix == fname[-slen:]:
                 ret_files.append(fname)
         return ret_files
@@ -96,6 +100,7 @@ class HDFSUtil(object):
 class CommandExecutor(object):
 
     def __init__(self, bin_file, *args):
+        self.logger = Logger(self.__class__.__name__).get()
         self.bin_file = bin_file
         self.args = args
 
