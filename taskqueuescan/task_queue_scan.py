@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-:
 from common.db.db_config import session as sess
 from common.dao.mr_task import TaskQueue
+from common.dao.mr_task import MRTask
 from common.entity.active_task import ActiveTask
 
 class TaskQueueScan(object):
@@ -11,8 +12,10 @@ class TaskQueueScan(object):
         sq = sess.query(TaskQueue).order_by(TaskQueue.id).filter(TaskQueue.has_processed == 0)
         task = sq.first()
         if task:
-            atask = ActiveTask()
-            atask.id = task.mr_task_id
+            print("task is: ", task)
+            sq2 = sess.query(MRTask).filter(MRTask.id == task.mr_task_id)
+            mr_task = sq2.first()
+            atask = ActiveTask(mr_task)
             atask.table_stage_list = task.table_stage_list
             return atask
         else:

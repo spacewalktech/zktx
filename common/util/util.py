@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-:
 # 工具类
-
+import os
 import sys
 import json
 import subprocess
@@ -75,10 +75,12 @@ class CommandExecutor(object):
 
     def execute(self):
         cmd_with_args = [self.bin_file]
+        local_env = os.environ.copy()
+        local_env["SPARK_HOME"] = config.spark_home 
         for arg in self.args:
             cmd_with_args.append(arg)
         try:
-            subprocess.call(cmd_with_args)
+            subprocess.call(cmd_with_args, env=local_env)
         except:
             self.logger.info("exec cmd: %s Error", cmd_with_args)
             raise

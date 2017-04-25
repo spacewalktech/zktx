@@ -38,8 +38,8 @@ class ActiveTask(object):
         return not self.__eq__(other)
 
     def __str__(self):
-        ret_str = "{ActiveTask(id=%s, name=%s, information=%s, table_stage_list=[" % \
-                  (self.id, self.name, self.information)
+        ret_str = "{ActiveTask(id=%s, name=%s, information=%s, bin_file_uri=%s, has_derivative_table=%s, type=%s, export_dir_uri=%s, table_stage_list=[" % \
+                  (self.id, self.name, self.information, self.bin_file_uri, self.has_derivative_table, self.type, self.export_dir_uri)
         for table_stage in self.table_stage_list:
             ret_str += str(table_stage)
             ret_str += ","
