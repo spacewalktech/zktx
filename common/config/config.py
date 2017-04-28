@@ -34,8 +34,8 @@ pro_path = {
 }
 logging_dir = "../logs"
 logging_stdout = True
-stage_scan_interval = 600
-task_queue_scan_interval = 600
+stage_scan_interval = 5
+task_queue_scan_interval = 5
 
 # es服务列表
 es_hosts = ["hadoop01:9200", "hadoop02:9200", "hadoop03:9200", "hadoop04:9200"]

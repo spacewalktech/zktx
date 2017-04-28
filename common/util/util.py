@@ -53,6 +53,22 @@ def object_list_to_str(object_list):
     ret_str += "]"
     return ret_str
 
+def convertCSV2PipeDelimited(data_file_path):
+    new_data_file_path = rreplace(data_file_path, ".csv", ".txt", 1)
+    with open(data_file_path, 'rt') as fin, \
+            open(new_data_file_path, 'wt') as fout:
+        reader = csv.DictReader(fin)
+        writer = csv.DictWriter(fout, reader.fieldnames, delimiter='|', lineterminator = '\n')
+        writer.writeheader()
+        writer.writerows(reader)
+        fin.close()
+        fout.close()
+    os.remove(data_file_path)
+
+def rreplace(s, old, new, occurrence):
+	li = s.rsplit(old, occurrence)
+	return new.join(li)
+
 class HDFSUtil(object):
     def __init__(self, hdfs_bin=None):
         self.logger = Logger(self.__class__.__name__).get()
