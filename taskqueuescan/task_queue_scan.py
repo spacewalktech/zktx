@@ -13,8 +13,8 @@ class TaskQueueScan(object):
         sq = sess.query(TaskQueue).order_by(TaskQueue.id).filter(TaskQueue.has_processed == 0)
         task = sq.first()
         sess.commit()
-	sess.flush()
-	print task
+        sess.flush()
+	#print task
         if task:
             print("task is: ", task)
             sq2 = sess.query(MRTask).filter(MRTask.id == task.mr_task_id)
