@@ -11,16 +11,17 @@ class ESClient(object):
     also it can write spark rdd and its higher derivative type like dataframe and so on.
     """
 
-    def __init__(self,  index, type, nodes=None):
+    def __init__(self,  index, type, id_field=None, nodes=None):
         self.logger = Logger(self.__class__.__name__).get()
-        if not nodes:
-            self.nodes = config.es_hosts
-        else:
-            self.nodes = nodes
-        self.es = Elasticsearch(nodes)
         self.es_conf = {}
+        if id_field:
+            self.es_conf["es.mapping.id"] = id_field
+        if not nodes:
+            self.es_conf["es.nodes"] = convertArrayToFlatString(config.es_hosts)
+        else:
+            self.es_conf["es.nodes"] = nodes
+
         self.es_conf["es.resource"] = index + "/" + type
-        self.es_conf["es.nodes"] = convertArrayToFlatString(self.nodes)
 
     def __str__(self):
         return "[ESClient: %s]" % self.es_conf
