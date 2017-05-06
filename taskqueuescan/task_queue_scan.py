@@ -3,6 +3,7 @@ from common.db.db_config import session as sess
 from common.dao.mr_task import TaskQueue
 from common.dao.mr_task import MRTask
 from common.entity.active_task import ActiveTask
+import common.db.db_config as db
 
 class TaskQueueScan(object):
     def __init__(self):
@@ -11,6 +12,9 @@ class TaskQueueScan(object):
     def dequeue_task(self):
         sq = sess.query(TaskQueue).order_by(TaskQueue.id).filter(TaskQueue.has_processed == 0)
         task = sq.first()
+        sess.commit()
+        sess.flush()
+	#print task
         if task:
             print("task is: ", task)
             sq2 = sess.query(MRTask).filter(MRTask.id == task.mr_task_id)

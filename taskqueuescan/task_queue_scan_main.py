@@ -14,10 +14,10 @@ def process_task(active_task):
 
 
 if __name__ == "__main__":
-    tqc = TaskQueueScan()
     while True:
+        tqc = TaskQueueScan()
         atask = tqc.dequeue_task()
         if atask:
             process_task(atask)
             tqc.set_task_processed(atask.id)
-            time.sleep(task_queue_scan_interval)
+        time.sleep(task_queue_scan_interval)

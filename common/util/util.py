@@ -4,6 +4,7 @@ import os
 import sys
 import json
 import subprocess
+import csv
 from common.entity.triggle_cond import TriggleCond
 from common.entity.stage_to_process import StageToProcess
 from common.config import config
@@ -52,6 +53,26 @@ def object_list_to_str(object_list):
         ret_str = "%s, %s" % (ret_str, obj)
     ret_str += "]"
     return ret_str
+
+def convertCSV2PipeDelimited(data_file_path):
+    new_data_file_path = rreplace(data_file_path, ".csv", ".txt", 1)
+    with open(data_file_path, 'rt') as fin, \
+            open(new_data_file_path, 'wt') as fout:
+        reader = csv.DictReader(fin)
+        writer = csv.DictWriter(fout, reader.fieldnames, delimiter='|', lineterminator = '\n')
+        writer.writeheader()
+        writer.writerows(reader)
+        fin.close()
+        fout.close()
+    os.remove(data_file_path)
+
+def rreplace(s, old, new, occurrence):
+	li = s.rsplit(old, occurrence)
+	return new.join(li)
+
+def touch(file_path):
+    with open(file_path, "a"):
+        os.utime(file_path, None)
 
 class HDFSUtil(object):
     def __init__(self, hdfs_bin=None):

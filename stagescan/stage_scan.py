@@ -171,14 +171,16 @@ class StageScan(object):
             self.logger.info("Begin to update task(id=%s) in tb_task_queue" % active_task.id)
             sq = sess.query(TaskQueue).filter(TaskQueue.mr_task_id == active_task.id)
             queued_task = sq.first()
-            if not queued_task:
-                self.logger.debug("Insert ActiveTask(%s) to queue" % active_task)
-                encoded_table_stage = util.encode_table_stage(active_task.table_stage_list)
-                tq = TaskQueue(mr_task_id = active_task.id, table_stage_info=encoded_table_stage)
-                sess.add(tq)
-            else:
-                self.logger.debug("Update ActiveTask(%s) to queue" % active_task)
-                queued_task.table_stage_info = util.encode_table_stage(active_task.table_stage_list)
+            if active_task.table_stage_list:
+                if not queued_task:
+                    self.logger.debug("Insert ActiveTask(%s) to queue" % active_task)
+                    encoded_table_stage = util.encode_table_stage(active_task.table_stage_list)
+                    tq = TaskQueue(mr_task_id = active_task.id, table_stage_info=encoded_table_stage)
+                    sess.add(tq)
+                else:
+                    self.logger.debug("Update ActiveTask(%s) to queue" % active_task)
+                    queued_task.table_stage_info = util.encode_table_stage(active_task.table_stage_list)
+		    queued_task.has_processed = 0
         sess.commit()
         sess.flush()
         self._update_stage_to_processed()

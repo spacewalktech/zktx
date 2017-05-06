@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-:
 import sys
 import json
+import time
 from common.config import config
 from common.util.util import HDFSUtil
 from common.util.logger import Logger
@@ -27,19 +28,22 @@ class DataContext(object):
             raise Exception("Export destination path should be given as an argument")
         export_dir_path = sys.argv[1]
         export_base_path = export_dir_path + "/" + db_name + "--" + table_name
+        cur_timestamp = str(int(time.time()))
         if is_full:
             #export_file_path = export_base_path + "--full--data.parquet"
-            export_file_path = export_base_path + "--full--data.csv"
+            #export_file_path = export_base_path + "--full--data.csv"
+            export_file_path = export_base_path + "--full--" + cur_timestamp + ".csv"
         else:
             #export_file_path = export_base_path + "--incremental--data.parquet"
-            export_file_path = export_base_path + "--incremental--data.csv"
+            #export_file_path = export_base_path + "--incremental--data.csv"
+            export_file_path = export_base_path + "--incremental--" + cur_timestamp + ".csv"
         try:
             df.write.csv(export_file_path)
         except:
             self.logger.error("Write csv %s Error" % export_file_path)
             raise
 
-        export_schema_path = export_base_path + "--schema.json"
+        export_schema_path = export_base_path + "--" + cur_timestamp + "--schema.json"
         destSchema = {}
         destSchema["db_type"] = "derivative"
         destSchema["db_version"] = None

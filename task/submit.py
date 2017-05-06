@@ -63,12 +63,14 @@ class Submitter(object):
                            + util.paddingTimeNum(cur_time.hour) + "_" + util.paddingTimeNum(cur_time.minute) + "_" + util.paddingTimeNum(cur_time.second)
                 dest_dir = config.pro_path["prefix"] + "/" + db_name + "/" + tb_name + "/" + full_str + "/" + date_str
                 if is_full:
-                    data_file_dest = dest_dir  + "/" + "data_full.txt"
+                    data_file_dest = dest_dir  + "/" + "data_full.csv"
                 else:
-                    data_file_dest = dest_dir  + "/" + "data_incremental.txt"
+                    data_file_dest = dest_dir  + "/" + "data_incremental.csv"
                 #data_file_dest = dest_dir  + "/" + "data_full.parquet"
                 schema_file_dest = dest_dir + "/" + "schema.json"
                 hUtil.copyMRResults2Local(data_file, data_file_dest)
                 hUtil.copyMRResults2Local(schema_file, schema_file_dest)
-
+                util.convertCSV2PipeDelimited(data_file_dest)
+                done_indicator_file = dest_dir + "/" + "upload_completed"
+                util.touch(done_indicator_file)
 
