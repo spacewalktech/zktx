@@ -71,4 +71,6 @@ class Submitter(object):
                 hUtil.copyMRResults2Local(data_file, data_file_dest)
                 hUtil.copyMRResults2Local(schema_file, schema_file_dest)
                 util.convertCSV2PipeDelimited(data_file_dest)
-                
+                done_indicator_file = dest_dir + "/" + "upload_completed"
+                util.touch(done_indicator_file)
+
