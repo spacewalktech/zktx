@@ -3,7 +3,7 @@
 import subprocess
 import datetime
 from common.util import util
-from common.util.util import CommandExecutor, HDFSUtil
+from common.util.util import CommandExecutor, HDFSUtil, HiveUtil
 from common.config import config
 from common.util.logger import Logger
 
@@ -33,27 +33,40 @@ class Submitter(object):
             self.hive_submit_bin = config.hive_home + "/bin/hive"
 
     def submit(self, active_task):
-        cmd_exec = None
         if TASK_TYPE[active_task.type] == "HIVE":
-            cmd_exec = CommandExecutor(self.hive_submit_bin, "-e")
+            hiveUtil = HiveUtil()
+            for tab in active_task.export_table_list:
+                hiveUtil.dropTable(active_task.db_name, tab)
+            cmd_exec = CommandExecutor(self.hive_submit_bin, "-f", active_task.bin_file_uri)
+            cmd_exec.execute()
+            for tab in active_task.export_table_list:
+                # export hive table (data & schema) to hdfs similar to spark task
+                #export_sub_dir = active_task.export_dir_uri + "/" + active_task.db_name + "." + tab
+                hiveUtil.exportTable(active_task.db_name, tab, True, active_task.export_dir_uri)
+
         elif TASK_TYPE[active_task.type] == "SPARK":
-            cmd_exec = CommandExecutor(self.spark_submit_bin, active_task.bin_file_uri, active_task.export_dir_uri)
-        cmd_exec.execute()
+            hdfsUtil = HDFSUtil()
+            local_bin_file = "/tmp/" + util.getPathFlat(active_task.bin_file_uri)
+            hdfsUtil.downloadFileFromHDFS(local_bin_file, active_task.bin_file_uri)
+            cmd_exec = CommandExecutor(self.spark_submit_bin, local_bin_file, active_task.export_dir_uri)
+            cmd_exec.execute()
+            if local_bin_file:
+                util.removeLocalFile(local_bin_file)
         if active_task.has_derivative_table:
-            hUtil = HDFSUtil()
-            export_files = hUtil.extractFilesFromDir(active_task.export_dir_uri)
+            hdfsUtil = HDFSUtil()
+            export_files = hdfsUtil.extractFilesFromDir(active_task.export_dir_uri, active_task.db_name, *active_task.export_table_list)
             self.logger.debug("Files generated in (%s) is (%s)" % (active_task.export_dir_uri, export_files))
-            #data_files = hUtil.getFilesBySuffix(export_files, ".parquet")
-            data_files = hUtil.getFilesBySuffix(export_files, ".csv")
+            #data_files = hdfsUtil.getFilesBySuffix(export_files, ".parquet")
+            data_files = hdfsUtil.getFilesBySuffix(export_files, ".csv")
             data_files.sort()
             self.logger.debug("Data files are (%s)" % data_files)
-            schema_files = hUtil.getFilesBySuffix(export_files, "schema.json")
+            schema_files = hdfsUtil.getFilesBySuffix(export_files, "schema.sql")
             schema_files.sort()
             self.logger.debug("Schema files are (%s)" % schema_files)
-            for i in range(len(data_files)):
-                data_file = data_files[i]
-                schema_file = schema_files[i]
-                db_name, tb_name, is_full = hUtil.getExportProperties(data_file)
+            for data_file in data_files:
+                # data_file = data_files[i]
+                db_name, tb_name, timestamp, is_full = hdfsUtil.getExportProperties(data_file)
+                schema_file = util.getFileFromTimestamp(schema_files, timestamp)
                 if is_full:
                     full_str = "full"
                 else:
@@ -67,10 +80,9 @@ class Submitter(object):
                 else:
                     data_file_dest = dest_dir  + "/" + "data_incremental.csv"
                 #data_file_dest = dest_dir  + "/" + "data_full.parquet"
-                schema_file_dest = dest_dir + "/" + "schema.json"
-                hUtil.copyMRResults2Local(data_file, data_file_dest)
-                hUtil.copyMRResults2Local(schema_file, schema_file_dest)
+                schema_file_dest = dest_dir + "/" + "schema.sql"
+                hdfsUtil.copyMRResults2Local(data_file, data_file_dest)
+                hdfsUtil.copyMRResults2Local(schema_file, schema_file_dest)
                 util.convertCSV2PipeDelimited(data_file_dest)
                 done_indicator_file = dest_dir + "/" + "upload_completed"
                 util.touch(done_indicator_file)
-

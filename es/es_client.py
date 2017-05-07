@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-：
 from common import config
-from elasticsearch import Elasticsearch
 from common.util.logger import Logger
 from common.config import config
+from elasticsearch import Elasticsearch
 
 class ESClient(object):
 
@@ -13,13 +13,21 @@ class ESClient(object):
 
     def __init__(self,  index, type, id_field=None, nodes=None):
         self.logger = Logger(self.__class__.__name__).get()
+        self.index = index
+        self.type = type
+        self.id_field = id_field
+
         self.es_conf = {}
         if id_field:
             self.es_conf["es.mapping.id"] = id_field
         if not nodes:
             self.es_conf["es.nodes"] = convertArrayToFlatString(config.es_hosts)
+            self.nodes = config.es_hosts
+            self.es = Elasticsearch(config.es_hosts)
         else:
-            self.es_conf["es.nodes"] = nodes
+            self.es_conf["es.nodes"] = convertArrayToFlatString(nodes)
+            self.nodes = nodes
+            self.es = Elasticsearch(nodes)
 
         self.es_conf["es.resource"] = index + "/" + type
 
@@ -41,6 +49,11 @@ class ESClient(object):
     def writeDF2ES(self, df):
         dfRDD = df.rdd.map(lambda row: (None, row.asDict()))
         self.writeRDD2ES(dfRDD)
+
+    def deleteItem(self, id_value):
+        if not self.id_field:
+            raise Exception("The ESClient(%s) does not specify id_field, can not delete item" % self.es_conf)
+        self.es.delete(self.index, self.type, id_value)
 
     def createIndex(self):
         pass
