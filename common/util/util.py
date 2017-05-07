@@ -53,12 +53,43 @@ def object_list_to_str(object_list):
     ret_str += "]"
     return ret_str
 
+def readFile2Str(file_name):
+    ret_strs = []
+    with open(file_name) as f:
+        for line in f:
+            ret_strs.append(line)
+    return "".join(ret_strs)
+
+def getPathFlat(file_path):
+    f = file_path.replace("/", "__")
+    return f.replace(":", "__")
+
+def removeLocalFile(file_path):
+    os.remove(file_path)
+
+def insertContent2File(content, file_path):
+    tmp_path = file_path + ".temp"
+    with open(tmp_path, "w") as tf:
+        tf.write(content + "\n")
+        with open(file_path) as f:
+            for line in f:
+                tf.write(line)
+    removeLocalFile(file_path)
+    os.rename(tmp_path, file_path)
+
+def splitString(input_str, separator):
+    arr1 = input_str.split(separator)
+    ret_arr = []
+    for s in arr1:
+        ret_arr.append(s.strip())
+    return ret_arr
+
 class HDFSUtil(object):
     def __init__(self, hdfs_bin=None):
         self.logger = Logger(self.__class__.__name__).get()
         if hdfs_bin == None:
             if not config.hadoop_home:
-                raise RuntimeError("spark_home must be specified in config")
+                raise RuntimeError("hadoop_home must be specified in config")
             self.hdfs_bin = config.hadoop_home + "/bin/hdfs"
 
     def copyMRResults2Local(self, src_path, dest_path):
@@ -96,6 +127,30 @@ class HDFSUtil(object):
         tb_name = name_splits[1]
         is_full = 1 if name_splits[2] == "full" else 1
         return db_name, tb_name, is_full
+
+    def downloadFileFromHDFS(self, local_path, remote_path):
+        cmd_exec = CommandExecutor(self.hdfs_bin, "dfs", "-get", local_path, remote_path)
+        cmd_exec.execute()
+
+class HiveUtil(object):
+    def __init__(self, hive_bin=None):
+        self.logger = Logger(self.__class__.__name__).get()
+        if hive_bin == None:
+            if not config.hive_home:
+                raise RuntimeError("hive_home must be specified in config")
+            self.hive_bin = config.hive_home + "/bin/hive"
+
+    def getCreateStatement(self, db_name, table_name):
+        query_str = "SHOW CREATE TABLE " + db_name + "." + table_name
+        cmd_exec = CommandExecutor(self.hive_bin, "-e", query_str)
+        output = cmd_exec.execute_output()
+        beg_index = output.index("CREATE TABLE")
+        for i in range(beg_index, len(output)-1):
+            if output[i] == ")" and output[i+1] == "\n":
+                end_index = i+1
+                break
+        return output[beg_index:end_index]
+
 
 class CommandExecutor(object):
 
