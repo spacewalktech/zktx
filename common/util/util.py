@@ -105,6 +105,19 @@ def touch(file_path):
     with open(file_path, "a"):
         os.utime(file_path, None)
 
+def getExportPath(db_name, table_name, is_full, export_dir_path, file_suffix):
+    cur_timestamp = str(int(time.time()))
+    export_base_path = export_dir_path + "/" + db_name + "--" + table_name
+    if is_full:
+        # export_file_path = export_base_path + "--full--data.parquet"
+        export_data_path = export_base_path + "--full--" + cur_timestamp
+    else:
+        # export_file_path = export_base_path + "--incremental--data.parquet"
+        export_data_path = export_base_path + "--incremental--" + cur_timestamp
+    export_data_path += "." + file_suffix
+    export_schema_path = export_base_path + "--" + cur_timestamp + "--schema.sql"
+    return export_data_path, export_schema_path
+
 class HDFSUtil(object):
     def __init__(self, hdfs_bin=None):
         self.logger = Logger(self.__class__.__name__).get()
@@ -172,6 +185,23 @@ class HiveUtil(object):
                 break
         return output[beg_index:end_index]
 
+    def exportTable(self, db_name, table_name, is_full, export_dir_uri):
+        self.logger.info("Begin to exportTable: db_name(%s), table_name(%s), is_full(%s), export_dir_uri(%s)" %
+                         (db_name, table_name, is_full, export_dir_uri))
+        # First export data
+        export_data_path, export_schema_path = getExportPath(db_name, table_name, is_full, export_dir_uri, "csv")
+        export_statement = "INSERT OVERWRITE DIRECTORY " + export_data_path +  """ ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' """
+        export_statement += "select * from " + db_name + "." + table_name
+        cmd_exec = CommandExecutor(self.hive_bin, "-e", export_statement)
+        cmd_exec.execute()
+
+        # Second export schema
+        schema_content = self.getCreateStatement(db_name, table_name)
+        tmp_schema_file = "/tmp/" + db_name + "__" + table_name + "__schema.sql"
+        with open(tmp_schema_file, "w") as sf:
+            insertContent2File(schema_content, tmp_schema_file)
+        hdfsUtil = HDFSUtil()
+        hdfsUtil.upload2HDFS(tmp_schema_file, export_schema_path)
 
 class CommandExecutor(object):
 

@@ -41,46 +41,44 @@ class Submitter(object):
             cmd_exec.execute()
             hiveUtil = HiveUtil()
             for tab in active_task.export_table_list:
-                hiveUtil.exportTable(active_task.db_name, tab)
-                create_statement = hiveUtil.getCreateStatement(active_task.db_name, tab)
-                tmp_schema_file = "/tmp/"
-                util.insertContent2File(create_statement, tmp_schema_file)
-
+                # export hive table (data & schema) to hdfs similar to spark task
+                hiveUtil.exportTable(active_task.db_name, tab, active_task)
+                
         elif TASK_TYPE[active_task.type] == "SPARK":
             cmd_exec = CommandExecutor(self.spark_submit_bin, local_bin_file, active_task.export_dir_uri)
             cmd_exec.execute()
-            if active_task.has_derivative_table:
-                hUtil = HDFSUtil()
-                export_files = hUtil.extractFilesFromDir(active_task.export_dir_uri)
-                self.logger.debug("Files generated in (%s) is (%s)" % (active_task.export_dir_uri, export_files))
-                #data_files = hUtil.getFilesBySuffix(export_files, ".parquet")
-                data_files = hUtil.getFilesBySuffix(export_files, ".csv")
-                data_files.sort()
-                self.logger.debug("Data files are (%s)" % data_files)
-                schema_files = hUtil.getFilesBySuffix(export_files, "schema.json")
-                schema_files.sort()
-                self.logger.debug("Schema files are (%s)" % schema_files)
-                for i in range(len(data_files)):
-                    data_file = data_files[i]
-                    schema_file = schema_files[i]
-                    db_name, tb_name, is_full = hUtil.getExportProperties(data_file)
-                    if is_full:
-                        full_str = "full"
-                    else:
-                        full_str = "incremental"
-                    cur_time = datetime.datetime.now()
-                    date_str = util.paddingTimeNum(cur_time.year) + util.paddingTimeNum(cur_time.month) + util.paddingTimeNum(cur_time.day) + "_" \
-                               + util.paddingTimeNum(cur_time.hour) + "_" + util.paddingTimeNum(cur_time.minute) + "_" + util.paddingTimeNum(cur_time.second)
-                    dest_dir = config.pro_path["prefix"] + "/" + db_name + "/" + tb_name + "/" + full_str + "/" + date_str
-                    if is_full:
-                        data_file_dest = dest_dir  + "/" + "data_full.csv"
-                    else:
-                        data_file_dest = dest_dir  + "/" + "data_incremental.csv"
-                    #data_file_dest = dest_dir  + "/" + "data_full.parquet"
-                    schema_file_dest = dest_dir + "/" + "schema.json"
-                    hUtil.copyMRResults2Local(data_file, data_file_dest)
-                    hUtil.copyMRResults2Local(schema_file, schema_file_dest)
-                    util.convertCSV2PipeDelimited(data_file_dest)
-                    done_indicator_file = dest_dir + "/" + "upload_completed"
-                    util.touch(done_indicator_file)
+        if active_task.has_derivative_table:
+            hUtil = HDFSUtil()
+            export_files = hUtil.extractFilesFromDir(active_task.export_dir_uri)
+            self.logger.debug("Files generated in (%s) is (%s)" % (active_task.export_dir_uri, export_files))
+            #data_files = hUtil.getFilesBySuffix(export_files, ".parquet")
+            data_files = hUtil.getFilesBySuffix(export_files, ".csv")
+            data_files.sort()
+            self.logger.debug("Data files are (%s)" % data_files)
+            schema_files = hUtil.getFilesBySuffix(export_files, "schema.json")
+            schema_files.sort()
+            self.logger.debug("Schema files are (%s)" % schema_files)
+            for i in range(len(data_files)):
+                data_file = data_files[i]
+                schema_file = schema_files[i]
+                db_name, tb_name, is_full = hUtil.getExportProperties(data_file)
+                if is_full:
+                    full_str = "full"
+                else:
+                    full_str = "incremental"
+                cur_time = datetime.datetime.now()
+                date_str = util.paddingTimeNum(cur_time.year) + util.paddingTimeNum(cur_time.month) + util.paddingTimeNum(cur_time.day) + "_" \
+                           + util.paddingTimeNum(cur_time.hour) + "_" + util.paddingTimeNum(cur_time.minute) + "_" + util.paddingTimeNum(cur_time.second)
+                dest_dir = config.pro_path["prefix"] + "/" + db_name + "/" + tb_name + "/" + full_str + "/" + date_str
+                if is_full:
+                    data_file_dest = dest_dir  + "/" + "data_full.csv"
+                else:
+                    data_file_dest = dest_dir  + "/" + "data_incremental.csv"
+                #data_file_dest = dest_dir  + "/" + "data_full.parquet"
+                schema_file_dest = dest_dir + "/" + "schema.json"
+                hUtil.copyMRResults2Local(data_file, data_file_dest)
+                hUtil.copyMRResults2Local(schema_file, schema_file_dest)
+                util.convertCSV2PipeDelimited(data_file_dest)
+                done_indicator_file = dest_dir + "/" + "upload_completed"
+                util.touch(done_indicator_file)
         util.removeLocalFile(local_bin_file)

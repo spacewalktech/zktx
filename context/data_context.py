@@ -5,6 +5,7 @@ import time
 from common.config import config
 from common.util.util import HDFSUtil
 from common.util.logger import Logger
+from common.util import util
 from pyspark.sql import SparkSession
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -27,23 +28,13 @@ class DataContext(object):
         if len(sys.argv) < 2:
             raise Exception("Export destination path should be given as an argument")
         export_dir_path = sys.argv[1]
-        export_base_path = export_dir_path + "/" + db_name + "--" + table_name
-        cur_timestamp = str(int(time.time()))
-        if is_full:
-            # export_file_path = export_base_path + "--full--data.parquet"
-            # export_file_path = export_base_path + "--full--data.csv"
-            export_file_path = export_base_path + "--full--" + cur_timestamp + ".csv"
-        else:
-            # export_file_path = export_base_path + "--incremental--data.parquet"
-            # export_file_path = export_base_path + "--incremental--data.csv"
-            export_file_path = export_base_path + "--incremental--" + cur_timestamp + ".csv"
+        export_data_path, export_schema_path = util.getExportPath(db_name, table_name, is_full, export_dir_path, "csv")
         try:
-            df.write.csv(export_file_path)
+            df.write.csv(export_data_path)
         except:
-            self.logger.error("Write csv %s Error" % export_file_path)
+            self.logger.error("Write csv %s Error" % export_data_path)
             raise
 
-        export_schema_path = export_base_path + "--" + cur_timestamp + "--schema.json"
         destSchema = {}
         destSchema["db_type"] = "derivative"
         destSchema["db_version"] = None
@@ -56,18 +47,3 @@ class DataContext(object):
         localTempFile.close()
         hUtil = HDFSUtil()
         hUtil.upload2HDFS(tmp_schema_path, export_schema_path)
-
-def getExportPath(db_name, table_name, is_full, export_dir_path, file_suffix):
-    cur_timestamp = str(int(time.time()))
-    export_base_path = export_dir_path + "/" + db_name + "--" + table_name
-    if is_full:
-        # export_file_path = export_base_path + "--full--data.parquet"
-        export_data_path = export_base_path + "--full--" + cur_timestamp
-    else:
-        # export_file_path = export_base_path + "--incremental--data.parquet"
-        export_data_path = export_base_path + "--incremental--" + cur_timestamp
-    export_data_path += "." + file_suffix
-    export_schema_path = export_base_path + "--" + cur_timestamp + "--schema.sql"
-    return export_data_path, export_schema_path
-
-
