@@ -16,6 +16,7 @@ class ESClient(object):
         self.index = index
         self.type = type
         self.id_field = id_field
+
         self.es_conf = {}
         if id_field:
             self.es_conf["es.mapping.id"] = id_field
