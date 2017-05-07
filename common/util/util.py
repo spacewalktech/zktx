@@ -5,6 +5,7 @@ import sys
 import json
 import subprocess
 import csv
+import time
 from common.entity.triggle_cond import TriggleCond
 from common.entity.stage_to_process import StageToProcess
 from common.config import config
@@ -66,7 +67,10 @@ def getPathFlat(file_path):
     return f.replace(":", "__")
 
 def removeLocalFile(file_path):
-    os.remove(file_path)
+    try:
+        os.remove(file_path)
+    except:
+        pass
 
 def insertContent2File(content, file_path):
     tmp_path = file_path + ".temp"
@@ -110,13 +114,18 @@ def getExportPath(db_name, table_name, is_full, export_dir_path, file_suffix):
     export_base_path = export_dir_path + "/" + db_name + "--" + table_name
     if is_full:
         # export_file_path = export_base_path + "--full--data.parquet"
-        export_data_path = export_base_path + "--full--" + cur_timestamp
+        export_data_path = export_base_path + "--" + cur_timestamp + "--full"
     else:
         # export_file_path = export_base_path + "--incremental--data.parquet"
-        export_data_path = export_base_path + "--incremental--" + cur_timestamp
+        export_data_path = export_base_path + "--" + cur_timestamp + "--incremental"
     export_data_path += "." + file_suffix
     export_schema_path = export_base_path + "--" + cur_timestamp + "--schema.sql"
     return export_data_path, export_schema_path
+
+def getFileFromTimestamp(files, timestamp):
+    for f in files:
+        if timestamp in f:
+            return f
 
 class HDFSUtil(object):
     def __init__(self, hdfs_bin=None):
@@ -134,22 +143,26 @@ class HDFSUtil(object):
         cmd_exec = CommandExecutor(self.hdfs_bin, "dfs", "-put", src_path, dest_path)
         cmd_exec.execute()
 
-    def extractFilesFromDir(self, dir_path):
+    def extractFilesFromDir(self, dir_path, *keywords):
         cmd_exec = CommandExecutor(self.hdfs_bin, "dfs", "-ls", dir_path)
         output = cmd_exec.execute_output()
         outputs = output.split("\n")
         files = []
         for line in outputs:
             line_arr = line.split()
-            if len(line_arr) > 5:
-                files.append(line_arr[-1])
+            if len(line_arr) < 5:
+                continue
+            cur_file_name = line_arr[-1]
+            for k in keywords:
+                if k in cur_file_name:
+                    files.append(cur_file_name)
+                    break
         return files
 
     def getFilesBySuffix(self, files, suffix):
         ret_files = []
         slen = len(suffix)
         for fname in files:
-            self.logger.debug("suffix is: (%s), fname is: (%s)" % (suffix, fname))
             if suffix == fname[-slen:]:
                 ret_files.append(fname)
         return ret_files
@@ -159,8 +172,9 @@ class HDFSUtil(object):
         name_splits = file_name.split("--")
         db_name = name_splits[0]
         tb_name = name_splits[1]
-        is_full = 1 if name_splits[2] == "full" else 1
-        return db_name, tb_name, is_full
+        timestamp = name_splits[2]
+        is_full = 1 if name_splits[3] == "full" else 1
+        return db_name, tb_name, timestamp, is_full
 
     def downloadFileFromHDFS(self, local_path, remote_path):
         cmd_exec = CommandExecutor(self.hdfs_bin, "dfs", "-get", local_path, remote_path)
@@ -185,12 +199,16 @@ class HiveUtil(object):
                 break
         return output[beg_index:end_index]
 
-    def exportTable(self, db_name, table_name, is_full, export_dir_uri):
+    def exportTable(self, db_name, table_name, is_full, export_dir_uri, compress=False):
         self.logger.info("Begin to exportTable: db_name(%s), table_name(%s), is_full(%s), export_dir_uri(%s)" %
                          (db_name, table_name, is_full, export_dir_uri))
         # First export data
         export_data_path, export_schema_path = getExportPath(db_name, table_name, is_full, export_dir_uri, "csv")
-        export_statement = "INSERT OVERWRITE DIRECTORY " + export_data_path +  """ ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' """
+        if compress:
+            export_statement = "set hive.exec.compress.output=true;"
+        else:
+            export_statement = "set hive.exec.compress.output=false;"
+        export_statement += "INSERT OVERWRITE DIRECTORY '" + export_data_path +  """' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' """
         export_statement += "select * from " + db_name + "." + table_name
         cmd_exec = CommandExecutor(self.hive_bin, "-e", export_statement)
         cmd_exec.execute()
@@ -202,6 +220,11 @@ class HiveUtil(object):
             insertContent2File(schema_content, tmp_schema_file)
         hdfsUtil = HDFSUtil()
         hdfsUtil.upload2HDFS(tmp_schema_file, export_schema_path)
+
+    def dropTable(self, db_name, table_name):
+        drop_statement = "DROP TABLE " + db_name + "." + table_name
+        cmd_exec = CommandExecutor(self.hive_bin, "-e", drop_statement)
+        cmd_exec.execute()
 
 class CommandExecutor(object):
 
@@ -217,6 +240,7 @@ class CommandExecutor(object):
         for arg in self.args:
             cmd_with_args.append(arg)
         try:
+            self.logger.debug("Try to execute command: (%s)" % cmd_with_args)
             subprocess.call(cmd_with_args, env=local_env)
         except:
             self.logger.info("exec cmd: %s Error", cmd_with_args)
