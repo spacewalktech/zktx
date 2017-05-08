@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-:
+# -*- coding: utf-8 -*-：
 # 合并上传完成的文件
 
 import os
@@ -48,7 +48,6 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
 
     # 启动spark任务
     spark = SparkSession.builder.appName(" python update table [ " + src_db + "_" + src_table + " ]").config("spark.master", spark_master_ip).config("spark.sql.warehouse.dir", "hdfs://hadoop01:9000/user/spark-with-hive/warehouse").getOrCreate()
-
     # 表的schema
     schema_string = schema_str + "," + hidden_colum
 
@@ -66,6 +65,15 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
         df = None
         print '-----------------开始全量更新--------------------' + get_time_format()
         if env == "pro":
+
+            # 对文件后缀的兼容
+            file_names = os.listdir(data_path)
+            suffix = ''
+            for t in file_names:
+                if 'data_full' in t:
+                    suffix = t[t.rfind('.')+1: len(t)]
+                    break
+
             # 将文件加载到hdfs上   /opt/spacewalk/data/orgin_file/test_db/test_table/processing/20170901_12_09_30
             hdfs_path = '/spacewalk/hdfs/orgin_file/' + src_db + '/' + src_table
             # 修改path，开始读取
@@ -80,7 +88,7 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
                 client.upload(hdfs_path, data_path, overwrite=True)
             # 读取数据
             print '--->开始读取hdfs上源文件'
-            df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(hdfs_path + data_path.split('processing')[1] + "/data_full.txt")
+            df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(hdfs_path + data_path.split('processing')[1] + "/data_full." + suffix)
         else:
             df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(data_path + "/data_full.txt")
 
@@ -145,8 +153,17 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
         fields = [StructField(field_name, StringType(), False) for field_name in schema_str.split(",")]
         schema_df = StructType(fields)
 
+        # 对文件后缀的兼容
+        file_names = os.listdir(data_path)
+        suffix = ''
+        for t in file_names:
+            if 'data_' in t:
+                suffix = t[t.rfind('.') + 1: len(t)]
+                break
+
         # 有 data_insert_updated.txt 文件
-        if os.path.exists(data_path + "/data_insert_updated.txt"):
+	print suffix
+        if os.path.exists(data_path + "/data_insert_updated." + suffix):
             print "--->开始增量更新"
             if env == "pro":
                 # 将文件加载到hdfs上   /opt/spacewalk/data/orgin_file/test_db/test_table/processing/20170901_12_09_30
@@ -163,7 +180,7 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
                     client.upload(hdfs_path, data_path, overwrite=True)
                 # 读取数据
                 print '--->开始读取hdfs上的源文件'
-                update_df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(hdfs_path + data_path.split('processing')[1] + "/data_insert_updated.txt")
+                update_df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(hdfs_path + data_path.split('processing')[1] + "/data_insert_updated." + suffix)
             else:
                 update_df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(data_path + "/data_insert_updated.txt")
 
@@ -204,7 +221,7 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
         hidden_df = spark.createDataFrame(hidden_cloum, hidden_colum_array)
 
         # 有 data_deleted.txt 文件
-        if os.path.exists(data_path + "/data_deleted.txt"):
+        if os.path.exists(data_path + "/data_deleted." + suffix):
             print '--->开始删除的更新'
             if env == "pro":
                 # 将文件加载到hdfs上   /opt/spacewalk/data/orgin_file/test_db/test_table/processing/20170901_12_09_30
@@ -220,7 +237,7 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
                     client.upload(hdfs_path, data_path, overwrite=True)
                 # 读取数据
                 print '--->开始加载源文件'
-                delete_df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(hdfs_path + data_path.split('processing')[1] + "/data_deleted.txt")
+                delete_df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(hdfs_path + data_path.split('processing')[1] + "/data_deleted." + suffix)
             else:
                 delete_df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(data_path + "/data_deleted.txt")
 
@@ -282,3 +299,4 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
         count_info["record_num"] = insert_count + update_count + delete_count
 
         return count_info
+

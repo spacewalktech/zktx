@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-:
+# -*- coding: utf-8 -*-：
 
 import os
 import time
@@ -16,9 +16,13 @@ from impala.dbapi import connect
 # df.filter("resvd_flag = 1").limit(10).show()
 # df = spark.read.load('/spacewalk/hdfs/parquet_file/spark/utiisales.parquet')
 # df.filter('resvd_flag = 1').show()
-client = Client('http://192.168.1.71:50070')
-client.download('/user/spark/lib/', '/Users/lzf/Movies/lib')
-
+#client = Client('http://192.168.1.71:50070')
+#client.download('/user/spark/lib/', '/Users/lzf/Movies/lib')
+spark = SparkSession.builder.appName("export data to spark").config("spark.master", "yarn").config("spark.sql.warehouse.dir", "hdfs://hadoop01:9000/user/spark-with-hive/warehouse").getOrCreate()
+df = spark.read.format('jdbc').option('url', 'jdbc:hive2://hadoop01:10001/lzf_test').option('dbtable', 'test_es').option("user", "hadoop").option("password", "hadoop").load()
+print '---'
+print df.count()
+print '---'
 # while True:
 #     print 1
 #     time.sleep(3)
