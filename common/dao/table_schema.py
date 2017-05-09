@@ -16,5 +16,6 @@ class TableSchema(db.Base):
     table_id = Column(Integer, ForeignKey("tb_import_tables.id"))
     version = Column(Integer)
     schema = Column(TEXT)
+    spark_schema = Column(TEXT)
     create_time = Column(DateTime)
     update_time = Column(DateTime)

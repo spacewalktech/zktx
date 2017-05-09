@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-:
+# -*- coding: utf-8 -*-：
 # 文件扫描程序
 
 import common.dao.import_tables as tb_import_tables
@@ -11,6 +11,7 @@ import create_dir
 import trigger_servers
 from sqlalchemy import desc
 import sys
+import common.util.schema_paser as schema_paser
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -62,48 +63,85 @@ def get_stand_type(old_type):
 
 
 # 获取schema描述
-def get_schema(schema_path):
-    file_object = open(schema_path + "/schema.json")
-    schema_str = ""
-    try:
-        for line in file_object.readlines():
-            schema_str += line.strip("\n")
-    finally:
-        file_object.close()
-    return schema_str
+def get_schema(json_str, table):
+    json_dict = {}
+    json_dict['db_type'] = table.src_db_type
+    json_dict['db_version'] = table.src_db_version
+    json_dict['db_name'] = table.src_db
+    json_dict['table_name'] = table.src_table
+    json_dict['schema'] = json.loads(json_str)
+    return json.dumps(json_dict)
 
-
-# 获取schema的string
-def get_schema_str(schema_str):
-    schema = json.loads(schema_str)
-    array = []
-    for i in schema.get("schema"):
-        array.append(i.get("name"))
-    return ",".join(array)
-
+get_json_schema(schema_path + '/schema.json'):
+    schema = open(path)
+    lines = schema.readlines(100000)
+    string = ''
+    for line in lines:
+        string += line
+    string = string.lower()
+    json_str = json.dumps(string)
+    array_origin = []
+    array_spark = []
+    array_name = []
+    for s in json_str:
+	dic = {}
+	diu = {}
+	name = s.get("name")
+	type = s.get("type")
+	dic["name"] = name
+	dic["type"] = type
+	array_origin.append(dic)
+	diu["name"] = name
+	diu["type"] = "string"
+	array_spark.append(diu)
+	array_name.append(name)
+    return {'origin_json': json.dumps(array_origin), 'spark_json': json.dumps(array_spark), 'name_array': name_array}
 
 # 处理schema
-def do_schema(schema_path, id):
+def do_schema(schema_path, table):
+
+    obj = None
+    if os.path.exists(schema_path + '/schema.json'):
+	obj = get_json_schema(schema_path + '/schema.json')	
+    else:
+        obj = schema_paser.get(schema_path + '/schema.sql')
+
+    # 这里需要获取原有schema的json和转换后的schema的json, 原有json
+    json_origin = obj.get('origin_json')
+
+    # 转换后的json
+    json_spark = obj.get('spark_json')
+
+    name_array = obj.get('name_array')
+
     # 没对应的schema信息就添加，有的话就把version+1
-    schema_str = get_schema(schema_path)
+    schema_str_origin = get_schema(json_origin, table)
+    schema_str_spark = get_schema(json_spark, table)
+
     TableSchema = tb_table_schema.TableSchema
-    schema = db.session.query(TableSchema).filter_by(table_id=id).first()
+    schema = db.session.query(TableSchema).filter_by(table_id=table.id).order_by(desc(TableSchema.id)).first()
 
     if schema is None:
         schema = TableSchema()
-        schema.table_id = id
+        schema.table_id = table.id
         schema.version = 1
-        schema.schema = schema_str
+        schema.schema = schema_str_origin
+        schema.spark_schema = schema_str_spark
         schema.create_time = get_time_format()
         schema.update_time = get_time_format()
         db.session.add(schema)
     else:
-        schema.version = int(schema.version) + 1
-        schema.schema = schema_str
-        schema.update_time = get_time_format()
+        schema_1 = TableSchema()
+        schema_1.table_id = table.id
+        schema_1.version = int(schema.version) + 1
+        schema_1.schema = schema_str_origin
+        schema_1.spark_schema = schema_str_spark
+        schema_1.create_time = get_time_format()
+        schema_1.update_time = get_time_format()
+        db.session.add(schema_1)
     db.session.commit()
 
-    return get_schema_str(schema_str)
+    return ','.join(name_array)
 
 
 # 修改stage信息
@@ -114,6 +152,16 @@ def do_stage(stage_id, table_id, import_type="full", inserted_num=0, updated_num
     table_stage.updated_num = 0 if updated_num is None else updated_num
     table_stage.deleted_num = 0 if deleted_num is None else deleted_num
     table_stage.record_num = 0 if record_num is None else record_num
+    table_stage.end_time = get_time_format()
+    table_stage.process_status = 0
+    table_stage.status = 1
+    db.session.commit()
+
+
+def update_stage_fail(stage_id, e):
+    StagePoJo = Stage
+    table_stage = db.session.query(StagePoJo).filter_by(id=stage_id).first()
+    table_stage.process_status = -2
     db.session.commit()
 
 
@@ -131,9 +179,12 @@ def create_stage(table_id, import_type):
     new_stage.updated_num = 0
     new_stage.deleted_num = 0
     new_stage.record_num = 0
+    new_stage.status = 0
     new_stage.create_time = get_time_format()
     new_stage.update_time = get_time_format()
-    new_stage.process_status = 0
+    new_stage.begin_time = get_time_format()
+    # 起始状态给-1，失败給-2，成功給0
+    new_stage.process_status = -1
     if table_stage is None:
         new_stage.stage_id = 1
     else:
@@ -144,24 +195,29 @@ def create_stage(table_id, import_type):
 
 
 # 更新数据的时候检查表的schema信息是不是一致
-def do_check_schema(data_path, table_id, stage_id):
-    # 获取上传的目录里面的schame
-    schema_str = get_schema(data_path)
+def do_check_schema(data_path, table, stage_id):
+    obj = schema_paser.get(data_path + '/schema.sql')
+    # 这里需要获取原有schema的json和转换后的schema的json, 原有json
+    json_origin = obj.get('origin_json')
+    # 转换后的json
+    name_array = obj.get('name_array')
+
+    schema_str = get_schema(json_origin, table)
 
     # 查询数据库存的schema
     TableSchema = tb_table_schema.TableSchema
-    schema = db.session.query(TableSchema).filter_by(table_id=table_id).first()
+    schema = db.session.query(TableSchema).filter_by(table_id=table.id).order_by(desc(TableSchema.id)).first()
 
     # 做对比，schema与数据库存的schema信息不一致，记录信息
     if schema.schema != schema_str:
         new_stage = db.session.query(Stage).filter_by(id=stage_id).first()
-        new_stage.status = 1
-        new_stage.fail_info = "增量更新时发现schema不一致"
+        new_stage.status = -2
+        new_stage.fail_info = "schema not same as old, the file path is : " + data_path
         new_stage.update_time = get_time_format()
         db.session.commit()
         return False
 
-    return get_schema_str(schema_str)
+    return ','.join(name_array)
 
 
 def load():
@@ -204,16 +260,19 @@ def load():
                 shutil.move(full_path, processing_path)
 
                 # 更新schema文件
-                schema_str = do_schema(processing_path, table.id)
-
+                schema_str = do_schema(processing_path, table)
+		
+		print schema_str
                 # 先创建stage_id
                 stageid = create_stage(table.id, "full")
 
-                # 全量更新
-                count_info = merge.merge(processing_path, "full", table.dbname, table.table_name, keys_array, schema_str, stageid)
-
-                # 更新此次录入的数据信息,只插入count的信息就行了
-                do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), record_num=count_info.get("record_num"))
+                try:
+                    # 全量更新
+                    count_info = merge.merge(processing_path, "full", table.dbname, table.table_name, keys_array, schema_str, stageid)
+                    # 更新此次录入的数据信息,只插入count的信息就行了
+                    do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), record_num=count_info.get("record_num"))
+                except Exception, e:
+                    update_stage_fail(stageid, e)
 
                 # 将 processing 目录下面的东西移动到 processed目录下
                 shutil.move(processing_path, processed_path)
@@ -245,16 +304,18 @@ def load():
                 stageid = create_stage(table.id, "incremental")
 
                 # 检查schema文件是否一致
-                flag = do_check_schema(processing_path, table.id, stageid)
+                flag = do_check_schema(processing_path, table, stageid)
                 if flag == False:
-                    print 'schema is not same as old !'
+                    update_stage_fail(stageid, 'schema is not same as old !')
                     break
-
-                # 增量更新
-                count_info = merge.merge(processing_path, "incremental", table.dbname, table.table_name, keys_array, flag, stageid)
-
-                # 更新此次录入的数据信息,只插入count的信息就行了
-                do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), updated_num=count_info.get("updated_num"), deleted_num=count_info.get("deleted_num"), record_num=count_info.get("record_num"))
+                try:
+                    # 增量更新
+                    count_info = merge.merge(processing_path, "incremental", table.dbname, table.table_name, keys_array, flag, stageid)
+                    # 更新此次录入的数据信息,只插入count的信息就行了
+                    do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), updated_num=count_info.get("updated_num"), deleted_num=count_info.get("deleted_num"), record_num=count_info.get("record_num"))
+                except Exception, e:
+		    print e
+                    update_stage_fail(stageid, e)
 
                 # 将旧文件移除
                 if env != 'pro':
@@ -267,17 +328,24 @@ def load():
                 shutil.move(processing_path, processed_path)
 
                 this_table_change = True
+	
+	if this_table_change is True:
+            print '--->begin export to hive  thrift server '
+            trigger_servers.hive_server(table.id, table.dbname, table.table_name)
 
         if table.export_to_sql_warehouse == 1 and this_table_change is True:
-            print '--->begin export to thrift server '
+            print '--->begin export to spark thrift server '
             trigger_servers.thrift_server(table.id, table.dbname, table.table_name)
 
         if table.export_to_es_index_warehouse == 1 and this_table_change is True:
-            print "export_to_es_index_warehouse"
+            print "--->export_to_es_index_warehouse"
+            trigger_servers.es_server(table.id, table.dbname, table.table_name)
 
 
 while True:
-    print '--->开始此次扫描 : ' + get_time_format()
+    print '--->开始扫描 : ' + get_time_format()
     load()
     print '--->扫描完成 : ' + get_time_format()
-    time.sleep(60 * 10)
+    print ''
+    time.sleep(2)
+

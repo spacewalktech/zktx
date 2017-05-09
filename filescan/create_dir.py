@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-:
+# -*- coding: utf-8 -*-：
 # 根据表创建文件夹
 
 import common.dao.import_tables as import_tables
