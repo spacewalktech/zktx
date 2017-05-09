@@ -36,12 +36,12 @@ class DataContext(object):
             raise
 
         destSchema = {}
-        destSchema["db_type"] = "derivative"
+        destSchema["db_type"] = "derived"
         destSchema["db_version"] = None
         destSchema["db_name"] = db_name
         destSchema["table_name"] = table_name
         destSchema["schema"] = df.schema.jsonValue()["fields"]
-        tmp_schema_path = "/tmp/" + db_name + "_" + table_name + ".sql"
+        tmp_schema_path = "/tmp/" + db_name + "_" + table_name + ".json"
         localTempFile = open(tmp_schema_path, mode="w")
         localTempFile.write(json.dumps(destSchema))
         localTempFile.close()

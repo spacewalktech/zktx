@@ -127,6 +127,10 @@ def getFileFromTimestamp(files, timestamp):
         if timestamp in f:
             return f
 
+def splitDBAndTable(table_with_db):
+    li = table_with_db.split(".")
+    return li[0], li[1]
+
 class HDFSUtil(object):
     def __init__(self, hdfs_bin=None):
         self.logger = Logger(self.__class__.__name__).get()
