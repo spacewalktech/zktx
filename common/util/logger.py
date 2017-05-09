@@ -17,10 +17,10 @@ class Logger(object):
             handler = logging.FileHandler(file_name)
             handler.setFormatter(formatter)
             logger.addHandler(handler)
-        if config.logging_stdout:
-            stdHanddler = logging.StreamHandler(sys.stdout)
-            stdHanddler.setFormatter(formatter)
-            logger.addHandler(stdHanddler)
+            if config.logging_stdout:
+                stdHanddler = logging.StreamHandler(sys.stdout)
+                stdHanddler.setFormatter(formatter)
+                logger.addHandler(stdHanddler)
         self._logger = logger
 
     def get(self):

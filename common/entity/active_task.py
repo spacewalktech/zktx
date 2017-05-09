@@ -13,7 +13,7 @@ class ActiveTask(object):
             self.table_stage_list = mr_task.table_stage_list
             self.triggle_cond_list = mr_task.triggle_cond_list
             self.export_table_list = mr_task.export_table_list
-            self.db_name = mr_task.db_name
+            #self.db_name = mr_task.db_name
         else:
             self.id = None
             self.name = None
@@ -26,7 +26,7 @@ class ActiveTask(object):
             self.table_stage_list = None
             self.triggle_cond_list = None
             self.export_table_list = None
-            self.db_name = None
+            #self.db_name = None
 
     def __eq__(self, other):
         return self.id == other.id and \

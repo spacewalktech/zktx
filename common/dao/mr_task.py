@@ -18,7 +18,6 @@ CREATE TABLE `tb_mr_task` (
 `type` int(11) NULL COMMENT '任务类型(HiveQL还是jar包，0：HiveQL，1：jar包)',
 `export_dir_uri` varchar(50) NULL COMMENT ' 导出文件的位置',
 `export_tables` varchar(50) NULL COMMENT ' 要生成的派生表',
-`db_name` varchar(50) NULL COMMENT ' Hive任务执行所在的数据库名',
 `priority` int(11) NULL COMMENT '优先级',
 `table_stage_info` longtext NULL COMMENT 'json，需要执行的表的stage信息{“表a”：[1,5],”表b”：[5,7]}',
 `triggle_tables` longtext NULL COMMENT '触发条件：[{“table”：a，“type”：“full”}，{“table”：b，“type”：“incremental”}]',
@@ -50,7 +49,6 @@ class MRTask(Base):
     table_stage_info = Column('table_stage_info', LONGTEXT)
     triggle_tables = Column('triggle_tables', LONGTEXT)
     export_tables = Column('export_tables', LONGTEXT)
-    db_name = Column('db_name', LONGTEXT)
     active = Column('active', TINYINT(1))
     task_schedule = Column('task_schedule', VARCHAR(50))
     latest_running_time = Column('latest_running_time', DATETIME())

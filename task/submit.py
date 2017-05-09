@@ -36,13 +36,15 @@ class Submitter(object):
         if TASK_TYPE[active_task.type] == "HIVE":
             hiveUtil = HiveUtil()
             for tab in active_task.export_table_list:
-                hiveUtil.dropTable(active_task.db_name, tab)
+                hiveUtil.dropTable(tab)
             cmd_exec = CommandExecutor(self.hive_submit_bin, "-f", active_task.bin_file_uri)
             cmd_exec.execute()
+            self.logger.debug("Export export_table_list: (%s)", active_task.export_table_list)
             for tab in active_task.export_table_list:
                 # export hive table (data & schema) to hdfs similar to spark task
                 #export_sub_dir = active_task.export_dir_uri + "/" + active_task.db_name + "." + tab
-                hiveUtil.exportTable(active_task.db_name, tab, True, active_task.export_dir_uri)
+                db_name, table_name = util.splitDBAndTable(tab)
+                hiveUtil.exportTable(db_name, table_name, True, active_task.export_dir_uri)
 
         elif TASK_TYPE[active_task.type] == "SPARK":
             hdfsUtil = HDFSUtil()
@@ -54,8 +56,13 @@ class Submitter(object):
                 util.removeLocalFile(local_bin_file)
         if active_task.has_derivative_table:
             hdfsUtil = HDFSUtil()
-            export_files = hdfsUtil.extractFilesFromDir(active_task.export_dir_uri, active_task.db_name, *active_task.export_table_list)
-            self.logger.debug("Files generated in (%s) is (%s)" % (active_task.export_dir_uri, export_files))
+            tables_in_file = []
+            for tab in active_task.export_table_list:
+                db_tb = util.splitDBAndTable(tab)
+                d, t = db_tb[0], db_tb[1]
+                tables_in_file.append(d + "--" + t)
+            export_files = hdfsUtil.extractFilesFromDir(active_task.export_dir_uri, *tables_in_file)
+            self.logger.debug("Files generated in (%s) are (%s)" % (active_task.export_dir_uri, export_files))
             #data_files = hdfsUtil.getFilesBySuffix(export_files, ".parquet")
             data_files = hdfsUtil.getFilesBySuffix(export_files, ".csv")
             data_files.sort()

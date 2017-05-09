@@ -127,6 +127,10 @@ def getFileFromTimestamp(files, timestamp):
         if timestamp in f:
             return f
 
+def splitDBAndTable(table_with_db):
+    li = table_with_db.split(".")
+    return li[0], li[1]
+
 class HDFSUtil(object):
     def __init__(self, hdfs_bin=None):
         self.logger = Logger(self.__class__.__name__).get()
@@ -221,8 +225,8 @@ class HiveUtil(object):
         hdfsUtil = HDFSUtil()
         hdfsUtil.upload2HDFS(tmp_schema_file, export_schema_path)
 
-    def dropTable(self, db_name, table_name):
-        drop_statement = "DROP TABLE " + db_name + "." + table_name
+    def dropTable(self, table_name):
+        drop_statement = "DROP TABLE " + table_name
         cmd_exec = CommandExecutor(self.hive_bin, "-e", drop_statement)
         cmd_exec.execute()
 
@@ -254,6 +258,7 @@ class CommandExecutor(object):
         for arg in self.args:
             cmd_with_args.append(arg)
         try:
+            self.logger.debug("Try to execute_output command: (%s)" % cmd_with_args)
             output = subprocess.check_output(cmd_with_args, env=local_env)
         except:
             self.logger.info("exec cmd: %s Error", cmd_with_args)
