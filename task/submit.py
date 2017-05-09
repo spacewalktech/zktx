@@ -36,9 +36,10 @@ class Submitter(object):
         if TASK_TYPE[active_task.type] == "HIVE":
             hiveUtil = HiveUtil()
             for tab in active_task.export_table_list:
-                hiveUtil.dropTable(active_task.db_name, tab)
+                hiveUtil.dropTable(tab)
             cmd_exec = CommandExecutor(self.hive_submit_bin, "-f", active_task.bin_file_uri)
             cmd_exec.execute()
+            self.logger.debug("Export export_table_list: (%s)", active_task.export_table_list)
             for tab in active_task.export_table_list:
                 # export hive table (data & schema) to hdfs similar to spark task
                 #export_sub_dir = active_task.export_dir_uri + "/" + active_task.db_name + "." + tab
