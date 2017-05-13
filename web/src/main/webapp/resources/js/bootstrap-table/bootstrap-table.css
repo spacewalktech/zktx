@@ -99,6 +99,7 @@
 .fixed-table-pagination .pagination-detail {
     margin: 0px;
     margin-bottom: 10px;
+    margin-top: 6px;
 }
 
 .fixed-table-pagination .pagination a {

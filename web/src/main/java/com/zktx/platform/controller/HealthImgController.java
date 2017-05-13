@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zktx.platform.entity.tb.HealthImg;
+import com.zktx.platform.log2.SystemControllerLog;
 import com.zktx.platform.service.importtable.HealthImgService;
 
 @Controller
@@ -18,11 +19,19 @@ public class HealthImgController {
 
 	@Autowired
 	HealthImgService service;
-	
-	@RequestMapping("/queryList.do")
-	public @ResponseBody Map<String, Object> queryList(Integer offset,Integer limit){
+
+	@SystemControllerLog(description = "进入医学图像列表信息页面")
+	@RequestMapping("/index")
+	public String toHealthImg() {
+		System.out.println("healthImg------");
+		return "/unDataManage/imglist";
+	}
+
+	@SystemControllerLog(description = "查看医学图像列表信息")
+	@RequestMapping("/queryList")
+	public @ResponseBody Map<String, Object> queryList(Integer offset, Integer limit) {
 		try {
-			int count =service.queryCount();
+			int count = service.queryCount();
 			List<HealthImg> list = service.queryList(offset, limit);
 			System.out.println(list.size());
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -33,8 +42,6 @@ public class HealthImgController {
 			e.printStackTrace();
 			return null;
 		}
-		
-		
-		
+
 	}
 }

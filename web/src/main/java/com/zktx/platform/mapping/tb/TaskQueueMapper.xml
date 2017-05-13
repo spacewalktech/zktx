@@ -8,6 +8,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="update_time" />
     <result column="begin_time" jdbcType="TIMESTAMP" property="begin_time" />
     <result column="end_time" jdbcType="TIMESTAMP" property="end_time" />
+    <association column="mr_task_id" property="taskWithBLOBs" select="selectMrtaskById"></association>
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.zktx.platform.entity.tb.TaskQueue">
     <result column="table_stage_info" jdbcType="LONGVARCHAR" property="table_stage_info" />
@@ -25,6 +26,18 @@
     <include refid="Blob_Column_List" />
     from tb_task_queue
     where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="queryRunningTaskList" resultMap="ResultMapWithBLOBs">
+  	select * from tb_task_queue
+  	order by id desc
+		limit #{offset,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
+  </select>
+  <select id="selectMrtaskById" parameterType="java.lang.Integer" resultType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
+  	select * from tb_mr_task where id=#{mr_task_id}
+  </select>
+  <select id="queryCountRunnngTask" resultType="java.lang.Integer">
+  	select count(*) from tb_task_queue
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from tb_task_queue

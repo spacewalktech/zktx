@@ -10,7 +10,7 @@ var TableInit = function() {
 	//初始化Table
 	oTableInit.Init = function() {
 		$('#task_list').bootstrapTable({
-			url : 'annotation/queryList.do', //请求后台的URL（*）
+			url : 'annotation/queryList', //请求后台的URL（*）
 			method : 'get', //请求方式（*）
 			toolbar : '#toolbar', //工具按钮用哪个容器
 			striped : true, //是否显示行间隔色
@@ -25,6 +25,7 @@ var TableInit = function() {
 			pageList : [ 10, 25, 50, 100 ], //可供选择的每页的行数（*）
 			search : false, //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
 			strictSearch : true,
+			smartDisplay:false,
 			showColumns : true, //是否显示所有的列
 			showRefresh : true, //是否显示刷新按钮
 			minimumCountColumns : 2, //最少允许的列数
@@ -50,18 +51,24 @@ var TableInit = function() {
 				field : 'create_time',
 				title : '识别时间',
 				formatter : function (value, row, index){
-			    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+			    	return null!=value?new Date(value).format('yyyy-MM-dd hh:mm:ss'):null;
 			    }
 			},{
 				 title : '操作',
 				    formatter : function(value,row,index){
 				    	 var str ="";
-				    	str+='<button type="submit" class="btn btn-primary btn-xs">查看</button>  ';
-				    	str+='<button type="submit"  class="btn btn-primary btn-xs">查看json</button>  ';
+				    	str+='<button id="img_button" onclick="showImg(\''+row.image_uri+'\')" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal">查看</button>  ';
+				    	str+='<button id="img_button" onclick="showJson('+row.id+')" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal">查看Json</button> ';
 						str+='<button type="submit"  class="btn btn-primary btn-xs">删除</button>  ';
 						return str;
 				    }
-			}]
+			}],
+			onLoadSuccess:function(data){
+				sessionStorage.clear();
+				$.each(data,function(index,val){
+				sessionStorage.setItem(val.id, val.res_json);
+				});
+			}
 		});
 	};
 	//得到查询的参数
@@ -75,28 +82,24 @@ var TableInit = function() {
 	};
 	return oTableInit;
 };
+function showJson(id){
+	$('#myModal').on('show.bs.modal', function () {
+		  $("#show_div").html(sessionStorage.getItem(id));
+		})
+}
+
+function showImg(url){
+	$('#myModal').on('show.bs.modal', function () {
+		  $("#show_div").html('<img id="showIMG" alt="" src="'+url+'">');
+		})
+}
 $(document).ready(function(){
 
 	var oTable = new TableInit();
 	oTable.Init();
-	Date.prototype.format =function(format){
-		var o = {
-			"M+" : this.getMonth()+1, //month
-			"d+" : this.getDate(), //day
-			"h+" : this.getHours(), //hour
-			"m+" : this.getMinutes(), //minute
-			"s+" : this.getSeconds(), //second
-			"q+" : Math.floor((this.getMonth()+3)/3), //quarter
-			"S" : this.getMilliseconds() //millisecond
-		}
-		if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
-		(this.getFullYear()+"").substr(4- RegExp.$1.length));
-		for(var k in o)if(new RegExp("("+ k +")").test(format))
-		format = format.replace(RegExp.$1,
-		RegExp.$1.length==1? o[k] :
-		("00"+ o[k]).substr((""+ o[k]).length));
-		return format;
-	}
+	
+	
+	
 });
 </script>
 </head>
@@ -114,5 +117,27 @@ $(document).ready(function(){
 				<table id="task_list"></table>
 			</div>
 			<!-- END MAIN CONTENT -->
+			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" 
+						aria-hidden="true">×
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					数据展示
+				</h4>
+			</div>
+			<div class="modal-body" id="show_div">
+				<img id="showIMG" alt="" src="">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" 
+						data-dismiss="modal">关闭
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div>
 </body>
 </html>

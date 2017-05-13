@@ -1,33 +1,47 @@
 package com.zktx.platform.entity.tb;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Role {
-    private Integer id;
+	private Integer id;
 
-    private String name;
+	private String name;
 
-    private String info;
+	private String info;
 
-    public Integer getId() {
-        return id;
-    }
+	private List<Role> roles = new ArrayList<Role>();
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getInfo() {
-        return info;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setInfo(String info) {
-        this.info = info;
-    }
+	public String getInfo() {
+		return info;
+	}
+
+	public void setInfo(String info) {
+		this.info = info;
+	}
+
+	public List<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
+	}
+
 }

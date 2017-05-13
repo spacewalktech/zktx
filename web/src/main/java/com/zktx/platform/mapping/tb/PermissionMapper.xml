@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktx.platform.dao.tb.PermissionMapper">
+	<resultMap type="com.zktx.platform.entity.tb.Permission" id="BaseResultMap">
+		<id column="id" jdbcType="INTEGER" property="id" />
+	    <result column="name" jdbcType="VARCHAR" property="name" />
+	    <result column="description" jdbcType="VARCHAR" property="description" />
+	    <result column="sn" jdbcType="VARCHAR" property="sn" />
+	    <association column="module_id"  property="module" select="selectModuleById"/>
+	</resultMap>
+	
+	<select id="querylistByroleId" resultMap="BaseResultMap">
+		select * from tb_permission p inner join tb_role_permission rp on p.id=rp.permission_id where rp.role_id=#{roleid,jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectModuleById"  parameterType="java.lang.Integer" resultType="com.zktx.platform.entity.tb.Module">
+		select * from tb_module where id=#{id}
+	</select>
+
+	<select id="queryListByModuleId" parameterType="java.lang.Integer" resultType="com.zktx.platform.entity.tb.Permission">
+		select * from tb_permission where module_id=#{moduleId}
+	</select>
+	
+	<select id="queryPermissionDISTINCT" resultType="com.zktx.platform.entity.tb.Permission">
+		select `name`, description,sn,count(DISTINCT(sn)) from tb_permission GROUP BY sn
+	</select>
+	
+	<insert id="insertBatch" parameterType="java.util.List">
+		insert into tb_permission (name,sn,description,module_id) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.name},#{item.sn},#{item.description},#{item.module_id})
+		</foreach>
+	</insert>
+	
+
+</mapper>

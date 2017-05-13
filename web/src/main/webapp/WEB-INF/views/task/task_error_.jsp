@@ -14,7 +14,7 @@ var TableInit = function() {
 		  shadeClose: true,
 		  shade: 0.2,
 		  area: ['60%', '50%'],
-		  content: 'mrTask/addPage.do' //iframe的url
+		  content: 'mrTask/addPage' //iframe的url
 		}); 
 	})	
 	
@@ -25,7 +25,7 @@ var TableInit = function() {
 		  shadeClose: true,
 		  shade: 0.2,
 		  area: ['60%', '50%'],
-		  content: 'mrTask/addPage.do' //iframe的url
+		  content: 'mrTask/addPage' //iframe的url
 		}); 
 	}
 	
@@ -33,7 +33,7 @@ var TableInit = function() {
 	//初始化Table
 	oTableInit.Init = function() {
 		$('#task_wait').bootstrapTable({
-			url : 'mrTask/findByProper.do', //请求后台的URL（*）
+			url : 'mrTask/findByProper', //请求后台的URL（*）
 			method : 'get', //请求方式（*）
 			toolbar : '#toolbar', //工具按钮用哪个容器
 			striped : true, //是否显示行间隔色
@@ -48,6 +48,7 @@ var TableInit = function() {
 			pageList : [ 10, 25, 50, 100 ], //可供选择的每页的行数（*）
 			search : false, //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
 			strictSearch : true,
+			smartDisplay:false,
 			showColumns : true, //是否显示所有的列
 			showRefresh : true, //是否显示刷新按钮
 			minimumCountColumns : 2, //最少允许的列数
