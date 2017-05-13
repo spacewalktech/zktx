@@ -14,26 +14,36 @@
 		<result column="latest_running_time" jdbcType="TIMESTAMP" property="latest_running_time" />
 		<result column="latest_running_status" jdbcType="BIT" property="latest_running_status" />
 		<result column="flag" jdbcType="BIT" property="flag" />
+		<result column="has_derivative_table" jdbcType="INTEGER" property="has_derivative_table"/>
 		<result column="create_time" jdbcType="TIMESTAMP" property="create_time" />
 		<result column="update_time" jdbcType="TIMESTAMP" property="update_time" />
+		<result column="task_type" jdbcType="VARCHAR" property="task_type"/>
+		<result column="option_mode" jdbcType="INTEGER" property="option_mode"/>
+		<result column="create_userid" jdbcType="INTEGER" property="create_userid"/>
+		<association column="create_userid" property="create_user" select="selectUserById"></association>
 	</resultMap>
 	<resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
 		<result column="table_stage_info" jdbcType="LONGVARCHAR" property="table_stage_info" />
 		<result column="triggle_tables" jdbcType="LONGVARCHAR" property="triggle_tables" />
 		<result column="latest_running_info" jdbcType="LONGVARCHAR" property="latest_running_info" />
+		<result column="export_tables" jdbcType="LONGVARCHAR" property="export_tables"/>
+		<result column="input_tables" jdbcType="LONGVARCHAR" property="input_tables"/>
 	</resultMap>
 	<sql id="Base_Column_List">
 		id, name, information, bin_file_uri, type, export_dir_uri, priority, active, task_schedule,
-		latest_running_time, latest_running_status, flag, create_time, update_time
+		latest_running_time, latest_running_status, flag, create_time, update_time,task_type,option_mode,create_userid,has_derivative_table
 	</sql>
 	<sql id="Blob_Column_List">
-		table_stage_info, triggle_tables, latest_running_info
+		table_stage_info, triggle_tables, latest_running_info,export_tables,input_tables
 	</sql>
 	<select id="findTableByDBName" parameterType="String" resultType="com.zktx.platform.entity.tb.ImportTables">
-		select id, src_table from tb_import_tables where src_db = #{dbname}
+		select * from tb_import_tables where dbname = #{dbname}
 	</select>
 	<select id="findDistintDBType" resultType="String">
-		select distinct src_db from tb_import_tables
+		select distinct dbname from tb_import_tables
+	</select>
+	<select id="findAllMrTaskWithBLOBs" resultMap="ResultMapWithBLOBs">
+		select * from tb_mr_task where flag =0
 	</select>
 	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
 		select
@@ -46,8 +56,12 @@
 	<select id="findCount" resultType="java.lang.Integer">
 		select count(id) from tb_mr_task
 	</select>
+	
+	<select id="selectUserById" parameterType="java.lang.Integer" resultType="com.zktx.platform.entity.tb.User">
+		select * from tb_user where id=#{create_userid}
+	</select>
 	<select id="findAllTables" resultType="com.zktx.platform.entity.tb.ImportTables">
-		select id,src_db,src_table from tb_import_tables where flag=0
+		select id,dbname,table_name from tb_import_tables where flag=0
 	</select>
 	<select id="findCountByPagination" resultType="java.lang.Integer">
 		select
@@ -83,7 +97,7 @@
 		select count(*) from tb_mr_task where flag = 0 and latest_running_status = 0
 	</select>
 
-	<select id="findByPagination" resultType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
+	<select id="findByPagination" resultMap="ResultMapWithBLOBs" >
 		select
 		<include refid="Base_Column_List" />
 		,
@@ -157,6 +171,9 @@
 	</insert>
 
 	<insert id="insertSelective" parameterType="com.zktx.platform.entity.tb.MrTaskWithBLOBs">
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			select LAST_INSERT_ID() as id
+		</selectKey>
 		insert into tb_mr_task
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="id != null">
@@ -201,6 +218,15 @@
 			<if test="update_time != null">
 				update_time,
 			</if>
+			<if test="task_type!=null">
+				task_type,
+			</if>
+			<if test="option_mode!=null">
+				option_mode,
+			</if>
+			<if test="create_userid!=null">
+				create_userid,
+			</if>
 			<if test="table_stage_info != null">
 				table_stage_info,
 			</if>
@@ -209,6 +235,15 @@
 			</if>
 			<if test="latest_running_info != null">
 				latest_running_info,
+			</if>
+			<if test="export_tables!=null">
+				export_tables,
+			</if>
+			<if test="input_tables!=null">
+				input_tables,
+			</if>
+			<if test="has_derivative_table!=null">
+				has_derivative_table,
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -254,6 +289,15 @@
 			<if test="update_time != null">
 				#{update_time,jdbcType=TIMESTAMP},
 			</if>
+			<if test="task_type!=null">
+				#{task_type,jdbcType=VARCHAR},
+			</if>
+			<if test="option_mode!=null">
+				#{option_mode,jdbcType=INTEGER},
+			</if>
+			<if test="create_userid!=null">
+				#{create_userid,jdbcType=INTEGER},
+			</if>
 			<if test="table_stage_info != null">
 				#{table_stage_info,jdbcType=LONGVARCHAR},
 			</if>
@@ -262,6 +306,15 @@
 			</if>
 			<if test="latest_running_info != null">
 				#{latest_running_info,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="export_tables!=null">
+				#{export_tables,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="input_tables!=null">
+				#{input_tables,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="has_derivative_table!=null">
+				#{has_derivative_table,jdbcType=INTEGER},
 			</if>
 		</trim>
 	</insert>
@@ -310,6 +363,7 @@
 			<if test="update_time != null">
 				update_time = #{update_time,jdbcType=TIMESTAMP},
 			</if>
+			
 			<if test="table_stage_info != null">
 				table_stage_info = #{table_stage_info,jdbcType=LONGVARCHAR},
 			</if>
@@ -318,6 +372,25 @@
 			</if>
 			<if test="latest_running_info != null">
 				latest_running_info = #{latest_running_info,jdbcType=LONGVARCHAR},
+			</if>
+			
+			<if test="task_type!=null">
+				task_type=#{task_type,jdbcType=VARCHAR},
+			</if>
+			<if test="option_mode!=null">
+				option_mode=#{option_mode,jdbcType=INTEGER},
+			</if>
+			<if test="create_userid!=null">
+				create_userid=#{create_userid,jdbcType=INTEGER},
+			</if>
+			<if test="has_derivative_table!=null">
+				has_derivative_table=#{has_derivative_table,jdbcType=BIT},
+			</if>
+			<if test="export_tables!=null">
+				export_tables=#{export_tables,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="input_tables!=null">
+				input_tables=#{input_tables,jdbcType=LONGVARCHAR}
 			</if>
 		</set>
 		where id = #{id,jdbcType=INTEGER}

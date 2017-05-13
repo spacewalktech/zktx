@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE>
 <html lang="en-us" id="extr-page">
 	<head>
 		<meta charset="utf-8">
@@ -9,11 +10,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 		<link rel="shortcut icon" href="${root }/resources/img/logo_title.ico" type="image/x-icon">
 		<link rel="icon" href="${root }/resources/img/logo_title.ico" type="image/x-icon">
-		<%@ include file="./header.jsp"%>
-		<script type="text/javascript">
-				
-				
-		</script>
+		<%@ include file="/WEB-INF/views/header.jsp"%>
+		
 	</head>
 	<style type="text/css">
 		.backgroundimg{ background:url(${root }/resources/img/login_bg.jpg) no-repeat top left;}
@@ -66,7 +64,7 @@
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
 						<div class="well no-padding">
-							<form action="index.do" method="post" id="login-form" class="smart-form client-form">
+							<form action="login" method="post" id="login-form" class="smart-form client-form">
 								<header>
 									登录
 								</header>
@@ -76,7 +74,7 @@
 									<section>
 										<label class="label">用户名</label>
 										<label class="input"> <i class="icon-append fa fa-user"></i>
-											<input type="email" name="username">
+											<input type="input" name="username">
 											<b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> 请输入邮箱地址或用户名</b></label>
 									</section>
 
@@ -88,6 +86,8 @@
 									</section>
 
 								</fieldset>
+								<%--用于输入后台返回的验证错误信息 --%>  
+							    <P><c:out value="${message }" /></P>  
 								<footer>
 									<button type="submit" class="btn btn-primary">
 										登录
@@ -102,7 +102,7 @@
 			</div>
 
 		</div>
-
+<script src="${root }/resources/js/jquery.min.js" type="text/javascript"></script>
 		<script type="text/javascript">
 			$(function() {
 				// Validation
@@ -110,12 +110,12 @@
 					// Rules for form validation
 					rules : {
 						email : {
-							required : true,
+							required : false,
 							email : false
 						},
 						password : {
 							required : true,
-							minlength : 3,
+							minlength : 2,
 							maxlength : 20
 						}
 					},

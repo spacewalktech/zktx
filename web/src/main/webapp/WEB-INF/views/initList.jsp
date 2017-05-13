@@ -217,7 +217,7 @@ $(document).ready(function(){
 							<div class="jarviswidget">
 								<div class="numcon">
 									<i class="fa fa-lg fa-fw fa-database" id="ico" style="color: #2196F3!important;"></i>
-									<span class="fontsize"><i>结构化数据</i><br />表记录数:39867<br />占用空间:1.2T</span>
+									<span class="fontsize"><i>结构化数据</i><br />表记录数:3000<br />占用空间:1.2T</span>
 								</div>
 							</div>
 						</div>
@@ -225,7 +225,7 @@ $(document).ready(function(){
 							<div class="jarviswidget">
 								<div class="numcon">
 									<i class="fa fa-lg fa-fw fa-signal" id="ico" style="color: #43A047!important; "></i>
-									<span class="fontsize"><i>非结构化数据</i><br />表记录数:8745<br />占用空间:3.1T</span>
+									<span class="fontsize"><i>非结构化数据</i><br />表记录数:8429452<br />占用空间:752G</span>
 								</div>
 							</div>
 						</div>

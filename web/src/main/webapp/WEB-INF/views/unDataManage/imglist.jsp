@@ -10,7 +10,7 @@ var TableInit = function() {
 	//初始化Table
 	oTableInit.Init = function() {
 		$('#task_list').bootstrapTable({
-			url : 'healthImg/queryList.do', //请求后台的URL（*）
+			url : 'healthImg/queryList', //请求后台的URL（*）
 			method : 'get', //请求方式（*）
 			toolbar : '#toolbar', //工具按钮用哪个容器
 			striped : true, //是否显示行间隔色
@@ -57,7 +57,7 @@ var TableInit = function() {
 				field : 'upload_time',
 				title : '上传时间',
 				formatter : function (value, row, index){
-			    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+			    	return null!=value?new Date(value).format('yyyy-MM-dd hh:mm:ss'):null;
 			    }
 			},{
 				 title : '操作',

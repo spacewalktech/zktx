@@ -1,4 +1,3 @@
-
 package com.zktx.platform.controller;
 
 import java.io.File;
@@ -20,9 +19,8 @@ import com.alibaba.fastjson.JSON;
 import com.zktx.platform.entity.tb.ImportTables;
 import com.zktx.platform.entity.tb.ImportTablesWithBLOBs;
 import com.zktx.platform.entity.tb.MrTaskWithBLOBs;
+import com.zktx.platform.entity.tb.TaskQueue;
 import com.zktx.platform.service.importtable.MrTaskService;
-
-	
 
 /**
  * 任务管理
@@ -38,7 +36,12 @@ public class MrTaskController {
 	@Autowired
 	MrTaskService mrTaskService;
 
-	@RequestMapping("/addPage.do")
+	@RequestMapping("/index")
+	public String toTaskPage() {
+		return "task/task_list";
+	}
+
+	@RequestMapping("/addPage")
 	public String addPage(HttpServletRequest request) {
 
 		// 查询出数据库与表
@@ -47,20 +50,20 @@ public class MrTaskController {
 		return "task/add";
 	}
 
-	@RequestMapping("/updatePage.do")
+	@RequestMapping("/updatePage")
 	public String updatePage(Integer id, HttpServletRequest request) {
 		MrTaskWithBLOBs task = mrTaskService.findById(id);
 		List<String> list = mrTaskService.findDistintDBType();
-		List<ImportTables> tables =mrTaskService.findAllTables();
+		List<ImportTables> tables = mrTaskService.findAllTables();
 		request.setAttribute("task", task);
-		String StrList =JSON.toJSONString(list, true);
-		String tableList =JSON.toJSONString(tables, true);
+		String StrList = JSON.toJSONString(list, true);
+		String tableList = JSON.toJSONString(tables, true);
 		request.setAttribute("srcdbs", StrList);
 		request.setAttribute("tableList", tableList);
 		return "task/update";
 	}
 
-	@RequestMapping("/getTableByDB.do")
+	@RequestMapping("/getTableByDB")
 	@ResponseBody
 	public List<ImportTablesWithBLOBs> getTableByDB(String dbname) {
 		List<ImportTablesWithBLOBs> list = mrTaskService.findTableByDBName(dbname);
@@ -68,12 +71,15 @@ public class MrTaskController {
 	}
 
 	// 分页查询
-	@RequestMapping("/query.do")
+	@RequestMapping("/query")
 	@ResponseBody
-	public Map<String, Object> findByPagination(String search_name, String search_type, String search_triggle_tables, String search_active, String search_create_time_begin, String search_create_time_end, Integer offset, Integer limit) {
+	public Map<String, Object> findByPagination(String search_name, String search_type, String search_triggle_tables, String search_active,
+			String search_create_time_begin, String search_create_time_end, Integer offset, Integer limit) {
 		try {
-			List<MrTaskWithBLOBs> list = mrTaskService.findByPagination(null, offset, limit, search_name, search_type, search_triggle_tables, search_active, search_create_time_begin, search_create_time_end);
-			int count = mrTaskService.findCountByPagination(null, search_name, search_type, search_triggle_tables, search_active, search_create_time_begin, search_create_time_end);
+			List<MrTaskWithBLOBs> list = mrTaskService.findByPagination(null, offset, limit, search_name, search_type, search_triggle_tables, search_active,
+					search_create_time_begin, search_create_time_end);
+			int count = mrTaskService.findCountByPagination(null, search_name, search_type, search_triggle_tables, search_active, search_create_time_begin,
+					search_create_time_end);
 			Map<String, Object> map = new HashMap<>();
 			map.put("total", count);
 			map.put("rows", list);
@@ -85,7 +91,7 @@ public class MrTaskController {
 	}
 
 	// 待运行任务列表
-	@RequestMapping("/findTaskToRun.do")
+	@RequestMapping("/findTaskToRun")
 	@ResponseBody
 	public Map<String, Object> findToRun(Integer offset, Integer limit) {
 		try {
@@ -106,7 +112,7 @@ public class MrTaskController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping("/deleteByid.do")
+	@RequestMapping("/deleteByid")
 	@ResponseBody
 	public boolean deleteByPrimaryKey(Integer id) {
 		try {
@@ -118,7 +124,7 @@ public class MrTaskController {
 		return false;
 	}
 
-	@RequestMapping("/deleteQueueByid.do")
+	@RequestMapping("/deleteQueueByid")
 	@ResponseBody
 	public boolean deleteQueueByid(Integer id) {
 		try {
@@ -130,7 +136,8 @@ public class MrTaskController {
 		return false;
 	}
 
-	@RequestMapping("/upload.do")
+	// 文件上传
+	@RequestMapping("/upload")
 	@ResponseBody
 	public String upload(MultipartFile file, HttpServletRequest request) {
 		try {
@@ -144,16 +151,23 @@ public class MrTaskController {
 				targetFile.mkdirs();
 			}
 			file.transferTo(targetFile);
-			return path + "/" +uploadFileName;
+			return path + "/" + uploadFileName;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "error";
 		}
 	}
 
-	@RequestMapping("/insertSelective.do")
+	@RequestMapping("/dowloadfile")
+	public String dowLoadFile(String uri) {
+		System.out.println("uri:" + uri);
+		return "";
+	}
+
+	@RequestMapping("/insertSelective")
 	@ResponseBody
 	public String insertSelective(MrTaskWithBLOBs record) {
+		long starttime = System.currentTimeMillis();
 		try {
 			record.setCreate_time(new Date());
 			record.setUpdate_time(new Date());
@@ -162,10 +176,11 @@ public class MrTaskController {
 			e.printStackTrace();
 			return "error";
 		}
-		return "result";
+		System.out.println("插入时间：" + (System.currentTimeMillis() - starttime));
+		return "success";
 	}
 
-	@RequestMapping("/update.do")
+	@RequestMapping("/update")
 	@ResponseBody
 	public String updateByPrimaryKeySelective(MrTaskWithBLOBs record) {
 		try {
@@ -180,7 +195,7 @@ public class MrTaskController {
 	}
 
 	// 任务预警
-	@RequestMapping("/findByProper.do")
+	@RequestMapping("/findByProper")
 	@ResponseBody
 	public Map<String, Object> findByProper(Integer offset, Integer limit) {
 		try {
@@ -196,7 +211,7 @@ public class MrTaskController {
 		}
 	}
 
-	@RequestMapping("/taskAction.do")
+	@RequestMapping("/taskAction")
 	public String taskAction(Integer id) {
 		try {
 			mrTaskService.taskAction(id);
@@ -207,4 +222,34 @@ public class MrTaskController {
 
 		return "result";
 	}
+
+	// 转向任务监控
+	@RequestMapping("/taskMonitor")
+	public String taskMonitor() {
+		return "task/taskMonitor";
+	}
+
+	// 任务监控列表
+	@RequestMapping("/queryRunningTaskList")
+	public @ResponseBody Map<String, Object> queryRunningTaskList(Integer offset, Integer limit) {
+		try {
+			List<TaskQueue> list = mrTaskService.queryRunningTaskList(offset, limit);
+			int count = mrTaskService.queryCountRunnngTask();
+			Map<String, Object> map = new HashMap<>();
+			map.put("total", count);
+			map.put("rows", list);
+			return map;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@RequestMapping("/taskViewViz")
+	public @ResponseBody List<MrTaskWithBLOBs> querytaskViewViz() {
+		List<MrTaskWithBLOBs> bloBs = mrTaskService.taskViewViz();
+		return bloBs;
+
+	}
+
 }

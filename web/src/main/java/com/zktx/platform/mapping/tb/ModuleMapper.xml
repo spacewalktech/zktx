@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zktx.platform.dao.tb.ModuleMapper">
+	<resultMap type="com.zktx.platform.entity.tb.Module" id="BaseResultMap">
+		<id column="id" jdbcType="INTEGER" property="id"/>
+		<result column="class_name" jdbcType="VARCHAR" property="class_name"/>
+		<result column="description" jdbcType="VARCHAR" property="description"/>
+		<result column="name" jdbcType="VARCHAR" property="name"/>
+		<result column="priority" jdbcType="INTEGER" property="priority"/>
+		<result column="sn" jdbcType="VARCHAR" property="sn"/>
+		<result column="url" jdbcType="VARCHAR" property="url"/>
+		<result column="grade" jdbcType="VARCHAR" property="grade"/>
+		<result column="parent_id" jdbcType="INTEGER" property="parent_id"/>
+		<association column="parent_id" property="parent_Module" select="selectById"></association>
+	</resultMap>
+	
+	<select id="queryList" resultMap="BaseResultMap">
+		select * from tb_module m1 left join tb_module m2 on m1.parent_id =m2.id 
+	</select>
+	<select id="selectById"  parameterType="java.lang.Integer" resultType="com.zktx.platform.entity.tb.Module">
+		select * from tb_module where id=#{parent_id}
+	</select>
+	
+	<select id="queryListByPId" resultType="com.zktx.platform.entity.tb.Module">
+		select * from tb_module where parent_id=#{pid,jdbcType=INTEGER}
+	</select>
+	
+	<select id="queryCountbySn" resultType="java.lang.Integer">
+		select count(*) from tb_module 
+		<where>
+			 sn=#{sn,jdbcType=VARCHAR}
+			 <if test="id!=null">
+			 	and id!=#{id,jdbcType=INTEGER}
+			 </if>
+		</where>
+	</select>
+	
+	<select id="queryModuleById" resultType="com.zktx.platform.entity.tb.Module">
+		select * from tb_module where id=#{id,jdbcType=INTEGER}
+	</select>
+	
+	<delete id="deleteByIds" parameterType="java.util.List">
+		delete from tb_module where id in
+		<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+			#{item,jdbcType=INTEGER}
+		</foreach>
+	</delete>
+	<insert id="insertSelective" parameterType="com.zktx.platform.entity.tb.Module" >
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+		insert into tb_module
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="class_name!=null">
+				class_name,
+			</if>
+			<if test="description!=null">
+				description,
+			</if>
+			<if test="name!=null">
+				name,
+			</if>
+			<if test="priority!=null">
+				priority,
+			</if>
+			<if test="sn!=null">
+				sn,
+			</if>
+			<if test="url!=null">
+				url,
+			</if>
+			<if test="parent_id!=null">
+				parent_id,
+			</if>
+			<if test="grade!=null">
+				grade,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="class_name!=null">
+				#{class_name,jdbcType=VARCHAR},
+			</if>
+			<if test="description!=null">
+				#{description,jdbcType=VARCHAR},
+			</if>
+			<if test="name!=null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="priority!=null">
+				#{priority,jdbcType=INTEGER},
+			</if>
+			<if test="sn!=null">
+				#{sn,jdbcType=VARCHAR},
+			</if>
+			<if test="url!=null">
+				#{url,jdbcType=VARCHAR},
+			</if>
+			<if test="parent_id!=null">
+				#{parent_id,jdbcType=INTEGER},
+			</if>
+			<if test="grade!=null">
+				#{grade,jdbcType=VARCHAR}
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.zktx.platform.entity.tb.Module">
+		update tb_module
+		<set>
+			<if test="class_name!=null">
+				class_name=#{class_name,jdbcType=VARCHAR},
+			</if>
+			<if test="description!=null">
+				description =#{description,jdbcType=VARCHAR},
+			</if>
+			<if test="name!=null">
+				name =#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="priority!=null">
+				priority=#{priority,jdbcType=INTEGER},
+			</if>
+			<if test="sn!=null">
+				sn=#{sn,jdbcType=VARCHAR},
+			</if>
+			<if test="url!=null">
+				url=#{url,jdbcType=VARCHAR},
+			</if>
+			<if test="parent_id!=null">
+				parent_id=#{parent_id,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

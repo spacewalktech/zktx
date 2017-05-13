@@ -112,9 +112,9 @@
 												<div class="row">	
 													<section class="col col-1 text-right"></section>
 													<section class="col col-6">
-														<section class="col col-1" ><label class="input"><input type="text" placeholder=""></label></section>
+<!-- 														<section class="col col-1" ><label class="input"><input type="text" placeholder=""></label></section> -->
 														<section class="col col-3"><label class="text">自动清理早于</label></section>
-														<section class="col col-2"><label class="input"><input type="text" placeholder=""></label></section>
+														<section class="col col-3"><label class="input"><input type="text" placeholder=""></label></section>
 														<section class="col col-3"><label class="text">天的外部文件</label></section>
 													</section>
 											</div>
@@ -147,7 +147,7 @@
 													重置
 												</button>
 												<button type="submit" class="btn btn-primary">
-													查询
+													提交
 												</button>
 											</footer>
 										</form>

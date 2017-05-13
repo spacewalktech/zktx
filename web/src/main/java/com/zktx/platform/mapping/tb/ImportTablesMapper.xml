@@ -22,6 +22,7 @@
     <result column="flag" jdbcType="BIT" property="flag" />
     <result column="create_time" jdbcType="TIMESTAMP" property="create_time" />
     <result column="update_time" jdbcType="TIMESTAMP" property="update_time" />
+    <association column="creator_id"  property="creatorUser" select="selectUserById"></association>
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.zktx.platform.entity.tb.ImportTablesWithBLOBs">
     <result column="es_index_schema" jdbcType="LONGVARCHAR" property="es_index_schema" />
@@ -37,6 +38,12 @@
   </sql>
   <select id="findBySource" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
   	select * from tb_import_tables where schema_source = #{source}
+  </select>
+  <select id="queryByIds" parameterType="java.util.List" resultType="java.util.Map">
+  	select id,dbname,table_name from tb_import_tables where id in
+  	<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+  		 #{item,jdbcType=INTEGER}
+  	</foreach>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
     select 
@@ -60,70 +67,74 @@
 		<if test="id!=null">
 			and id!=#{id,jdbcType=INTEGER}
 		</if>
-		and ((table_name =  #{table_name,jdbcType=VARCHAR} and dbname=#{dbname,jdbcType=VARCHAR}) or (src_table = #{src_table,jdbcType=VARCHAR} and src_db=#{src_db,jdbcType=VARCHAR}))
+		and (table_name =  #{table_name,jdbcType=VARCHAR} and dbname=#{dbname,jdbcType=VARCHAR})
 		</where>
 		
 		
 	</select>
-  <select id="findByPagination" parameterType="com.zktx.platform.entity.tb.ImportTablesPo" resultType="com.zktx.platform.entity.tb.ImportTablesWithBLOBs">
-  	select t.id,t.src_db,t.src_table,t.src_db_type,t.dbname,t.table_name,t.create_time,t.update_time,t.active,u.name creator_username,t.creator_id
-  	from tb_import_tables t,tb_user u
+  <select id="findByPagination" parameterType="com.zktx.platform.entity.tb.ImportTablesPo" resultMap="ResultMapWithBLOBs">
+  	select *
+  	from tb_import_tables
   	<where>
-  		t.flag=0 and t.creator_id = u.id
+  		 flag=0
       <if test="src_db!= null and src_db!=''">
-       and t.src_db like CONCAT ('%',#{src_db,jdbcType=VARCHAR},'%')
+       and src_db like CONCAT ('%',#{src_db,jdbcType=VARCHAR},'%')
       </if>
       <if test="src_table != null and src_table != ''">
-        and t.src_table like CONCAT('%',#{src_table,jdbcType=VARCHAR},'%')
+        and src_table like CONCAT('%',#{src_table,jdbcType=VARCHAR},'%')
       </if>
      
       <if test="src_db_type != null and src_db_type != ''">
-       and t.src_db_type like CONCAT('%',#{src_db_type,jdbcType=VARCHAR},'%')
+       and src_db_type like CONCAT('%',#{src_db_type,jdbcType=VARCHAR},'%')
       </if>
       <if test="dbname != null and dbname != ''">
-       and t.dbname like CONCAT('%',#{dbname,jdbcType=VARCHAR},'%')
+       and dbname like CONCAT('%',#{dbname,jdbcType=VARCHAR},'%')
       </if>
       <if test="table_name != null and table_name != ''">
-       and t.table_name like  CONCAT('%',#{table_name,jdbcType=VARCHAR},'%')
+       and table_name like  CONCAT('%',#{table_name,jdbcType=VARCHAR},'%')
       </if>
       <if test="table_type!=null">
-      	and t.table_type =#{table_type,jdbcType=INTEGER}
+      	and table_type =#{table_type,jdbcType=INTEGER}
       </if>
       <if test="create_time_from!=null and create_time_to!=null">
-      	and t.create_time between #{create_time_from,jdbcType=TIMESTAMP} and #{create_time_to,jdbcType=TIMESTAMP}
+      	and create_time between #{create_time_from,jdbcType=TIMESTAMP} and #{create_time_to,jdbcType=TIMESTAMP}
       </if>
   	</where>
-  		order by t.id desc
+  		order by id desc
   		<if test="offset!=null and limit!=null">
   		limit #{offset,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
   		</if>
   		
   </select>
+  
+  <select id="selectUserById" parameterType="java.lang.Integer" resultType="com.zktx.platform.entity.tb.User">
+  	select * from tb_user where id=#{creator_id,jdbcType=INTEGER}
+  </select>
   <select id="findCountByParms" parameterType="com.zktx.platform.entity.tb.ImportTablesPo" resultType="java.lang.Integer">
-  	select count(*) from tb_import_tables t,tb_user u
+  	select count(*) from tb_import_tables t 
   	<where>
-  		t.flag=0
+  		 flag=0
       <if test="src_db!= null and src_db!=''">
-       and t.src_db= #{src_db,jdbcType=VARCHAR}
+       and src_db= #{src_db,jdbcType=VARCHAR}
       </if>
       <if test="src_table != null and src_table != ''">
-        and t.src_table=#{src_table,jdbcType=VARCHAR}
+        and src_table=#{src_table,jdbcType=VARCHAR}
       </if>
      
       <if test="src_db_type != null and src_db_type != ''">
-       and t.src_db_type = #{src_db_type,jdbcType=VARCHAR}
+       and src_db_type = #{src_db_type,jdbcType=VARCHAR}
       </if>
       <if test="dbname != null and dbname != ''">
-       and t.dbname =  #{dbname,jdbcType=VARCHAR}
+       and dbname =  #{dbname,jdbcType=VARCHAR}
       </if>
       <if test="table_name != null and table_name != ''">
-       and t.table_name =  #{table_name,jdbcType=VARCHAR}
+       and table_name =  #{table_name,jdbcType=VARCHAR}
       </if>
       <if test="table_type!=null">
-      	and t.table_type =#{table_type,jdbcType=INTEGER}
+      	and table_type =#{table_type,jdbcType=INTEGER}
       </if>
       <if test="create_time_from!=null and create_time_to!=null">
-      	and t.create_time between #{create_time_from,jdbcType=TIMESTAMP} and #{create_time_to,jdbcType=TIMESTAMP}
+      	and create_time between #{create_time_from,jdbcType=TIMESTAMP} and #{create_time_to,jdbcType=TIMESTAMP}
       </if>
   	</where>
   </select>

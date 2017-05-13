@@ -29,7 +29,7 @@
   <select id="selectByImportTableId" resultType="com.zktx.platform.entity.tb.TableSchemaPo">
   	 select s.id,s.version,t.src_db,t.src_table,t.dbname,t.table_name,s.create_time,s.schema,s.spark_schema,t.table_type    
   	from tb_table_schema s, tb_import_tables t 
-  	where s.table_id=t.id and t.id = #{table_id,jdbcType=INTEGER}
+  	where s.table_id=t.id and t.id = #{table_id,jdbcType=INTEGER} order by s.id desc
   	limit #{fromRowId,jdbcType=INTEGER} , #{num,jdbcType=INTEGER}
   </select>
   <select id="selectCountBytId" resultType="java.lang.Integer">

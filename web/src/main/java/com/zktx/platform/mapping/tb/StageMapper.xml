@@ -10,12 +10,13 @@
     <result column="updated_num" jdbcType="INTEGER" property="updated_num" />
     <result column="deleted_num" jdbcType="INTEGER" property="deleted_num" />
     <result column="record_num" jdbcType="INTEGER" property="record_num" />
-    <result column="status" jdbcType="BIT" property="status" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="process_status" jdbcType="INTEGER" property="process_status" />
     <result column="create_time" jdbcType="TIMESTAMP" property="create_time" />
     <result column="update_time" jdbcType="TIMESTAMP" property="update_time" />
     <result column="begin_time" jdbcType="TIMESTAMP" property="begin_time" />
     <result column="end_time" jdbcType="TIMESTAMP" property="end_time" />
+    <association column="import_table_id"  property="importTables" select="selectImportTablesById"/>
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.zktx.platform.entity.tb.Stage">
     <result column="fail_info" jdbcType="LONGVARCHAR" property="fail_info" />
@@ -67,8 +68,23 @@
     order by id desc
     limit #{offset,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
   </select>
+   <select id="queryStageList" resultMap="ResultMapWithBLOBs">
+  	 select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tb_stage
+    order by id desc
+    limit #{offset,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
+  </select>
+  <select id="selectImportTablesById" parameterType="java.lang.Integer" resultType="com.zktx.platform.entity.tb.ImportTables">
+  		select * from tb_import_tables where id =#{import_table_id}
+  </select>
   <select id="queryCountByTableId" resultType="java.lang.Integer">
   	select count(*) from tb_stage where import_table_id = #{import_table_id,jdbcType=INTEGER}
+  </select>
+  <select id="queryCount" resultType="java.lang.Integer">
+  	select count(*) from tb_stage
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from tb_stage

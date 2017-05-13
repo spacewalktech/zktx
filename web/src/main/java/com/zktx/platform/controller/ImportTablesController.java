@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -13,18 +15,32 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zktx.platform.entity.tb.ImportTablesPo;
 import com.zktx.platform.entity.tb.ImportTablesWithBLOBs;
+import com.zktx.platform.log2.SystemControllerLog;
 import com.zktx.platform.service.importtable.ImportTableService;
+import com.zktx.platform.service.importtable.StageService;
 
 @Controller
-@RequestMapping("/importTables")
+@RequestMapping("/dataManage")
 public class ImportTablesController {
-
 	@Autowired
 	ImportTableService tableService;
 
+	@Autowired
+	private StageService stageService;
+
+	private static Log log = LogFactory.getLog(ImportTablesController.class);
+
+	@RequestMapping("/list")
+	public String orgTableList() {
+		return "/dataManage/list";
+
+	}
+
 	// 条件查询
-	@RequestMapping("/query.do")
+	@SystemControllerLog(description = "查询导入表")
+	@RequestMapping("/query")
 	public @ResponseBody Map<String, Object> findByPagination(ImportTablesPo tablesPo) {
+		log.info("导入表查询————————");
 		try {
 			int count = tableService.findCountByParms(tablesPo);
 			List<ImportTablesWithBLOBs> list = tableService.findByPagination(tablesPo);
@@ -39,18 +55,19 @@ public class ImportTablesController {
 
 	}
 
-	@RequestMapping("/toAddPage.do")
-	public String toAddPage(Integer table_type, ModelMap map) {
+	@SystemControllerLog(description = "进入新建表页面")
+	@RequestMapping("/toAddPage")
+	public String toAddPage(ModelMap map) {
 		List<String> src_dbList = tableService.findDistintSRCDBType();
 		List<String> dbList = tableService.findDistintDBType();
-		map.put("table_type", table_type);
 		map.put("src_dbList", src_dbList);
 		map.put("dbList", dbList);
 		return "dataManage/add";
 	}
 
 	// 插入
-	@RequestMapping("/insert.do")
+	@SystemControllerLog(description = "新建表")
+	@RequestMapping("/insert")
 	public @ResponseBody String insertSelective(ImportTablesWithBLOBs record) {
 		try {
 			record.setCreate_time(new Date());
@@ -62,7 +79,8 @@ public class ImportTablesController {
 		return "success";
 	}
 
-	@RequestMapping("/toUpdatePage.do")
+	@SystemControllerLog(description = "进入修改页面")
+	@RequestMapping("/toUpdatePage")
 	public String toUpdatePage(Integer id, ModelMap map) {
 		ImportTablesWithBLOBs bloBs = tableService.selectByPrimaryKey(id);
 		List<String> src_dbList = tableService.findDistintSRCDBType();
@@ -74,7 +92,8 @@ public class ImportTablesController {
 	}
 
 	// 更新
-	@RequestMapping("/update.do")
+	@SystemControllerLog(description = "修改表")
+	@RequestMapping("/update")
 	public @ResponseBody String updateByPrimaryKeySelective(ImportTablesWithBLOBs record) {
 		try {
 
@@ -89,7 +108,8 @@ public class ImportTablesController {
 	}
 
 	// 删除
-	@RequestMapping("/delete.do")
+	@SystemControllerLog(description = "删除表")
+	@RequestMapping("/delete")
 	public @ResponseBody String deleteByPrimaryKey(Integer id) {
 		try {
 			tableService.deleteByPrimaryKey(id);
@@ -101,14 +121,13 @@ public class ImportTablesController {
 		return "success";
 	}
 
-	@RequestMapping("/queryCountTable.do")
-	public @ResponseBody Integer queryCountTable(Integer id, String src_table, String src_db, String table_name, String dbname) {
+	@RequestMapping("/queryCountTable")
+	public @ResponseBody Integer queryCountTable(Integer id, String table_name, String dbname) {
 		try {
-			if (null == table_name || "".equals(table_name.trim()) || null == dbname || "".equals(dbname.trim()) || null == src_table
-					|| "".equals(src_table.trim()) || null == src_db || "".equals(src_db.trim())) {
+			if (null == table_name || "".equals(table_name.trim()) || null == dbname || "".equals(dbname.trim())) {
 				return -1;
 			} else {
-				int count = tableService.queryCountTable(id, src_table, src_db, table_name, dbname);
+				int count = tableService.queryCountTable(id, table_name, dbname);
 				return count;
 			}
 		} catch (Exception e) {

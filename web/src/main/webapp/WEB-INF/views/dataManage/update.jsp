@@ -36,8 +36,8 @@
 			layer.msg("es索引设置json格式不能为空！")
 		    return
 		}
-		var data ={id:$("#id").val(),src_table:$("#src_table").val(),src_db:$("#src_db").val(),table_name:$("#table_name").val(),dbname:$("#dbname").val()};
-		$.post("queryCountTable.do",data,function(msg){
+		var data ={id:$("#id").val(),table_name:$("#table_name").val(),dbname:$("#dbname").val()};
+		$.post("queryCountTable",data,function(msg){
 			if(msg>0){
 				layer.msg("表名重复，请重新输入", {
 					  icon: 2
@@ -52,7 +52,7 @@
 		});
 	}
 	function doSubmit_ready(){
-		$.post("update.do",$("#smartForm").serialize(),function(result){
+		$.post("update",$("#smartForm").serialize(),function(result){
 			if (result == "error") {
 			    layer.msg('修改失败！', {
 				  icon: 2
@@ -126,11 +126,12 @@
 					<label class="select">
 						<select id="src_db_type" name="src_db_type">
 							<option value="Oracle" selected="${bloBs.src_db_type==Oracle}">Oracle</option>
+							<option value="Spark SQL" selected="${bloBs.src_db_type=='Spark SQL'}">Spark SQL</option>
 							<option value="DB2" selected="${bloBs.src_db_type==DB2}">DB2</option>
 							<option value="Sybase" selected="${bloBs.src_db_type==Sybase}">Sybase</option>
-							<option value="SQL" selected="${bloBs.src_db_type==SQL}">SQL</option>
-							<option value="Server" selected="${bloBs.src_db_type==Server}">Server</option>
-							<option value="Informax" selected="${bloBs.src_db_type==Informax}">Informax</option>
+							<option value="Hive" selected="${bloBs.src_db_type==Hive}">Hive</option>
+							<option value="SQL Server" selected="${bloBs.src_db_type=='SQL Server'}">SQL Server</option>
+							<option value="Informix" selected="${bloBs.src_db_type==Informix}">Informix</option>
 							<option value="MySQL" selected="${bloBs.src_db_type==MySQL}">MySQL</option>
 						</select> 
 					</label> 

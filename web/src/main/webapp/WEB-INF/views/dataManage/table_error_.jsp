@@ -10,7 +10,7 @@ var TableInit = function() {
 	//初始化Table
 	oTableInit.Init = function() {
 		$('#task_list').bootstrapTable({
-			url : 'stage/queryStageOri.do', //请求后台的URL（*）
+			url : 'stage/queryStageOri', //请求后台的URL（*）
 			method : 'get', //请求方式（*）
 			toolbar : '#toolbar', //工具按钮用哪个容器
 			striped : true, //是否显示行间隔色
@@ -72,25 +72,25 @@ var TableInit = function() {
 				field : 'create_time',
 				title : '创建时间',
 				formatter : function (value, row, index){
-			    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+			    	return null!=value?new Date(value).format('yyyy-MM-dd hh:mm:ss'):null;
 			    }
 			},{
 				field : 'update_time',
 				title : '更新时间',
 				formatter : function (value, row, index){
-			    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+			    	return null!=value?new Date(value).format('yyyy-MM-dd hh:mm:ss'):null;
 			    }
 			},{
 				field : 'begin_time',
 				title : '开始执行时间',
 				formatter : function (value, row, index){
-			    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+			    	return null!=value?new Date(value).format('yyyy-MM-dd hh:mm:ss'):null;
 			    }
 			},{
 				field : 'end_time',
 				title : '执行结束时间',
 				formatter : function (value, row, index){
-			    	return new Date(value).format('yyyy-MM-dd hh:mm:ss');
+			    	return null!=value?new Date(value).format('yyyy-MM-dd hh:mm:ss'):null;
 			    }
 			}]
 		});

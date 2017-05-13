@@ -12,7 +12,7 @@ $("#task_add").bind('click' , function(){
 	  shadeClose: true,
 	  shade: 0.2,
 	  area: ['60%', '50%'],
-	  content: 'mrTask/addPage.do' //iframe的url
+	  content: 'mrTask/addPage' //iframe的url
 	}); 
 })	
 
@@ -23,7 +23,7 @@ function show_task_queue(id){
 	  shadeClose: true,
 	  shade: 0.2,
 	  area: ['60%', '50%'],
-	  content: 'mrTask/addPage.do' //iframe的url
+	  content: 'mrTask/addPage' //iframe的url
 	}); 
 }
 
@@ -35,7 +35,7 @@ function del_queue(id){
 	}, function(){
 	    $.ajax({
 			type : 'post',
-			url : 'mrTask/deleteQueueByid.do',
+			url : 'mrTask/deleteQueueByid',
 			data : {
 			    id : id
 			},
@@ -55,7 +55,7 @@ var TableInit = function() {
 	//初始化Table
 	oTableInit.Init = function() {
 		$('#task_wait').bootstrapTable({
-			url : 'mrTask/findTaskToRun.do', //请求后台的URL（*）
+			url : 'mrTask/findTaskToRun', //请求后台的URL（*）
 			method : 'get', //请求方式（*）
 			toolbar : '', //工具按钮用哪个容器
 			striped : true, //是否显示行间隔色
