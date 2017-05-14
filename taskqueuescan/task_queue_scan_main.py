@@ -19,15 +19,13 @@ def process_task(active_task):
 if __name__ == "__main__":
     while True:
         tqc = TaskQueueScan()
-        atask = tqc.dequeue_task()
+        atask, queued_id = tqc.dequeue_task()
         if atask:
-            if atask.should_process():
-                atask.begin_time = util.getCurrentDatetime()
-                r = process_task(atask)
-                atask.end_time = util.getCurrentDatetime()
-                tqc.move_task_to_history(atask, r)
-                if atask.type != 2:
-                    tqc.set_task_processed(atask.id)
-                    tqc.delete_task(atask.id)
+            atask.begin_time = util.getCurrentDatetime()
+            r = process_task(atask)
+            atask.end_time = util.getCurrentDatetime()
+            tqc.move_task_to_history(atask, r)
+            tqc.set_task_processed(queued_id)
+            tqc.delete_queued_task(queued_id)
 
         time.sleep(task_queue_scan_interval)

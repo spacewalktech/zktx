@@ -31,7 +31,7 @@ class StageScan(object):
     def _get_mr_tasks(self):
         self.logger.info("Begin to execute _get_mr_tasks")
         mr_task_list = []  # MRTask list
-        sq = sess.query(MRTask)
+        sq = sess.query(MRTask).filter(MRTask.type < 2)
         for s in sq:
             mr_task_list.append(s)
         self.logger.info("Success to execute _get_mr_tasks")
@@ -199,12 +199,12 @@ class StageScan(object):
 
     def enqueue_time_task(self):
         self.logger.info("Begin to enque_time_task")
-        sq_task = sess.query(MRTask).filter(MRTask.type == 2)
+        sq_task = sess.query(MRTask).filter(MRTask.type > 1)
         for s in sq_task:
-            sq2_queue = sess.query(TaskQueue).filter(TaskQueue.mr_task_id == s.id)
-            qtask = sq2_queue.first()
+            #sq2_queue = sess.query(TaskQueue).filter(TaskQueue.mr_task_id == s.id)
+            #qtask = sq2_queue.first()
             # time task not in task queue, we should enqueue the task
-            if not qtask:
+            if s.time_to_process():
                 tq = TaskQueue(mr_task_id = s.id)
                 tq.create_time = util.getCurrentDatetime()
                 tq.has_processed = 0

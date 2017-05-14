@@ -369,7 +369,7 @@ class CronUtil(object):
         return "{" + "minutes: " + str(self.minutes) + \
             ", hours: " + str(self.hours) + ", days_in_month: " + str(self.days_in_month) + \
             ", months: " + str(self.months) + ", days_in_week: " + str(self.days_in_week) + \
-            ", years: " + str(self.years) + "}"
+            "}"
 
 
 

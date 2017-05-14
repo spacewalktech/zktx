@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-:
 import json
 from common.util import util
+from common.util.logger import Logger
 
 class ActiveTask(object):
     def __init__(self, mr_task=None):
+        self.logger = Logger(self.__class__.__name__).get()
         if mr_task:
             self.id = mr_task.id
             self.name = mr_task.name
@@ -62,7 +64,7 @@ class ActiveTask(object):
         return ret_str
 
     def should_process(self):
-        if self.type != 2:
+        if self.type < 2:
             return True
         cur_datetime = util.getCurrentDatetime()
         cur_year = cur_datetime.year
@@ -71,6 +73,9 @@ class ActiveTask(object):
         cur_day_in_month = cur_datetime.day
         cur_hour = cur_datetime.hour
         cur_minute = cur_datetime.minute
+        self.logger.debug("task schedule_cron is: %s, current time is:{minutes(%s), hour(%s)," 
+                        " day_in_month(%s), month(%s), day_in_week(%s)}" % \
+                        (self.schedule_cron, cur_minute, cur_hour, cur_day_in_month, cur_month, cur_day_in_week))
         if cur_year in self.schedule_cron.years and \
             cur_day_in_week in self.schedule_cron.days_in_week and \
             cur_month in self.schedule_cron.months and \
@@ -81,4 +86,4 @@ class ActiveTask(object):
         return False
 
     def get_stage_info(self):
-        return json.dumps(self.table_stage_list)
+        return util.encode_table_stage(self.table_stage_list)

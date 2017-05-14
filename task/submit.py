@@ -9,7 +9,9 @@ from common.util.logger import Logger
 
 TASK_TYPE = {
     0: "SPARK",
-    1: "HIVE"
+    1: "HIVE",
+    2: "TIME_SPARK",
+    3: "TIME_HIVE"
 }
 
 class Submitter(object):
@@ -33,7 +35,7 @@ class Submitter(object):
             self.hive_submit_bin = config.hive_home + "/bin/hive"
 
     def submit(self, active_task):
-        if TASK_TYPE[active_task.type] == "HIVE":
+        if TASK_TYPE[active_task.type] == "HIVE" or TASK_TYPE[active_task.type] == "TIME_HIVE":
             hiveUtil = HiveUtil()
             for tab in active_task.export_table_list:
                 hiveUtil.dropTable(tab)
@@ -46,7 +48,7 @@ class Submitter(object):
                 db_name, table_name = util.splitDBAndTable(tab)
                 hiveUtil.exportTable(db_name, table_name, True, active_task.export_dir_uri)
 
-        elif TASK_TYPE[active_task.type] == "SPARK":
+        elif TASK_TYPE[active_task.type] == "SPARK" or TASK_TYPE[active_task.type] == "TIME_HIVE":
             hdfsUtil = HDFSUtil()
             local_bin_file = "/tmp/" + util.getPathFlat(active_task.bin_file_uri)
             hdfsUtil.downloadFileFromHDFS(local_bin_file, active_task.bin_file_uri)

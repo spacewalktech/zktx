@@ -4,32 +4,35 @@ from common.dao.mr_task import TaskQueue, MRTask, TaskHistory
 from common.entity.active_task import ActiveTask
 from common.util import util
 import common.db.db_config as db
+from common.util.logger import Logger
 
 class TaskQueueScan(object):
     def __init__(self):
+        self.logger = Logger(self.__class__.__name__).get()
         pass
 
     def dequeue_task(self):
         sq = sess.query(TaskQueue).order_by(TaskQueue.id).filter(TaskQueue.has_processed == 0)
         task = sq.first()
+        res = None
         if task:
             sq2 = sess.query(MRTask).filter(MRTask.id == task.mr_task_id)
             mr_task = sq2.first()
             atask = ActiveTask(mr_task)
             atask.table_stage_list = task.table_stage_list
-            task.begin_time = util.getCurrentDatetime()
-            sess.commit()
-            sess.flush()
-            return atask
+            atask.begin_time = util.getCurrentDatetime()
+            res = (atask, task.id)
         else:
-            return None
+            res = (None,None)
+        sess.commit()
+        sess.flush()
+        return res
 
-    def set_task_processed(self, task_id):
-        sq = sess.query(TaskQueue).filter(TaskQueue.mr_task_id == task_id)
-        queued_task = sq.one()
+    def set_task_processed(self, queued_id):
+        queued_task = sess.query(TaskQueue).get(queued_id)
         if queued_task:
             queued_task.has_processed = 1
-            queued_task.end_time = util.getCurrentDatetime()
+            queued_task.end_time = util.getCurrentDatetime().replace(tzinfo=None)
             sess.commit()
             sess.flush()
         else:
@@ -45,10 +48,9 @@ class TaskQueueScan(object):
 
 
     def delete_queued_task(self, queued_id):
+        self.logger.info("delete_queued_task: delete task from queue(queued_id = %s)" % queued_id)
         tq = sess.query(TaskQueue).get(queued_id)
         sess.delete(tq)
         sess.commit()
         sess.flush()
 
-    def submit_task(self, atask):
-        pass
