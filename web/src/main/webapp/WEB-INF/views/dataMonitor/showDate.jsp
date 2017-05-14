@@ -1,114 +1,35 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>资源管理</title>
 <script type="text/javascript">
-var dataStorage_option = {
-	    series: [{
-	        type: 'liquidFill',
-	        data: [0.6, 0.5, 0.4, 0.3],
-	        outline: {
-	            show: false
-	        }
-	    }]
-	};
-var record_option = {   
-	     title : {
-	         text: '磁盘监控',
-	         subtext: '纯属虚构',
-	         x:'center'
-	        },
-	        tooltip : {
-	         trigger: 'item',
-	         formatter: "{a} <br/>{b} : {c} ({d}%)"
-	        },
-	        legend: {
-	         orient : 'vertical',
-	         x : 'left',
-	         data:['碎片','使用','空闲']
-	        },
-	        toolbox: {
-	         show : true,
-	         feature : {
-	          saveAsImage : {show: true}
-	         }
-	        },
-	        calculable : false,   //拖拽
-	        series : [
-	         {
-	          name:'访问来源',
-	          type:'pie',     //这里指定类型
-	          radius : '55%',
-	          center: ['50%', '60%'],
-	          data:[
-	           {value:234, name:'碎片'},
-	           {value:135, name:'使用'},
-	           {value:1548, name:'空闲'}
-	          ]
-	         }
-	        ]
-	       };
-var data_JVM_option = {
-	    title: {
-	        text: '内存占用率'
-	    },
+
+	var data_obj = {};
+
+    function init(key, nodes){
+		var data = nodes[key];
+		resource_use_echarts(key, data)
+    }
+
+    var resource_use_option = {
 	    tooltip: {
-	        trigger: 'axis'
-	    },
-	    legend: {
-	        data:['内存']
+	        trigger: 'axis',
+	        axisPointer: {
+	            animation: false
+	        },
+	        formatter: function(params) {
+	            params_cpu = params[0];
+	            params_mem = params[1];
+	            return params_cpu.seriesName + " : " + params_cpu.value + "%" + params_mem.seriesName + " : " + params_mem.value + "%";
+	        }
 	    },
 	    grid: {
-	        left: '3%',
-	        right: '4%',
-	        bottom: '3%',
+	        left: '2%',
+	        right: '2%',
+	        bottom: '2%',
+	        top: '3%',
 	        containLabel: true
-	    },
-	    toolbox: {
-	        feature: {
-	            saveAsImage: {}
-	        }
-	    },
-	    xAxis: {
-	        type: 'category',
-	        boundaryGap: false,
-	    	data:[]
-	    },
-	    yAxis: {
-	        type: 'value'
-	    },
-	    series: [
-	        {
-	            name:'增',
-	            type:'line',
-	            stack: '总量',
-	            smooth:true,//true为平滑，
-	            data:[120, 132, 101, 134, 90, 230, 210]
-	        }
-	    ]
-	};
-var SystemPayload_option = {
-	    title: {
-	        text: '系统负载'
-	    },
-	    tooltip: {
-	        trigger: 'axis'
-	    },
-	    legend: {
-	        data:['线程']
-	    },
-	    grid: {
-	        left: '3%',
-	        right: '4%',
-	        bottom: '3%',
-	        containLabel: true
-	    },
-	    toolbox: {
-	        feature: {
-	            saveAsImage: {}
-	        }
 	    },
 	    xAxis: {
 	        type: 'category',
@@ -116,511 +37,358 @@ var SystemPayload_option = {
 	        data: []
 	    },
 	    yAxis: {
-	        type: 'value'
+	        type: 'value',
+	        data: [0, 20, 40, 60, 80, 100]
 	    },
-	    series: [
-	        {
-	            name:'线程',
-	            type:'line',
-	            stack: '总量',
-	            smooth:true,//true为平滑，
-	            data:[120, 132, 101, 134, 90, 230, 210]
+	    series: [{
+	        name: 'cpu',
+	        type: 'line',
+	        data: [0, 0, 0, 0, 0, 0, 0, 0]
+	    },
+	    {
+	        name: 'mem',
+	        type: 'line',
+	        data: [0, 0, 0, 0, 0, 0, 0, 0]
+	    }]
+	}
+    
+    
+    var search_requests_option = {
+	    tooltip: {
+	        trigger: 'axis',
+	        formatter: function(params) {
+	            params_cpu = params[0];
+	            params_mem = params[1];
+	            return params_cpu.seriesName + " : " + params_cpu.value + " " + params_mem.seriesName + " : " + params_mem.value;
 	        }
-	    ]
-	};
-//FIRST===================================================
-$(document).ready(function(){
-	var dataStorage_Chart = echarts.init(document.getElementById('dataStoragefirst')); 
-	dataStorage_Chart.setOption(dataStorage_option); 
-	//---------------------
-	var SystemPayload_Chart = echarts.init(document.getElementById('SystemPayloadfirst')); 
-	 var x = (new Date()).getTime(); 
-     var data_x=[];
-     var i;
-     for(i=-7;i<=0;i++){
-     	data_x.push(new Date(x+i*1000).format('hh:mm:ss'));
-     }      
-     SystemPayload_option.xAxis.data =data_x;
-	SystemPayload_Chart.hideLoading();
-	SystemPayload_Chart.setOption(SystemPayload_option); 
-     //----------
-	var record_Chart = echarts.init(document.getElementById('recordfirst')); 
-	record_Chart.setOption(record_option); 
-	//-------------
-	var data_JVM_Chart = echarts.init(document.getElementById('data_JVMfirst'));
-	var data_x = [];
-    var data_y = [];
-	setInterval(function () {
-        var x = (new Date()).getTime(); // current time
-        //将返回的category和series对象赋值给options对象内的category和series
-        //因为xAxis是一个数组 这里需要是xAxis[i]的形式
-        var data_y=[];
-        var data_x=[];
-        var i;
-        for(i=-7;i<=0;i++){
-        	data_y.push(Math.random());
-        	data_x.push(new Date(x+i*1000).format('hh:mm:ss'));
-        }      
-        data_JVM_option.xAxis.data =data_x;
-        data_JVM_option.series[0].data =data_y ;
-        data_JVM_Chart.hideLoading();
-        data_JVM_Chart.setOption(data_JVM_option); 
-    }, 2000);
-});
-//SECOND===================================================
-$(document).ready(function(){
-	var dataStorage_Chart = echarts.init(document.getElementById('dataStoragesecond')); 
-	dataStorage_Chart.setOption(dataStorage_option); 
-	//---------------------
-	var SystemPayload_Chart = echarts.init(document.getElementById('SystemPayloadsecond')); 
-	 var x = (new Date()).getTime(); 
-     var data_x=[];
-     var i;
-     for(i=-7;i<=0;i++){
-     	data_x.push(new Date(x+i*1000).format('hh:mm:ss'));
-     }      
-     SystemPayload_option.xAxis.data =data_x;
-	SystemPayload_Chart.hideLoading();
-	SystemPayload_Chart.setOption(SystemPayload_option); 
-     //----------
-	var record_Chart = echarts.init(document.getElementById('recordsecond')); 
-	record_Chart.setOption(record_option); 
-	//-------------
-	var data_JVM_Chart = echarts.init(document.getElementById('data_JVMsecond'));
-	var data_x = [];
-    var data_y = [];
-	setInterval(function () {
-        var x = (new Date()).getTime(); // current time
-        //将返回的category和series对象赋值给options对象内的category和series
-        //因为xAxis是一个数组 这里需要是xAxis[i]的形式
-        var data_y=[];
-        var data_x=[];
-        var i;
-        for(i=-7;i<=0;i++){
-        	data_y.push(Math.random());
-        	data_x.push(new Date(x+i*1000).format('hh:mm:ss'));
-        }      
-        data_JVM_option.xAxis.data =data_x;
-        data_JVM_option.series[0].data =data_y ;
-        data_JVM_Chart.hideLoading();
-        data_JVM_Chart.setOption(data_JVM_option); 
-    }, 2000);
-});
-//THIRD===================================================
-$(document).ready(function(){
-	var dataStorage_Chart = echarts.init(document.getElementById('dataStoragethird')); 
-	dataStorage_Chart.setOption(dataStorage_option); 
-	//---------------------
-	var SystemPayload_Chart = echarts.init(document.getElementById('SystemPayloadthird')); 
-	 var x = (new Date()).getTime(); 
-     var data_x=[];
-     var i;
-     for(i=-7;i<=0;i++){
-     	data_x.push(new Date(x+i*1000).format('hh:mm:ss'));
-     }      
-     SystemPayload_option.xAxis.data =data_x;
-	SystemPayload_Chart.hideLoading();
-	SystemPayload_Chart.setOption(SystemPayload_option); 
-     //----------
-	var record_Chart = echarts.init(document.getElementById('recordthird')); 
-	record_Chart.setOption(record_option); 
-	//-------------
-	var data_JVM_Chart = echarts.init(document.getElementById('data_JVMthird'));
-	var data_x = [];
-    var data_y = [];
-	setInterval(function () {
-        var x = (new Date()).getTime(); // current time
-        //将返回的category和series对象赋值给options对象内的category和series
-        //因为xAxis是一个数组 这里需要是xAxis[i]的形式
-        var data_y=[];
-        var data_x=[];
-        var i;
-        for(i=-7;i<=0;i++){
-        	data_y.push(Math.random());
-        	data_x.push(new Date(x+i*1000).format('hh:mm:ss'));
-        }      
-        data_JVM_option.xAxis.data =data_x;
-        data_JVM_option.series[0].data =data_y ;
-        data_JVM_Chart.hideLoading();
-        data_JVM_Chart.setOption(data_JVM_option); 
-    }, 2000);
-});
-//FOUR===================================================
-$(document).ready(function(){
-	var dataStorage_Chart = echarts.init(document.getElementById('dataStoragefour')); 
-	dataStorage_Chart.setOption(dataStorage_option); 
-	//---------------------
-	var SystemPayload_Chart = echarts.init(document.getElementById('SystemPayloadfour')); 
-	 var x = (new Date()).getTime(); 
-     var data_x=[];
-     var i;
-     for(i=-7;i<=0;i++){
-     	data_x.push(new Date(x+i*1000).format('hh:mm:ss'));
-     }      
-     SystemPayload_option.xAxis.data =data_x;
-	SystemPayload_Chart.hideLoading();
-	SystemPayload_Chart.setOption(SystemPayload_option); 
-     //----------
-	var record_Chart = echarts.init(document.getElementById('recordfour')); 
-	record_Chart.setOption(record_option); 
-	//-------------
-	var data_JVM_Chart = echarts.init(document.getElementById('data_JVMfour'));
-	var data_x = [];
-    var data_y = [];
-	setInterval(function () {
-        var x = (new Date()).getTime(); // current time
-        //将返回的category和series对象赋值给options对象内的category和series
-        //因为xAxis是一个数组 这里需要是xAxis[i]的形式
-        var data_y=[];
-        var data_x=[];
-        var i;
-        for(i=-7;i<=0;i++){
-        	data_y.push(Math.random());
-        	data_x.push(new Date(x+i*1000).format('hh:mm:ss'));
-        }      
-        data_JVM_option.xAxis.data =data_x;
-        data_JVM_option.series[0].data =data_y ;
-        data_JVM_Chart.hideLoading();
-        data_JVM_Chart.setOption(data_JVM_option); 
-    }, 2000);
-});
+	    },
+	    grid: {
+	        left: '2%',
+	        right: '2%',
+	        bottom: '2%',
+	        top: '3%',
+	        containLabel: true
+	    },
+	    xAxis: {
+	        type: 'category',
+	        boundaryGap: false,
+	        data: []
+	    },
+	    yAxis: {
+	        type: 'value',
+	        data: [0, 20, 40, 60, 80, 100]
+	    },
+	    series: [{
+	        name: 'Query',
+	        type: 'line',
+	        data: [0, 0, 0, 0, 0, 0, 0, 0]
+	    },
+	    {
+	        name: 'Fetch',
+	        type: 'line',
+	        data: [0, 0, 0, 0, 0, 0, 0, 0]
+	    }]
+	}
+    
+    
+    var search_time_option = {
+	    tooltip: {
+	        trigger: 'axis',
+	        formatter: function(params) {
+	            params_cpu = params[0];
+	            params_mem = params[1];
+	            return params_cpu.seriesName + " : " + params_cpu.value + "ms  " + params_mem.seriesName + " : " + params_mem.value + "ms";
+	        }
+	    },
+	    grid: {
+	        left: '2%',
+	        right: '2%',
+	        bottom: '2%',
+	        top: '3%',
+	        containLabel: true
+	    },
+	    xAxis: {
+	        type: 'category',
+	        boundaryGap: false,
+	        data: []
+	    },
+	    yAxis: {
+	        type: 'value',
+	        data: [0, 20, 40, 60, 80, 100]
+	    },
+	    series: [{
+	        name: 'Query',
+	        type: 'line',
+	        data: [0, 0, 0, 0, 0, 0, 0, 0]
+	    },
+	    {
+	        name: 'Fetch',
+	        type: 'line',
+	        data: [0, 0, 0, 0, 0, 0, 0, 0]
+	    }]
+	}
+    
+    var indexing_time_option = {
+	    tooltip: {
+	        trigger: 'axis',
+	        formatter: function(params) {
+	            params_cpu = params[0];
+	            params_mem = params[1];
+	            return params_cpu.seriesName + " : " + params_cpu.value + "ms  " + params_mem.seriesName + " : " + params_mem.value + "ms";
+	        }
+	    },
+	    grid: {
+	        left: '2%',
+	        right: '2%',
+	        bottom: '2%',
+	        top: '3%',
+	        containLabel: true
+	    },
+	    xAxis: {
+	        type: 'category',
+	        boundaryGap: false,
+	        data: []
+	    },
+	    yAxis: {
+	        type: 'value',
+	        data: [0, 20, 40, 60, 80, 100]
+	    },
+	    series: [{
+	        name: 'Delete',
+	        type: 'line',
+	        data: [0, 0, 0, 0, 0, 0, 0, 0]
+	    },
+	    {
+	        name: 'Index',
+	        type: 'line',
+	        data: [0, 0, 0, 0, 0, 0, 0, 0]
+	    }]
+	}
+    
+    function resource_use_echarts(id, data){
+	
+		// 声明需要的echart
+		var data_JVM_Chart = echarts.init(document.getElementById('resource_use_'+id));
+		var search_requests_Chart = echarts.init(document.getElementById('search_requests_'+id));
+		var search_time_Chart = echarts.init(document.getElementById('search_time_'+id));
+		var indexing_time_Chart = echarts.init(document.getElementById('indexing_time_'+id));
+				
+		
+		// 获取各自的属性
+		var data_y = data_obj[id].resource_use_data_y;
+		var data_z = data_obj[id].resource_use_data_z;
+		
+		var search_requests_y = data_obj[id].search_requests_y;
+		var search_requests_z = data_obj[id].search_requests_z;
+		
+		var search_time_y = data_obj[id].search_time_y;
+		var search_time_z = data_obj[id].search_time_z;
+		
+		var indexing_time_y = data_obj[id].indexing_time_y;
+		var indexing_time_z = data_obj[id].indexing_time_z;
+		
+		// X轴都是时间
+		var x = (new Date()).getTime();
+	    var i;
+	    var data_x = [];
+	    
+	    // 各个图的数据
+	    var data_y_1 = [];
+	    var data_z_1 = [];
+	    
+	    var search_requests_y_1 = [];
+	    var search_requests_z_1 = [];
+	    
+	    var search_time_y_1 = [];
+	    var search_time_z_1 = [];
+	    
+	    var indexing_time_y_1 = [];
+	    var indexing_time_z_1 = [];
+	    
+	    // 将历史数据去掉第一个，加上最新的
+	    for (i = 1; i <= 7; i++) {
+	        data_y_1.push(data_y[i]);
+	        data_z_1.push(data_z[i]);
+	        search_requests_y_1.push(search_requests_y[i])
+	        search_requests_z_1.push(search_requests_z[i])
+	        search_time_y_1.push(search_time_y[i])
+	        search_time_z_1.push(search_time_z[i])
+	        indexing_time_y_1.push(indexing_time_y[i])
+	        indexing_time_z_1.push(indexing_time_z[i])
+	    }
+	    
+	    
+	    // X轴
+	    for (i = -7; i <= 0; i++) {
+        	data_x.push(new Date(x + i * 1000).format('hh:mm:ss'));
+        }
+	    
+		// 需要展示的数据	    
+	    var cpu_percent = data.os.cpu.percent
+	    var used_percent = data.os.mem.used_percent
+        data_y_1.push(cpu_percent);
+        data_z_1.push(used_percent);
+        
+        var query_total = data.indices.search.query_total
+        var fetch_total = data.indices.search.fetch_total
+        search_requests_y_1.push(query_total)
+        search_requests_z_1.push(fetch_total)
+        
+        var query_time = data.indices.search.query_time
+        var fetch_time = data.indices.search.fetch_time
+        search_time_y_1.push(query_time.replace("ms",""))
+        search_time_z_1.push(fetch_time.replace("ms",""))
+        
+        var delete_time = data.indices.indexing.delete_time
+        var index_time = data.indices.indexing.index_time
+        indexing_time_y_1.push(delete_time.replace("ms",""))
+        indexing_time_z_1.push(index_time.replace("ms",""))
+        
+        resource_use_option.xAxis.data = data_x;
+        search_requests_option.xAxis.data = data_x;
+        search_time_option.xAxis.data = data_x;
+        indexing_time_option.xAxis.data = data_x;
+        
+        // 设置属性和加载到图上
+        resource_use_option.series[0].data = data_y_1;
+        resource_use_option.series[1].data = data_z_1;
+        data_JVM_Chart.setOption(resource_use_option, true);
+        
+        search_requests_option.series[0].data = search_requests_y_1;
+        search_requests_option.series[1].data = search_requests_z_1;
+        search_requests_Chart.setOption(search_requests_option);
+        
+        search_time_option.series[0].data = search_time_y_1;
+        search_time_option.series[1].data = search_time_z_1;
+        search_time_Chart.setOption(search_time_option);
+        
+        indexing_time_option.series[0].data = indexing_time_y_1;
+        indexing_time_option.series[1].data = indexing_time_z_1;
+        indexing_time_Chart.setOption(indexing_time_option)
+        
+        // 将值写回到源数据上
+        data_obj[id].resource_use_data_y = data_y_1;
+        data_obj[id].resource_use_data_z = data_z_1;
+        data_obj[id].search_requests_y = search_requests_y_1;
+        data_obj[id].search_requests_z = search_requests_z_1;
+        data_obj[id].search_time_y = search_time_y_1;
+        data_obj[id].search_time_z = search_time_z_1;
+        data_obj[id].indexing_time_y = indexing_time_y_1;
+        data_obj[id].indexing_time_z = indexing_time_z_1;
+        
+    }
+    
+    function init_data(keys){
+		var len = keys.length
+		for(var i = 0; i < len; i++){
+		    var k = keys[i]
+		    var obj = {};
+		    // resource_use
+		    obj.resource_use_data_y = [0, 0, 0, 0, 0, 0, 0, 0];
+		    obj.resource_use_data_z = [0, 0, 0, 0, 0, 0, 0, 0];
+		    obj.search_requests_y = [0, 0, 0, 0, 0, 0, 0, 0];
+		    obj.search_requests_z = [0, 0, 0, 0, 0, 0, 0, 0];
+		    obj.search_time_y = [0, 0, 0, 0, 0, 0, 0, 0];
+		    obj.search_time_z = [0, 0, 0, 0, 0, 0, 0, 0];
+		    obj.indexing_time_y = [0, 0, 0, 0, 0, 0, 0, 0];
+		    obj.indexing_time_z = [0, 0, 0, 0, 0, 0, 0, 0];
+		    data_obj[k] = obj
+		    var data_JVM_Chart = echarts.init(document.getElementById('resource_use_'+k));
+			var search_requests_Chart = echarts.init(document.getElementById('search_requests_'+k));
+			var search_time_Chart = echarts.init(document.getElementById('search_time_'+k));
+			var indexing_time_Chart = echarts.init(document.getElementById('indexing_time_'+k));
+			data_JVM_Chart.setOption(resource_use_option);
+			search_requests_Chart.setOption(search_requests_option);
+			search_time_Chart.setOption(search_time_option);
+			indexing_time_Chart.setOption(indexing_time_option)
+		}
+		
+		
+	}
+    
+    $(function() {
+		
+		var len = '${size}'
+		
+		var keys = '${keys}'
+		
+		init_data(keys.split(","))
+	
+		setInterval(function() {
+		    $.ajax({
+				url : 'http://hadoop01:9200/_nodes/stats?human=true',
+				type : 'get',
+				success : function(re) {
+				    keys = Object.keys(re.nodes)
+				    for(var key in keys){
+						var k = keys[key]
+						init(k, re.nodes)
+				    }
+				}
+		    })
+		}, 3000)
+	})
+    
 </script>
 </head>
 <body>
-			<div id="content">
-				
-				<section>
-					<!-- FIRST============================================================== -->
-					
-					<div class="row">
-						<legend><font color="black" size="22"><b>节点1：</b></font></legend>
-						<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
-
-							<!-- new widget -->
-							
-							<div class="jarviswidget" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false">
-								<header>
-									<span class="widget-icon"> <i class="glyphicon glyphicon-stats txt-color-darken	"></i> </span>
-									<h2> CPU使用率 </h2>
-								</header>
-								
-								<!-- widget div-->
-								<div id="dataStoragefirst" style="height: 400px;">
-								</div>
-								<!-- end widget div -->
-							</div>
-							<!-- end widget -->
-								</article>
-
-						<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
-							
-							<div class="jarviswidget" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false">
-
-								
-
-								<header>
-									<span class="widget-icon"> <i class="fa fa-comments txt-color-dark	"></i> </span>
-									<h2> JVM </h2>
-								</header>
-								
-								
-								
-								<!-- widget div-->
-								<div id="data_JVMfirst" style="height: 400px;">
-								</div>
-								<!-- end widget div -->
-							</div>
-
-						</article>
-
-						<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
-							<!-- new widget -->
-							
-							<div class="jarviswidget" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false">
-
-								
-
-								<header>
-									<span class="widget-icon"> <i class="glyphicon glyphicon-stats txt-color-darken"></i> </span>
-									<h2> 磁盘使用监控 </h2>
-									
-								</header>
-								
-								<!-- widget div-->
-								<div id="recordfirst" style="height: 400px;">
-								</div>
-								<!-- end widget div -->
-							</div>
-							<!-- end widget -->
-								</article>
-
-						<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
-		<!-- new widget -->
-							<div class="jarviswidget" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false">
-
-
-								<header>
-									<span class="widget-icon"> <i class="fa fa-map-marker"></i> </span>
-									<h2>系统负载</h2>
-								</header>
-
-								<!-- widget div-->
-								<div id="SystemPayloadfirst" style="height: 400px;">
-								</div>
-							<!-- end widget -->
-							</div>
-						</article>
-
+	<div id="ribbon">
+		<ol class="breadcrumb">
+			<li>首页</li>
+			<li>运行监控</li>
+			<li>资源监控</li>
+		</ol>
+	</div>
+	<div id="content">
+		<c:forEach var="i" items="${nodesInfo}">
+			<div class="row">
+				<legend style="padding-left: 13px"> ${i.name} (${i.transport_address }) </legend>
+				<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
+					<div class="jarviswidget" data-widget-colorbutton="false" data-widget-editbutton="false">
+						<header>
+							<span class="widget-icon">
+								<i class="glyphicon glyphicon-stats txt-color-darken	"></i>
+							</span>
+							<h2>Resouce Used (%)</h2>
+						</header>
+						<div id="resource_use_${i.id}" style="height: 200px;"></div>
 					</div>
-					<!--  SECOND==========================================================================-->
-					<div class="row">
-					<legend><font color="black" size="22"><b>节点2：</b></font></legend>
-						<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
-
-							<!-- new widget -->
-							
-							<div class="jarviswidget" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false">
-								<header>
-									<span class="widget-icon"> <i class="glyphicon glyphicon-stats txt-color-darken	"></i> </span>
-									<h2>CPU使用率 </h2>
-								</header>
-								
-								<!-- widget div-->
-								<div id="dataStoragesecond" style="height: 400px;">
-								</div>
-								<!-- end widget div -->
-							</div>
-							<!-- end widget -->
-								</article>
-
-						<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
-							
-							<div class="jarviswidget" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false">
-
-								
-
-								<header>
-									<span class="widget-icon"> <i class="fa fa-comments txt-color-dark	"></i> </span>
-									<h2> JVM </h2>
-								</header>
-								
-								
-								
-								<!-- widget div-->
-								<div id="data_JVMsecond" style="height: 400px;">
-								</div>
-								<!-- end widget div -->
-							</div>
-
-						</article>
-
-						<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
-							<!-- new widget -->
-							
-							<div class="jarviswidget" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false">
-
-								
-
-								<header>
-									<span class="widget-icon"> <i class="glyphicon glyphicon-stats txt-color-darken"></i> </span>
-									<h2> 磁盘使用监控</h2>
-									
-								</header>
-								
-								<!-- widget div-->
-								<div id="recordsecond" style="height: 400px;">
-								</div>
-								<!-- end widget div -->
-							</div>
-							<!-- end widget -->
-								</article>
-
-						<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
-		<!-- new widget -->
-							<div class="jarviswidget" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false">
-
-
-								<header>
-									<span class="widget-icon"> <i class="fa fa-map-marker"></i> </span>
-									<h2>系统负载</h2>
-								</header>
-
-								<!-- widget div-->
-								<div id="SystemPayloadsecond" style="height: 400px;">
-								</div>
-							<!-- end widget -->
-							</div>
-						</article>
-
+				</article>
+				<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
+					<div class="jarviswidget" data-widget-colorbutton="false" data-widget-editbutton="false">
+						<header>
+							<span class="widget-icon">
+								<i class="glyphicon glyphicon-stats txt-color-darken	"></i>
+							</span>
+							<h2>Search requests per second</h2>
+						</header>
+						<div id="search_requests_${i.id}" style="height: 200px;"></div>
 					</div>
-					<!--  THIRD==========================================================================-->
-					<div class="row">
-						<legend><font color="black" size="22"><b>节点3：</b></font></legend>
-						<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
-
-							<!-- new widget -->
-							
-							<div class="jarviswidget" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false">
-								<header>
-									<span class="widget-icon"> <i class="glyphicon glyphicon-stats txt-color-darken	"></i> </span>
-									<h2> CPU使用率 </h2>
-								</header>
-								
-								<!-- widget div-->
-								<div id="dataStoragethird" style="height: 400px;">
-								</div>
-								<!-- end widget div -->
-							</div>
-							<!-- end widget -->
-								</article>
-
-						<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
-							
-							<div class="jarviswidget" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false">
-
-								
-
-								<header>
-									<span class="widget-icon"> <i class="fa fa-comments txt-color-dark	"></i> </span>
-									<h2> JVM </h2>
-								</header>
-								
-								
-								
-								<!-- widget div-->
-								<div id="data_JVMthird" style="height: 400px;">
-								</div>
-								<!-- end widget div -->
-							</div>
-
-						</article>
-
-						<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
-							<!-- new widget -->
-							
-							<div class="jarviswidget" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false">
-
-								
-
-								<header>
-									<span class="widget-icon"> <i class="glyphicon glyphicon-stats txt-color-darken"></i> </span>
-									<h2> 磁盘使用监控 </h2>
-									
-								</header>
-								
-								<!-- widget div-->
-								<div id="recordthird" style="height: 400px;">
-								</div>
-								<!-- end widget div -->
-							</div>
-							<!-- end widget -->
-								</article>
-
-						<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
-		<!-- new widget -->
-							<div class="jarviswidget" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false">
-
-
-								<header>
-									<span class="widget-icon"> <i class="fa fa-map-marker"></i> </span>
-									<h2>系统负载</h2>
-								</header>
-
-								<!-- widget div-->
-								<div id="SystemPayloadthird" style="height: 400px;">
-								</div>
-							<!-- end widget -->
-							</div>
-						</article>
-
+				</article>
+				<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
+					<div class="jarviswidget" data-widget-colorbutton="false" data-widget-editbutton="false">
+						<header>
+							<span class="widget-icon">
+								<i class="glyphicon glyphicon-stats txt-color-darken	"></i>
+							</span>
+							<h2>Search time per second</h2>
+						</header>
+						<div id="search_time_${i.id}" style="height: 200px;"></div>
 					</div>
-					<!-- FOUR ==========================================================================-->
-					<div class="row">
-						<legend><font color="black" size="22"><b>节点4：</b></font></legend>
-						<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
-
-							<!-- new widget -->
-							
-							<div class="jarviswidget" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false">
-								<header>
-									<span class="widget-icon"> <i class="glyphicon glyphicon-stats txt-color-darken	"></i> </span>
-									<h2>CPU使用率</h2>
-								</header>
-								
-								<!-- widget div-->
-								<div id="dataStoragefour" style="height: 400px;">
-								</div>
-								<!-- end widget div -->
-							</div>
-							<!-- end widget -->
-								</article>
-
-						<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
-							
-							<div class="jarviswidget" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false">
-
-								
-
-								<header>
-									<span class="widget-icon"> <i class="fa fa-comments txt-color-dark	"></i> </span>
-									<h2> JVM </h2>
-								</header>
-								
-								
-								
-								<!-- widget div-->
-								<div id="data_JVMfour" style="height: 400px;">
-								</div>
-								<!-- end widget div -->
-							</div>
-
-						</article>
-
-						<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
-							<!-- new widget -->
-							
-							<div class="jarviswidget" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false">
-
-								
-
-								<header>
-									<span class="widget-icon"> <i class="glyphicon glyphicon-stats txt-color-darken"></i> </span>
-									<h2> 磁盘使用监控 </h2>
-									
-								</header>
-								
-								<!-- widget div-->
-								<div id="recordfour" style="height: 400px;">
-								</div>
-								<!-- end widget div -->
-							</div>
-							<!-- end widget -->
-								</article>
-
-						<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
-		<!-- new widget -->
-							<div class="jarviswidget" id="wid-id-2" data-widget-colorbutton="false" data-widget-editbutton="false">
-
-
-								<header>
-									<span class="widget-icon"> <i class="fa fa-map-marker"></i> </span>
-									<h2>系统负载</h2>
-								</header>
-
-								<!-- widget div-->
-								<div id="SystemPayloadfour" style="height: 400px;">
-								</div>
-							<!-- end widget -->
-							</div>
-						</article>
-
+				</article>
+				<article class="col-sm-12 col-md-12 col-lg-3 sortable-grid">
+					<div class="jarviswidget" data-widget-colorbutton="false" data-widget-editbutton="false">
+						<header>
+							<span class="widget-icon">
+								<i class="glyphicon glyphicon-stats txt-color-darken	"></i>
+							</span>
+							<h2>Indexing time per second</h2>
+						</header>
+						<div id="indexing_time_${i.id}" style="height: 200px;"></div>
 					</div>
-				</section>
-
+				</article>
 			</div>
-			<!-- END MAIN CONTENT -->
-	
-		
-	
+		</c:forEach>
+	</div>
 </body>
 </html>
