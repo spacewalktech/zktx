@@ -6,6 +6,8 @@ import json
 import subprocess
 import csv
 import time
+import datetime
+import pytz
 from common.entity.triggle_cond import TriggleCond
 from common.entity.stage_to_process import StageToProcess
 from common.config import config
@@ -108,6 +110,9 @@ def rreplace(s, old, new, occurrence):
 def touch(file_path):
     with open(file_path, "a"):
         os.utime(file_path, None)
+
+def getCurrentDatetime():
+    return datetime.datetime.now(tz=pytz.timezone("Asia/Shanghai"))
 
 def getExportPath(db_name, table_name, is_full, export_dir_path, file_suffix):
     cur_timestamp = str(int(time.time()))
@@ -269,3 +274,102 @@ def paddingTimeNum(num):
     if num < 10:
         return "0" + str(num)
     return str(num)
+
+CRON_RANGE = {
+    0: (0, 59),     # minutes
+    1: (0, 23),     # hours
+    2: (1, 31),     # days_in_month
+    3: (1, 12),     # months
+    4: (1, 7),      # days_in_week
+    5: (1900, 3000) # years
+}
+
+WEEKDAY_INDEX = {
+    "mon": "1",
+    "tue": "2",
+    "wed": "3",
+    "thu": "4",
+    "fri": "5",
+    "sat": "6",
+    "sun": "7"
+}
+
+
+
+MONTH_INDEX = {
+    "jan": "1",
+    "feb": "2",
+    "mar": "3",
+    "apr": "4",
+    "may": "5",
+    "jun": "6",
+    "jul": "7",
+    "aug": "8",
+    "sep": "9",
+    "oct": "10",
+    "nov": "11",
+    "dec": "12"
+}
+
+class CronUtil(object):
+    def __init__(self, minutes=None, hours=None, days_in_month=None, months=None, days_in_week=None, years=None):
+        self.minutes = minutes
+        self.hours = hours
+        self.days_in_month = days_in_month
+        self.months = months
+        self.days_in_week = days_in_week
+        self.years = years
+
+    def parseLinuxCron(self, cron_str):
+        cstr_new = self._preProcess(cron_str)
+        params = cstr_new.split()
+        self.minutes = self._parseField(params[0], 0)
+        self.hours = self._parseField(params[1], 1)
+        self.days_in_month = self._parseField(params[2], 2)
+        self.months = self._parseField(params[3], 3)
+        self.days_in_week = self._parseField(params[4], 4)
+        if len(params) > 5:
+            self.years = self._parseField(params[5], 5)
+        else:
+            self.years = set([i for i in range(2000, 2100)])
+
+    def _preProcess(self, cron_str):
+        cron_str = cron_str.lower()
+        for k in MONTH_INDEX:
+            cron_str = cron_str.replace(k, MONTH_INDEX[k])
+        for k in WEEKDAY_INDEX:
+            cron_str = cron_str.replace(k, WEEKDAY_INDEX[k])
+        return cron_str
+
+    def _parseField(self, field_str, index):
+        field_values = []
+        f1 = splitString(field_str, "/")
+        range_field = f1[0]
+        stride = 1
+        if range_field == "*":
+            beg, end = CRON_RANGE[index]
+        elif "-" in range_field:
+            rr = range_field.split("-")
+            beg, end = int(rr[0]), int(rr[1])
+        elif len(f1) < 2:
+            vals = splitString(range_field, ",")
+            for v in vals:
+                field_values.append(int(v))
+            return field_values
+        else:
+            raise ValueError("_parseField field_str(%s) Error" % field_str)
+        # update the default stride 1
+        if len(f1) > 1:
+            stride = int(f1[1])
+        for i in range(beg, end+1, stride):
+            field_values.append(i)
+        return set(field_values)
+
+    def __str__(self):
+        return "{" + "minutes: " + str(self.minutes) + \
+            ", hours: " + str(self.hours) + ", days_in_month: " + str(self.days_in_month) + \
+            ", months: " + str(self.months) + ", days_in_week: " + str(self.days_in_week) + \
+            ", years: " + str(self.years) + "}"
+
+
+

@@ -93,3 +93,4 @@ class Submitter(object):
                 util.convertCSV2PipeDelimited(data_file_dest)
                 done_indicator_file = dest_dir + "/" + "upload_completed"
                 util.touch(done_indicator_file)
+        return 0
