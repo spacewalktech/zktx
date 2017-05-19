@@ -1,9 +1,12 @@
 package com.zktx.platform.service.importtable.impl;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -215,5 +218,28 @@ public class MrTaskServiceImple implements MrTaskService {
 	public List<MrTaskWithBLOBs> taskViewViz() {
 
 		return mapper.findAllMrTaskWithBLOBs();
+	}
+
+	@Override
+	public String dowLoadFile(String uri) {
+		StringBuffer sb = new StringBuffer();
+		InputStream inStream = null;
+		Configuration conf = new Configuration();
+		try {
+			FileSystem fs = FileSystem.get(URI.create(uri), conf);
+			Path path = new Path(URI.create(uri));
+			if (fs.exists(path)) {
+				inStream = fs.open(path);
+				BufferedReader reader = new BufferedReader(new InputStreamReader(inStream));
+				String context = null;
+				while ((context = reader.readLine()) != null) {
+					sb.append(context);
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return sb.toString();
 	}
 }

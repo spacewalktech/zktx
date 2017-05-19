@@ -4,29 +4,89 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
-
+<style type="text/css">
+.svg-container { 
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%; 
+    vertical-align: middle; 
+    overflow: hidden; 
+}
+        </style>
 <script type="text/vnd.graphviz" id="view_div">
 digraph task{
-    graph[color=red bgcolor="lightgrey" label="任务图表关系图",fontname="FangSong"]
-    	rankdir=LR;//表示从左到右显示
-	a1[shape=box label="表a1" fontname="FangSong"];
-	b1[shape=box label="表b1" fontname="FangSong"];
-	c1[shape=box label="表c1" fontname="FangSong"];
-	d1[shape=box label="表d1" fontname="FangSong"];
-	e1[shape=box label="表e1" fontname="FangSong"];
-	C[label="任务C" fontname="FangSong"]
-	A[label="任务A" fontname="FangSong" id="qq"]
-	B[label="任务B" fontname="FangSong"]
-	over[shape=Msquare]
 	
-	{a1 b1}->C[label="触发任务" fontname="FangSong"];
-	C->c1[constraint=false label="生成" fontname="FangSong"];
-	{d1 c1}->A[label="触发任务" fontname="FangSong"]
-	A->e1[label="生成" fontname="FangSong"]
-	e1->B[label="触发任务" fontname="FangSong"];
-	B->over
-	
+	 graph[label="任务图表关系图" fontsize="20" fontname="FangSong"]
+	rankdir=LR;
+	a1[shape=box label="l1prpcinsured_etn_d" fontname="FangSong"]
+	a2[shape=box label="l1prpcitem_car_etn_d" fontname="FangSong"]
+	a3[shape=box label="l1prpcmain_etn_d" fontname="FangSong"]
+	a4[shape=box label="l1prpcopyitemkind_etn_d" fontname="FangSong"]
+	a5[shape=box label="l1prpcopymain_etn_d" fontname="FangSong"]
+	a6[shape=box label="l1prpcopyprofitdetail_etn_d" fontname="FangSong"]
+	a7[shape=box label="l1prpdagent_etn_d" fontname="FangSong"]
 
+	b1[shape=box label="l2prpcmain_d" fontname="FangSong"]
+	b2[shape=box label="l2prpcopymain_d" fontname="FangSong"]
+	b3[shape=box label="l2prpdagent_d" fontname="FangSong"]
+	b4[shape=box label="l2prpdcompany_d" fontname="FangSong"]
+	b5[shape=box label="l2prpdagent_d" fontname="FangSong"]
+	b6[shape=box label="l2utiisales_d" fontname="FangSong"]
+	b7[shape=box label="l2utiisales_d" fontname="FangSong"]
+
+	c1[shape=box label="dim_com_branch" fontname="FangSong"]
+	c2[shape=box label="dim_com_county" fontname="FangSong"]
+	c3[shape=box label="dim_com_city" fontname="FangSong"]
+	c4[shape=box label="dim_com_province" fontname="FangSong"]
+	c5[shape=box label="dim_com_staff" fontname="FangSong"]
+
+	d1[shape=box label="l1utiisales_etn_d" fontname="FangSong"]
+	d2[shape=box label="l1sffdocdetail_etn_d" fontname="FangSong"]
+
+	e1[shape=box label="l1prpphead_etn_d" fontname="FangSong"]
+
+	over[shape=doublecircle fillcolor="black"]
+	
+	R1[style=filled fillcolor="lightgrey" label="l2prpcinsured_p" fontname="FangSong"]
+	R2[style=filled fillcolor="lightgrey" label="l2prpcitem_car_p" fontname="FangSong"]
+	R3[style=filled fillcolor="lightgrey" label="l2prpcmain_p" fontname="FangSong"]
+	R4[style=filled fillcolor="lightgrey" label="l2prpcopyitemkind_p" fontname="FangSong"]
+	R5[style=filled fillcolor="lightgrey" label="l2prpcopymain_p" fontname="FangSong"]
+	R6[style=filled fillcolor="lightgrey" label="l2prpcopyprofitdetail_p" fontname="FangSong"]
+	R7[style=filled fillcolor="lightgrey" label="l2prpdagent_p" fontname="FangSong"]
+
+	P1[style=filled fillcolor="lightgrey" label="l2prpdcompany_p" fontname="FangSong"]
+	P2[style=filled fillcolor="lightgrey" label="l2prplcompensate_p" fontname="FangSong"]
+	P3[style=filled fillcolor="lightgrey" label="l2prplprepay_p" fontname="FangSong"]
+	P4[style=filled fillcolor="lightgrey" label="l2prpmainsub_p" fontname="FangSong"]
+	P5[style=filled fillcolor="lightgrey" label="l2prppfee_p" fontname="FangSong"]
+	
+	M1[style=filled fillcolor="lightgrey" label="l2prpphead_p" fontname="FangSong"]
+	M2[style=filled fillcolor="lightgrey" label="l2sffdocdetail_p" fontname="FangSong"]
+	
+	N1[style=filled fillcolor="lightgrey" label="l2utiisales_p" fontname="FangSong"]
+
+
+	a1->R1->b1
+	a2->R2->b2	
+	a3->R3->b3
+	a4->R4->b4
+	a5->R5->b5
+	a6->R6->b6
+	a7->R7->b7
+	
+	
+	{b1 b2}->P1->c1
+	{b1 b3}->P2->c2
+	{b3 b5}->P3->c3
+	{b4 b5 b6}->P4->c4
+	b7->P5->c5
+	c4->M1->d1
+	c4->M2->d2
+	b6->N1->e1
+	{e1 d1 d2}->over;
+	
 }
 </script>
 <script type="text/javascript">
@@ -159,15 +219,19 @@ var TableInit = function() {
 				},{
 				    title : '操作',
 				    formatter : function(value,row,index){
-						return '<div class="btn-group" style="width: 100px;">'
-						+	'<a class="btn btn-default" href="javascript:void(0);">操作</a>'
-						+	'<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"><span class="caret"></span></a>'
-						+	'<ul class="dropdown-menu">'
-						+	'	<li><a href="javascript:void(0);onclick=show_file('+ row.id +')">查看代码</a></li>'
-						+	'	<li><a href="javascript:void(0);onclick=upd_task('+ row.id +')">编辑</a></li>'
-						+	'	<li><a href="javascript:void(0);onclick=del_task('+ row.id +')">删除</a></li>'
-						+	'	<li><a href="javascript:void(0);onclick=del_task('+ row.id +')">手动运行</a></li>'
-						+	'</ul></div>'
+				    	var val ="";
+				    	val+= '<div class="btn-group" style="width: 100px;">'
+						val+='<a class="btn btn-default" href="javascript:void(0);">操作</a>'
+						val+=	'<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);"><span class="caret"></span></a>'
+						val+=	'<ul class="dropdown-menu">'
+						val+=	'	<li><a href="javascript:void(0);onclick=show_file('+ row.id +')">查看代码</a></li>'
+						val+='	<li><a href="javascript:void(0);onclick=upd_task('+ row.id +')">编辑</a></li>'
+						val+='	<li><a href="javascript:void(0);onclick=del_task('+ row.id +')">删除</a></li>'
+						if(row.option_mode==0){
+							val+='	<li><a href="javascript:void(0);onclick=del_task('+ row.id +')">手动运行</a></li>'
+						}
+						val+='</ul></div>'
+						return val;
 				    }
 				}],
 				onLoadSuccess:function(data){
@@ -281,10 +345,14 @@ function showExport(id){
 
 function show_file(id){
 	var res =sessionStorage.getItem("uri_"+id);
-	$.post("mrTask/dowloadfile",{uri:res},function(msg){
-		alert(msg);
-// 		$("#id").load();
-	});
+	layer.open({
+		  type: 2,
+		  title: '代码展示',
+		  shadeClose: true,
+		  shade: 0.3,
+		  area: ['60%', '80%'],
+		  content: 'mrTask/dowloadfile?uri='+res
+		}); 
 }
 
 	
@@ -297,22 +365,43 @@ function show_file(id){
 				strbuf.append('rankdir=LR;');
 				$.each(res,function(index,val){
 					var input_tables =val.input_tables;
+					var export_tables=val.export_tables;
+					if((input_tables==null||input_tables=="null"||input_tables.length==0)&&(export_tables=="null"||export_tables==null||export_tables.length==0)){
+						return  true;
+					}
+					//任务：
 					var task_name =val.name
 					var task_id =val.id
-// 					alert(task_id+":"+task_name);
-					strbuf.append(task_name+'[label="'+task_name+'" fontname="FangSong" id="task_'+task_id+'"]');
+					strbuf.append(task_name+'[label="'+task_name+'" fontname="FangSong" id="task_'+task_id+'"];');
+					//任务对应的输入表
+					
 					if(input_tables!=null&&input_tables.length>0){
 						var obj =eval('('+input_tables+')');
 						$.each(obj,function(index_,val_){
 							var node_input =val_.dbname+"_"+val_.table_name;
 							var node_input_id =val_.id;
-							strbuf.append(node_input+'[shape=box label="'+node_input+'" fontname="FangSong" id="input_'+node_input_id+'"];');
-							strbuf.append(node_input+'->'+task_name);
+							strbuf.append(node_input+'[shape="box" label="'+node_input+'" fontname="FangSong"];');
+							strbuf.append(node_input+'->'+task_name+";");
 						});
 					}
+					//任务对应的输出 表：
+					
+					if(export_tables!=null&&export_tables.length>0){
+						var exports = export_tables.split(",");
+						$.each(exports,function(index,val){
+							var valstr=val.split(".");
+							var exp_dbname = valstr[0];
+							var exp_tablename=valstr[1];
+							var label_name=val[0]+"_"+val[1];
+							strbuf.append(label_name+'[shape="box" label="'+label_name+'" fontname="FangSong"];');
+							strbuf.append(task_name+"->"+label_name+";");
+						})
+					}
+					
+					
 				})
 				strbuf.append('}');
-				document.getElementById("profile_center").innerHTML=Viz(strbuf.toString(), "SVG");
+				document.getElementById("messages_center").innerHTML=Viz(strbuf.toString(), "SVG");
 			})
 			
 			
@@ -338,7 +427,9 @@ function show_file(id){
 			
 		})
 	//==========================================================================
-		
+		$(function(){
+			document.getElementById("profile_center").innerHTML=Viz(document.getElementById("view_div").innerHTML, "SVG");
+		})
 </script>
 </head>
 <body>
@@ -374,15 +465,15 @@ function show_file(id){
 				    
 				    </div>
 				    <div role="tabpanel" class="tab-pane" id="profile">
-				    	<center id="profile_center" style="width: 1000; height: 1000">
+				    	<div id="profile_center" class="svg-container">
 				    		
-				    	</center>
+				    	</div>
 				    	
 				    </div>
 				    <div role="tabpanel" class="tab-pane" id="messages">
-				    	<center id="messages_center">
+				    	<div id="messages_center" >
 				    		
-				    	</center>
+				    	</div>
 				    </div>
 				  </div>
 			

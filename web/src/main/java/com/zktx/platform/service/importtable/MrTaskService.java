@@ -50,4 +50,6 @@ public interface MrTaskService {
 	int queryCountRunnngTask();
 
 	List<MrTaskWithBLOBs> taskViewViz();
+
+	String dowLoadFile(String uri);
 }
