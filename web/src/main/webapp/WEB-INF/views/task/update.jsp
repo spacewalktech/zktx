@@ -5,7 +5,6 @@
 <head>
 <title>修改任务</title>
 <%@ include file="../header.jsp"%>
-
 <script>
 	var n = 0
 	var m = 0
@@ -380,180 +379,184 @@
 	}
 
 </script>
-
 </head>
 <body style='width: 99.5%'>
 	<div id="content">
-			<form class="form-horizontal" action="mrTask/insertSelective">
-		<fieldset id="firstDiv">
-		       <legend>流程类型</legend>
-
-                      <div class="form-group">
-                      		<input type='hidden' id='id' name='id' value='${task.id}'>
-								<label for="disabledSelect"  class="col-sm-2 control-label text-right">流程类型：</label>
-								<section class="col col-4">
-				
-								<div class="col-sm-10">
-										<div class="checkbox-inline">
-									        <label>
-									            <input type="radio" name="task_type" value="sql" <c:if test='${task.task_type == "sql" }'>checked</c:if>> SQL
-									        </label>
-									    </div>
-									    <div class="checkbox-inline">
-									        <label>
-									            <input type="radio" name="task_type" value="scala" <c:if test='${task.task_type == "scala" }'>checked</c:if>> SCALA
-									        </label>
-									    </div>
-									    <div class="checkbox-inline">
-									        <label>
-									            <input type="radio" name="task_type" value="python" <c:if test='${task.task_type == "python" }'>checked</c:if>>PYTHON
-									        </label>
-									    </div>
-									    <div class="checkbox-inline">
-									        <label>
-									            <input type="radio" name="task_type" value="java" <c:if test='${task.task_type == "java" }'>checked</c:if>>JAVA
-									        </label>
-									    </div>
-									</div>
-								</section>
-						   </div>
-						    <div class="form-group">
-								<label for="disabledSelect"  class="col-sm-2 control-label text-right">流程代码：</label>
-						    	<section class="col col-8">
-									<label class="file">
-										<input type="file" placeholder="选择文件" id="file" name="file">
-										<div class="input input-file" id="file_lable">
-											${task.bin_file_uri }
-											<input type="hidden" placeholder="选择文件" id="bin_file_uri" name="bin_file_uri" value="${task.bin_file_uri }">
-										</div>
-									</label> 
-								</section>
-						    </div>
-						 
-		</fieldset>
-		<fieldset id="secondDiv">
-			<legend>调度类型</legend>
-			 <div class="form-group">
-				<label for="disabledSelect"  class="col-sm-2 control-label text-right">类型：</label>
-								<section class="col col-4">
-				
-								<div class="col-sm-10">
-										<div class="checkbox-inline">
-									        <label>
-									            <input type="radio" name="option_mode" value="0" <c:if test='${task.option_mode == 0 }'>checked</c:if>>手动
-									        </label>
-									    </div>
-									    <div class="checkbox-inline">
-									        <label>
-									            <input type="radio" name="option_mode" value="1" <c:if test='${task.option_mode == 1 }'>checked</c:if>>触发
-									        </label>
-									    </div>
-									    <div class="checkbox-inline">
-									        <label>
-									            <input type="radio" name="option_mode" value="2" <c:if test='${task.option_mode == 2 }'>checked</c:if>>定时
-									        </label>
-									    </div>
-									</div>
-			 </div>
-			 <div class="form-group" id="task_schedule_div">
-			 	<label for="disabledSelect"  class="col-sm-2 control-label text-right">定时运行表达式：</label>
+		<form class="form-horizontal" action="mrTask/insertSelective">
+			<fieldset id="firstDiv">
+				<legend>流程类型</legend>
+				<div class="form-group">
+					<input type='hidden' id='id' name='id' value='${task.id}'>
+					<label for="disabledSelect" class="col-sm-2 control-label text-right">流程类型：</label>
+					<section class="col col-4">
+					<div class="col-sm-10">
+						<div class="checkbox-inline">
+							<label>
+								<input type="radio" name="task_type" value="sql" <c:if test='${task.task_type == "sql" }'>checked</c:if>>
+								SQL
+							</label>
+						</div>
+						<div class="checkbox-inline">
+							<label>
+								<input type="radio" name="task_type" value="scala" <c:if test='${task.task_type == "scala" }'>checked</c:if>>
+								SCALA
+							</label>
+						</div>
+						<div class="checkbox-inline">
+							<label>
+								<input type="radio" name="task_type" value="python" <c:if test='${task.task_type == "python" }'>checked</c:if>>
+								PYTHON
+							</label>
+						</div>
+						<div class="checkbox-inline">
+							<label>
+								<input type="radio" name="task_type" value="java" <c:if test='${task.task_type == "java" }'>checked</c:if>>
+								JAVA
+							</label>
+						</div>
+					</div>
+					</section>
+				</div>
+				<div class="form-group">
+					<label for="disabledSelect" class="col-sm-2 control-label text-right">流程代码：</label>
+					<section class="col col-8"> <label class="file">
+						<input type="file" placeholder="选择文件" id="file" name="file">
+						<div class="input input-file" id="file_lable">
+							${task.bin_file_uri }
+							<input type="hidden" placeholder="选择文件" id="bin_file_uri" name="bin_file_uri" value="${task.bin_file_uri }">
+						</div>
+					</label> </section>
+				</div>
+			</fieldset>
+			<fieldset id="secondDiv">
+				<legend>调度类型</legend>
+				<div class="form-group">
+					<label for="disabledSelect" class="col-sm-2 control-label text-right">类型：</label>
+					<section class="col col-4">
+					<div class="col-sm-10">
+						<div class="checkbox-inline">
+							<label>
+								<input type="radio" name="option_mode" value="0" <c:if test='${task.option_mode == 0 }'>checked</c:if>>
+								手动
+							</label>
+						</div>
+						<div class="checkbox-inline">
+							<label>
+								<input type="radio" name="option_mode" value="1" <c:if test='${task.option_mode == 1 }'>checked</c:if>>
+								触发
+							</label>
+						</div>
+						<div class="checkbox-inline">
+							<label>
+								<input type="radio" name="option_mode" value="2" <c:if test='${task.option_mode == 2 }'>checked</c:if>>
+								定时
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group" id="task_schedule_div">
+					<label for="disabledSelect" class="col-sm-2 control-label text-right">定时运行表达式：</label>
 					<div class="col-sm-6">
 						<input class="form-control" type="text" placeholder="定时表达式" id="task_schedule" name="task_schedule" value="${task.task_schedule }">
-                    </div>
-                    <div class="col-sm-4 control-label text-left">
-										<font color="red"><b>*</b></font>
-									</div>
-			 </div>
-			 <div id="trigger_db_div" class="form-group" name="trigger_div"> 
-			 	<label for="disabledSelect"  class="col-sm-2 control-label text-right">触发条件：</label>
-                    <div class="col-sm-8 control-label text-left">
+					</div>
+					<div class="col-sm-4 control-label text-left">
+						<font color="red">
+							<b>*</b>
+						</font>
+					</div>
+				</div>
+				<div id="trigger_db_div" class="form-group" name="trigger_div">
+					<label for="disabledSelect" class="col-sm-2 control-label text-right">触发条件：</label>
+					<div class="col-sm-8 control-label text-left">
 						<a style="cursor: pointer; color: blue" onclick="add_triger()">点击添加触发条件</a>
 					</div>
-			 </div>
-
+				</div>
 				<div class="form-group">
-					<label for="disabledSelect"  class="col-sm-2 control-label text-right">是否创建输出表：</label>
-								<section class="col col-4">
-				
-								<div class="col-sm-10">
-										<div class="checkbox-inline">
-									        <label>
-									            <input type="radio" name="has_derivative_table" value="0" <c:if test='${task.has_derivative_table == 0 }'>checked</c:if>>否
-									        </label>
-									    </div>
-									    <div class="checkbox-inline">
-									        <label>
-									            <input type="radio" name="has_derivative_table" value="1" <c:if test='${task.has_derivative_table == 1 }'>checked</c:if>>是
-									        </label>
-									    </div>
-									</div>
-			 	</div>
-			 	<div id="export_db_div" class="form-group" name="export_div"> 
-			 		<label for="disabledSelect"  class="col-sm-2 control-label text-right">输出表：</label>
-                    <div class="col-sm-8 control-label text-left">
+					<label for="disabledSelect" class="col-sm-2 control-label text-right">是否创建输出表：</label>
+					<section class="col col-4">
+					<div class="col-sm-10">
+						<div class="checkbox-inline">
+							<label>
+								<input type="radio" name="has_derivative_table" value="0" <c:if test='${task.has_derivative_table == 0 }'>checked</c:if>>
+								否
+							</label>
+						</div>
+						<div class="checkbox-inline">
+							<label>
+								<input type="radio" name="has_derivative_table" value="1" <c:if test='${task.has_derivative_table == 1 }'>checked</c:if>>
+								是
+							</label>
+						</div>
+					</div>
+				</div>
+				<div id="export_db_div" class="form-group" name="export_div">
+					<label for="disabledSelect" class="col-sm-2 control-label text-right">输出表：</label>
+					<div class="col-sm-8 control-label text-left">
 						<a style="cursor: pointer; color: blue" onclick="add_export()">点击添加输出表</a>
 					</div>
-			 	</div>
-               <div class="form-group">
-			 	<label for="disabledSelect"  class="col-sm-2 control-label text-right">优先级：</label>
+				</div>
+				<div class="form-group">
+					<label for="disabledSelect" class="col-sm-2 control-label text-right">优先级：</label>
 					<div class="col-sm-6">
 						<input class="form-control" type="text" placeholder="优先级" id="priority" name="priority" value="${task.priority }">
-                    </div>
-                    <div class="col-sm-4 control-label text-left">
-										<font color="red"><b>*</b></font>
-									</div>
-			 </div>
-		</fieldset>
-		<fieldset id="threeDiv">
-			<legend>任务基本信息</legend>
-			 <div class="form-group">
-			 	<label for="disabledSelect"  class="col-sm-2 control-label text-right">任务名称：</label>
+					</div>
+					<div class="col-sm-4 control-label text-left">
+						<font color="red">
+							<b>*</b>
+						</font>
+					</div>
+				</div>
+			</fieldset>
+			<fieldset id="threeDiv">
+				<legend>任务基本信息</legend>
+				<div class="form-group">
+					<label for="disabledSelect" class="col-sm-2 control-label text-right">任务名称：</label>
 					<div class="col-sm-5">
 						<input type="text" placeholder="任务名称" id="name" name="name" class="form-control" value="${task.name }">
-                    </div>
-                    <div class="col-sm-5 control-label text-left">
-										<font color="red"><b>*</b></font>
-									</div>
-			 	</div>
-			 	<div class="form-group">
-                           <label for="disabledSelect"  class="col-sm-2 control-label text-right">描述信息：</label>
-                           <div class="col-sm-8">
-								<textarea class="form-control" rows="3" id="information" name="information">
+					</div>
+					<div class="col-sm-5 control-label text-left">
+						<font color="red">
+							<b>*</b>
+						</font>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="disabledSelect" class="col-sm-2 control-label text-right">描述信息：</label>
+					<div class="col-sm-8">
+						<textarea class="form-control" rows="3" id="information" name="information">
 									${task.information }	
-								</textarea> 
-                           </div>
-                           <div class="col-sm-5 control-label text-left">
-										<font color="red"><b></b></font>
-									</div>
-                </div>
-               <div class="form-group">
-				<label for="disabledSelect"  class="col-sm-2 control-label text-right">是否激活：</label>
-								<section class="col col-4">
-				
-								<div class="col-sm-10">
-										<div class="checkbox-inline">
-									        <label>
-									            <input type="radio" name="active" value="0"  <c:if test='${task.active == false }'>checked</c:if> >否
-									        </label>
-									    </div>
-									    <div class="checkbox-inline">
-									        <label>
-									            <input type="radio" name="active" value="1"  <c:if test='${task.active == true }'>checked</c:if> >是
-									        </label>
-									    </div>
-									</div>
-			 </div>
-			 <select id="testSe">
-			 	 <option value="1" >1</option>
-			 	 <option value="2" >2</option>
-			 	 <option value="3" >3</option>
-			 </select>
-			 <div class="text-center">
-				<button type="button" class="btn btn-default" onclick=""  >上一步</button>
-				<button type="button" class="btn btn-primary" onclick="subimtForm()">提交</button>
-			</div>
-		</fieldset>
-    </form>
+								</textarea>
+					</div>
+					<div class="col-sm-5 control-label text-left">
+						<font color="red">
+							<b></b>
+						</font>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="disabledSelect" class="col-sm-2 control-label text-right">是否激活：</label>
+					<section class="col col-4">
+					<div class="col-sm-10">
+						<div class="checkbox-inline">
+							<label>
+								<input type="radio" name="active" value="0" <c:if test='${task.active == false }'>checked</c:if>>
+								否
+							</label>
+						</div>
+						<div class="checkbox-inline">
+							<label>
+								<input type="radio" name="active" value="1" <c:if test='${task.active == true }'>checked</c:if>>
+								是
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="text-center">
+					<button type="button" class="btn btn-default" onclick="">上一步</button>
+					<button type="button" class="btn btn-primary" onclick="subimtForm()">提交</button>
+				</div>
+			</fieldset>
+		</form>
 	</div>
 </body>
 </html>

@@ -16,7 +16,6 @@
 		});
 	});
 	function changeDiv(val){
-		
 		$("#index_div").css('display',(val==0?'none':'block'));
 	}
 	function doSubmit(){
@@ -38,6 +37,8 @@
 		}
 		var data ={id:$("#id").val(),table_name:$("#table_name").val(),dbname:$("#dbname").val()};
 		$.post("queryCountTable",data,function(msg){
+		var data ={id:$("#id").val(),src_table:$("#src_table").val(),src_db:$("#src_db").val(),table_name:$("#table_name").val(),dbname:$("#dbname").val()};
+		$.post("queryCountTable.do",data,function(msg){
 			if(msg>0){
 				layer.msg("表名重复，请重新输入", {
 					  icon: 2

@@ -186,14 +186,14 @@ var TableInit = function() {
 					field : 'input_tables',
 					title : '输入',
 					formatter: function(value,row,index){
-						return '<a href="#" onclick="showInput('+row.id+')" data-toggle="modal" data-target="#myModal">查看库名/表名？</a>'
+						return '<a href="#" onclick="showInput('+row.id+')" data-toggle="modal" data-target="#myModal">查看</a>'
 					}
 					
 				}, {
 					field : 'export_tables',
 					title : '输出',
 					formatter: function(value,row,index){
-						return '<a href="#" onclick="showExport('+row.id+')" data-toggle="modal" data-target="#myModal">查看库名/表名？</a>'
+						return '<a href="#" onclick="showExport('+row.id+')" data-toggle="modal" data-target="#myModal">查看</a>'
 					}
 				}, {
 					field : 'active',
@@ -441,12 +441,12 @@ function show_file(id){
 			</ol>
 		</div>
 		<div id="content">
-				  <!-- Nav tabs -->
-				  <ul class="nav nav-tabs" role="tablist">
-				    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">主页</a></li>
-				    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">可视化</a></li>
-				    <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">帮助</a></li>
-				  </ul>
+		
+			<ul class="nav nav-tabs" role="tablist">
+			  <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">主页</a></li>
+			  <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">可视化</a></li>
+			  <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">帮助</a></li>
+			</ul>
 				
 				  <!-- Tab panes -->
 				  <div class="tab-content">
