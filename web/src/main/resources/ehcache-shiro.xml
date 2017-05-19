@@ -1,12 +1,13 @@
-<ehcache updateCheck="false" name="shiroCache!">
+<ehcache updateCheck="false" name="shiroCache">
 
-   <defaultCache
-            maxElementsInMemory="100000"
-            eternal="false"
-            timeToIdleSeconds="300"
-            timeToLiveSeconds="600"
-            overflowToDisk="false"
-            diskPersistent="false"
-            diskExpiryThreadIntervalSeconds="300"
-            />           
+  <defaultCache 
+		maxElementsInMemory="10000" 
+        eternal="false" 
+        timeToIdleSeconds="120" 
+        timeToLiveSeconds="120" 
+        overflowToDisk="false" 
+        maxElementsOnDisk="10000000" 
+        diskPersistent="false" 
+        diskExpiryThreadIntervalSeconds="120" 
+        memoryStoreEvictionPolicy="LRU" />        
 </ehcache>

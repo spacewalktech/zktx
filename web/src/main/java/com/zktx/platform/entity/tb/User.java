@@ -1,6 +1,12 @@
 package com.zktx.platform.entity.tb;
 
 public class User {
+	
+	public static final int STATUS_1 = 1;
+
+	public static final int STATUS_0 = 0;
+	
+	
 	private Integer id;
 
 	private String name;

@@ -57,14 +57,17 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Set<String> findRoles(String username) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Set<String> findPermissions(String username) {
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public User findById(int id) {
+		return userMapper.selectByPrimaryKey(id);
 	}
 
 }

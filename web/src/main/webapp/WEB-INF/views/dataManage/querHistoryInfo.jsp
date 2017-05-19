@@ -118,6 +118,16 @@
 		</script>
 	</head>
 	<body class="style='width: 99.5%'">
+		
+				<div id="ribbon">
+		<!-- breadcrumb -->
+		<ol class="breadcrumb">
+			<li>首页</li>
+			<li>数据管理</li>
+			<li>导入轨迹</li>
+		</ol>
+	</div>
+	
 			<div id="content">
 				<table id="task_list_"></table>
 			</div>

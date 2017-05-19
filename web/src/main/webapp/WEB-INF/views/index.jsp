@@ -70,7 +70,8 @@
 		<!-- HEADER -->
 		<header id="header">
 			<div id="logo-group">
-				<span id="titlogo" style="height: 32px;font-size: 22px">健康医疗保险大数据</span>
+				<!-- <span id="titlogo" style="height: 32px;font-size: 22px">健康医疗保险大数据</span> -->
+				<img src="${root }/resources/img/infinidata_logo.png" style="padding-top:7px;padding-left:5px"/>
 			</div>
 			<!-- pulled right: nav area -->
 			<div class="pull-right">
@@ -85,43 +86,12 @@
 				<div id="fullscreen" class="btn-header transparent pull-right">
 					<span> <a href="javascript:void(0);" data-action="launchFullscreen" title="Full Screen"><i class="fa fa-arrows-alt"></i></a> </span>
 				</div>
-				<div id="" class="btn-header transparent pull-right">
-				<span> <!-- User image size is adjusted inside CSS, it should stay as it --> 
-					
-					<a>
-						<img src="${root}/resources/img/avatars/sunny.png" alt="me" class="online" style="height: 32px"> 
-						<span>
-							${ sessionScope.user.name}
-						</span>
-						<i class="fa fa-angle-down"></i>
-					</a> 
-					
-				</span>
 			</div>
-				
-			</div>
-
 		</header>
+		
 		<!-- END HEADER -->
 		<aside id="left-panel">
-
-			<!-- User info -->
-			<div class="login-info" style="display: none;">
-				<span > <!-- User image size is adjusted inside CSS, it should stay as it --> 
-					
-					<a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut">
-						<img src="${root}/resources/img/avatars/sunny.png" alt="me" class="online" /> 
-						<span>
-							廖梓帆 
-						</span>
-						<i class="fa fa-angle-down"></i>
-					</a> 
-					
-				</span>
-			</div>
-			<!-- end user info -->
-
-			<!-- NAVIGATION : This navigation is also responsive-->
+		
 			<nav>
 				<ul>
 					<li>
@@ -142,22 +112,22 @@
 							
 						</ul>
 					</li>
-					<li  class="top-menu-invisible">
+					<!-- <li  class="top-menu-invisible">
 						<a><i class="fa fa-lg fa-fw fa-picture-o"></i> <span class="menu-item-parent">非结构化数据</span></a>
 						<ul>
 							
 							<li><a href="javascript:void(0);" onclick="testList('uploadBatRecord/index')">批量上传记录</a></li>
-							<li><a href="javascript:void(0);" onclick="testList('annotation/index')">已识别非结构化数据</a></li>
+							<li><a href="javascript:void(0);" onclick="testList('annotation/index')">已识别数据</a></li>
 							<li><a href="javascript:void(0);" onclick="testList('healthImg/index')">医学图像</a></li>
-							<li><a href="javascript:void(0);" onclick="testList('inlineIdentify/index')">非结构化数据在线识别</a></li>
+							<li><a href="javascript:void(0);" onclick="testList('inlineIdentify/index')">数据在线识别</a></li>
 							
 						</ul>	
-					</li>
-					<li  class="top-menu-invisible">
+					</li> -->
+					<!-- <li  class="top-menu-invisible">
 							<a href="javascript:void(0);" onclick="testList()"><i class="fa fa-lg fa-fw fa-inbox"></i> <span class="menu-item-parent">慢病模型</span></a>
-						</li>
+						</li> -->
 					<li  class="top-menu-invisible">
-						<a><i class="fa fa-lg fa-fw fa-picture-o"></i> <span class="menu-item-parent">流程管理</span></a>
+						<a><i class="fa fa-lg fa-fw fa-cube txt-color-blue"></i> <span class="menu-item-parent">流程管理</span></a>
 						<ul>
 							
 							<li><a href="javascript:void(0);" onclick="testList('mrTask/addPage')">流程注册</a></li>
@@ -165,7 +135,7 @@
 						</ul>	
 					</li>
 					<li  class="top-menu-invisible">
-						<a><i class="fa fa-lg fa-fw fa-inbox"></i> <span class="menu-item-parent">运行监控</span></a>
+						<a><i class="fa fa-lg fa-fw fa-bar-chart-o"></i> <span class="menu-item-parent">运行监控</span></a>
 						<ul>
 							<li><a href="javascript:void(0);" onclick="testList('mrTask/taskMonitor')">任务监控</a></li>
 							<li><a href="javascript:void(0);" onclick="testList('dataMonitor/getData')">资源监控</a></li>

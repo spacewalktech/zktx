@@ -17,7 +17,8 @@
 <link rel="apple-touch-startup-image" href="${root }/resources/img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
 <link rel="apple-touch-startup-image" href="${root }/resources/img/splash/iphone.png" media="screen and (max-device-width: 320px)">
 <link rel="stylesheet" type="text/css" media="screen" href="${root}/resources/css/bootstrap-datetimepicker.min.css">
-<link rel="stylesheet" type="text/css" href="${root}/resources/css/style.css"/>
+<link rel="stylesheet/less" type="text/css" href="${root }/resources/css/less/style.less" />
+
 
 <style type="text/css">
 		#titlogo{width: 320px; height: 50px; font-size: 30px; color: #fff; line-height: 2.5; text-align: center; font-weight: bold;}
@@ -46,7 +47,7 @@
 		 
 
 	</style>
-<script data-pace-options='{ "restartOnRequestAfter": true }' src="${root }/resources/js/plugin/pace/pace.min.js"></script>
+<%-- <script data-pace-options='{ "restartOnRequestAfter": true }' src="${root }/resources/js/plugin/pace/pace.min.js"></script> --%>
 <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		<script>
 			if (!window.jQuery) {
@@ -65,6 +66,9 @@
 <script type="text/javascript" src="${root }/resources/js/bootstrap-treeview/bootstrap-treeview_erp.js"></script>
 <script type="text/javascript" src="${root }/resources/js/bootstrap-treeview/bootstrap-treeview.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="${root }/resources/js/bootstrap-treeview/bootstrap-treeview.css">
+
+<script src="${root }/resources/js/bootstrap/less.js" type="text/javascript"></script>
+<script src="${root }/resources/js/bootstrap/lib.js" type="text/javascript"></script>
 
 <script src="${root }/resources/js/app.config.js"></script>
 <script src="${root }/resources/js/smartwidgets/jarvis.widget.min.js"></script>

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.zktx.platform.dao.tb.RoleMapper;
 import com.zktx.platform.entity.tb.Role;
+import com.zktx.platform.entity.tb.UserRole;
 import com.zktx.platform.service.user.RoleService;
 
 @Service("roleService")
@@ -23,6 +24,16 @@ public class RoleServiceImpl implements RoleService {
 	@Override
 	public List<Role> findRolesByUserId(Integer userid) {
 		return roleMapper.findRolesByUserId(userid);
+	}
+
+	@Override
+	public List<Role> findAll() {
+		return roleMapper.findAll();
+	}
+
+	@Override
+	public List<UserRole> findByUserId(int id) {
+		return roleMapper.findByUserId(id);
 	}
 
 }

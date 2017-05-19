@@ -1,59 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>任务监控</title>
 <script type="text/javascript">
-//新增
-
-// 修改 
-function upd_task(id){
-    layer.open({
-	  type: 2,
-	  title: '修改任务',
-	  shadeClose: true,
-	  shade: 0.2,
-	  area: ['65%', '60%'],
-	  content: 'mrTask/updatePage?id='+id
-	}); 
-}
-
-// 删除
-function del_task(id){
-    layer.confirm('确认删除?', {
-	  btn: ['删除','取消'], //按钮
-	  icon: 3
-	}, function(){
-	    $.ajax({
-			type : 'post',
-			url : 'mrTask/deleteByid',
-			data : {
-			    id : id
-			},
-	    	success : function(result){
-	    	    if(result == true){
-	    			layer.msg('删除成功', {icon: 1});
-	    			$('#task_list').bootstrapTable('refresh');
-	    	    }else{
-	    			layer.msg('删除失败', {icon: 5});
-	    	    }
-	    	}
-	    })
-	});
-}
-
-
-function showImg(){
-	
-}
-
-
 var TableInit = function() {
 		var oTableInit = new Object();
 		//初始化Table
 		oTableInit.Init = function() {
-			$('#task_list').bootstrapTable({
+			$('#table').bootstrapTable({
 				url : 'mrTask/queryRunningTaskList', //请求后台的URL（*）
 				method : 'get', //请求方式（*）
 				toolbar : '#toolbar', //工具按钮用哪个容器
@@ -67,7 +21,7 @@ var TableInit = function() {
 				pageNumber : 1, //初始化加载第一页，默认第一页
 				pageSize : 10, //每页的记录行数（*）
 				pageList : [ 10, 25, 50, 100 ], //可供选择的每页的行数（*）
-				search : true, //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+				// search : true, //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
 				strictSearch : true,
 				smartDisplay:false,
 				showColumns : false, //是否显示所有的列
@@ -79,68 +33,15 @@ var TableInit = function() {
 				showToggle : false, //是否显示详细视图和列表视图的切换按钮
 				cardView : false, //是否显示详细视图
 				detailView : false, //是否显示父子表
-				columns : [{
-					field : 'id',
-					title : 'ID'
-				}, {
-					field : 'taskWithBLOBs',
-					title : '流程名称',
-					formatter : function (value, row, index){
-				    	return value.name;
-				    }
-				},  {
-					field : 'taskWithBLOBs',
-					title : '类型',
-					formatter : function (value, row, index){
-				    	return value.task_type;
-				    }
-				}, {
-					field : 'create_time',
-					title : '触发时间',
-					formatter : function (value, row, index){
-				    	return value == null ? null : new Date(value).format('yyyy-MM-dd hh:mm:ss');
-				    }
-				}, {
-					field : 'begin_time',
-					title : '开始时间',
-					formatter : function (value, row, index){
-				    	return value == null ? null : new Date(value).format('yyyy-MM-dd hh:mm:ss');
-				    }
-					
-				}, {
-					field : 'end_time',
-					title : '结束时间',
-					formatter : function (value, row, index){
-				    	return value == null ? null : new Date(value).format('yyyy-MM-dd hh:mm:ss');
-				    }
-				}, {
-					field : 'taskWithBLOBs',
-					title : '状态',
-					formatter : function (value, row, index){
-				    	return value.latest_running_status;
-				    }
-				}, {
-					field : 'taskWithBLOBs',
-					title : '原因',
-					formatter : function (value, row, index){
-				    	return value.latest_running_info;
-				    }
-				}]
+				columns : getColums()
 			});
 		};
 
-		//得到查询的参数
 		oTableInit.queryParams = function(params) {
-		    
 			var temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
 				limit : params.limit, //页面大小
 				offset : params.offset, //页码
-				search_name : $("#search_name").val(),
-				search_type : $("#search_type").val(),
-				search_triggle_tables : $("#search_triggle_tables").val(),
-				search_active : $("#search_active").val(),
-				search_create_time_begin : $("#search_create_time_begin").val(),
-				search_create_time_end : $("#search_create_time_end").val()
+				type : $("#type").val()
 			};
 			return temp;
 		};
@@ -150,8 +51,9 @@ var TableInit = function() {
 	function queryTable(){
 	    $('#task_list').bootstrapTable("refresh")
 	}
+	
 $(document).ready(function(){
-  	//1.初始化Table
+    
 	var oTable = new TableInit();
 	oTable.Init();
 
@@ -174,7 +76,6 @@ $(document).ready(function(){
 		return format;
 	}
 	
-	
 	$("#search_create_time_begin").datetimepicker({
 	    format: 'YYYY-MM-DD HH:mm:ss',
 	    locale:  'zh-cn'
@@ -185,31 +86,201 @@ $(document).ready(function(){
 	    locale:  'zh-cn'
 	});
 	
-	
 });
+
+
+function refresh(type){
+    // alert(tbid)
+   	/* var oTable = new TableInit(tbid);
+	oTable.Init(); */
+	$("#type").val(type)
+	$('#table').bootstrapTable("destroy")
+	var oTable = new TableInit();
+	oTable.Init();
+	
+	// $('#table').bootstrapTable("refresh",{columns: getColums()})
+}
+
+function getColums(){
+    
+    // type 为 1 需要加上 状态条；2需要加上是失败原因；
+    var type = $("#type").val()
+    if(type == 0 || type == 4){
+		
+	    var colums = [{
+			field : 'id',
+			title : 'ID',
+			width : '50'
+		}, {
+			field : 'taskWithBLOBs',
+			title : '流程名称',
+			formatter : function (value, row, index){
+		    	return value.name;
+		    }
+		},  {
+			field : 'taskWithBLOBs',
+			title : '类型',
+			formatter : function (value, row, index){
+		    	return value.task_type;
+		    }
+		}, {
+			field : 'create_time',
+			title : '触发时间',
+			formatter : function (value, row, index){
+		    	return value == null ? null : new Date(value).format('yyyy-MM-dd hh:mm:ss');
+		    }
+		}, {
+			field : 'begin_time',
+			title : '开始时间',
+			formatter : function (value, row, index){
+		    	return value == null ? null : new Date(value).format('yyyy-MM-dd hh:mm:ss');
+		    }
+		}, {
+			field : 'end_time',
+			title : '结束时间',
+			formatter : function (value, row, index){
+		    	return value == null ? null : new Date(value).format('yyyy-MM-dd hh:mm:ss');
+		    }
+		}, {
+			field : 'taskWithBLOBs',
+			title : '状态',
+			formatter : function (value, row, index){
+		    	return value.latest_running_status;
+		    }
+		}]
+	
+	    return colums;
+	    
+    }else if (type == 1){
+		var colums = [{
+			field : 'id',
+			title : 'ID',
+			width : '50'
+		}, {
+			field : 'taskWithBLOBs',
+			title : '流程名称',
+			formatter : function (value, row, index){
+		    	return value.name;
+		    }
+		},  {
+			field : 'taskWithBLOBs',
+			title : '类型',
+			formatter : function (value, row, index){
+		    	return value.task_type;
+		    }
+		}, {
+			field : 'create_time',
+			title : '触发时间',
+			formatter : function (value, row, index){
+		    	return value == null ? null : new Date(value).format('yyyy-MM-dd hh:mm:ss');
+		    }
+		}, {
+			field : 'begin_time',
+			title : '开始时间',
+			formatter : function (value, row, index){
+		    	return value == null ? null : new Date(value).format('yyyy-MM-dd hh:mm:ss');
+		    }
+		}, {
+			field : 'taskWithBLOBs',
+			title : '状态',
+			width : '300',
+			formatter : function (value, row, index){
+		    	return '<div class="progress progress-striped active" style="margin-bottom: 0px;height: 15px" >' + 
+					   '<div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 40%;">' + 
+					   '<span class="sr-only">40% 完成</span></div></div>'
+		    }
+		}]
+		return colums;
+    }else if ( type == 2){
+	
+		var colums = [{
+			field : 'id',
+			title : 'ID',
+			width : '50px'
+		}, {
+			field : 'taskWithBLOBs',
+			title : '流程名称',
+			formatter : function (value, row, index){
+		    	return value.name;
+		    }
+		},  {
+			field : 'taskWithBLOBs',
+			title : '类型',
+			formatter : function (value, row, index){
+		    	return value.task_type;
+		    }
+		}, {
+			field : 'create_time',
+			title : '触发时间',
+			width : '100px',
+			formatter : function (value, row, index){
+		    	return value == null ? null : new Date(value).format('yyyy-MM-dd hh:mm:ss');
+		    }
+		}, {
+			field : 'begin_time',
+			title : '开始时间',
+			width : '100px',
+			formatter : function (value, row, index){
+		    	return value == null ? null : new Date(value).format('yyyy-MM-dd hh:mm:ss');
+		    }
+		}, {
+			field : 'end_time',
+			title : '结束时间',
+			width : '100px',
+			formatter : function (value, row, index){
+		    	return value == null ? null : new Date(value).format('yyyy-MM-dd hh:mm:ss');
+		    }
+		}, {
+			field : 'reason',
+			title : '原因',
+			formatter : function (value, row, index){
+		    	return "";
+		    }
+		}]
+	
+		return colums;
+    }
+    
+}
+
+
 </script>
 </head>
 <body>
-		<div id="ribbon">
-			<ol class="breadcrumb">
-				<li>首页</li>
-				<li>运行监控</li>
-				<li>任务监控</li>
-			</ol>
-		</div>
-		<div id="content">
-
-			<!-- 任务管理主表 -->
-			<div class="panel">
-				<div>
-					<div id="toolbar" class="btn-group">
-						
-					</div>
-				</div>
+	<div id="ribbon">
+		<ol class="breadcrumb">
+			<li>首页</li>
+			<li>运行监控</li>
+			<li>任务监控</li>
+		</ol>
+	</div>
+	<div id="content">
+		<ul class="nav nav-tabs" role="tablist">
+			<li role="presentation" class="active">
+				<a href="#succ" aria-controls="succ" role="tab" data-toggle="tab" onclick="refresh('0')">运行成功</a>
+			</li>
+			<li role="presentation">
+				<a href="#runing" aria-controls="runing" role="tab" data-toggle="tab" onclick="refresh('1')">运行中</a>
+			</li>
+			<li role="presentation">
+				<a href="#fail" aria-controls="fail" role="tab" data-toggle="tab" onclick="refresh('2')">运行失败</a>
+			</li>
+			<li role="presentation">
+				<a href="#fail" aria-controls="fail" role="tab" data-toggle="tab" onclick="refresh('4')">未运行</a>
+			</li>
+		</ul>
+		<div class="tab-content">
+			<!-- <div role="tabpanel" class="tab-pane active" id="succ">
 			</div>
-			
-			<table id="task_list"></table>
-			</div>	
-
+			<div role="tabpanel" class="tab-pane" id="runing">
+				<table id="table_runing"></table>
+			</div>
+			<div role="tabpanel" class="tab-pane" id="fail">
+				<table id="table_fail"></table>
+			</div> -->
+			<table id="table"></table>
+			<input type='hidden' id='type' value="0"/>
+		</div>
+	</div>
 </body>
 </html>

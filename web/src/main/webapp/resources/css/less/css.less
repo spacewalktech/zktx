@@ -1,0 +1,177 @@
+//
+////颜色参考 http://bsfans.com/fc/index.html
+//
+@idc: rgba(255,255,255,.5);
+@ces: rgb(0,184,245); //颜色网站基础色
+@ces1:rgb(236, 240, 241);
+@ces2:rgb(0, 135, 180);
+@ces3:rgb(0,162,202);
+@cun: transparent;
+@cwh: rgb(255, 255, 255); //白色
+//
+@cor: rgb(230, 126, 34); //橙色
+@cor1: rgb(211, 84, 0);
+@cbl: rgb(52, 152, 219); //蓝色
+@cbl1: rgb(41, 128, 185);
+@cgr: rgb(46, 204, 113); //绿色
+@cgr1: rgb(39, 174, 96);
+@cye: rgb(241, 196, 15); //黄色
+@cye1: rgb(243, 156, 18);
+@cre: rgb(231, 76, 60); //红色
+@cre1: rgb(192, 57, 43);
+@cgy: rgb(236, 240, 241); //灰色
+@cgy1: rgb(189, 195, 199);
+@cbla: rgb(0,0,0); //
+//
+@cc: rgb(68,68,68); //文字主要颜色
+@cc1: rgb(46,46,46); //文字主要颜色
+@cc2: rgb(210,210,210); //文字主要颜色
+@cc3: rgb(51,51,51); //文字主要颜色
+@cc4: rgb(246,246,246); //黑色背景颜色
+//
+@bdrc: rgb(225, 225, 225); //边框颜色
+//
+@bgc: rgb(66, 69, 79);
+//
+@ffmix: "Microsoft Yahei","微软雅黑", "黑体";
+@rem: 14px; //
+@hack: ~"\9"; //
+//
+//
+.bdr(@w:1px, @s:solid, @cr:@bdrc) {
+    border: @w @s @cr;
+}
+.bdrt(@w:1px, @s:solid, @cr:@bdrc) {
+    border-top: @w @s @cr;
+}
+.bdrr(@w:1px, @s:solid, @cr:@bdrc) {
+    border-right: @w @s @cr;
+}
+.bdrb(@w:1px, @s:solid, @cr:@bdrc) {
+    border-bottom: @w @s @cr;
+}
+.bdrl(@w:1px, @s:solid, @cr:@bdrc) {
+    border-left: @w @s @cr;
+}
+//
+@mpb: 15px; //距离单位
+.mg(@a:@mpb) {
+    margin: @a;
+}
+.mgt(@a:@mpb) {
+    margin-top: @a;
+}
+.mgr(@a:@mpb) {
+    margin-right: @a;
+}
+.mgb(@a:@mpb) {
+    margin-bottom: @a;
+}
+.mgl(@a:@mpb) {
+    margin-left: @a;
+}
+.pd(@a:@mpb) {
+    padding: @a;
+}
+.pdt(@a:@mpb) {
+    padding-top: @a;
+}
+.pdr(@a:@mpb) {
+    padding-right: @a;
+}
+.pdb(@a:@mpb) {
+    padding-bottom: @a;
+}
+.pdl(@a:@mpb) {
+    padding-left: @a;
+}
+//
+.amid {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    -webkit-transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+}
+.flmm {
+    display: flex;
+    display: -webkit-flex;
+    justify-content: center;
+    align-items: center;
+}
+//
+.textoh {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.blod {
+    font-weight: bolder;
+}
+//
+.trs(@t:.5s, @b: ease-in-out) {
+    transition: all @t @b;
+    -webkit-transition: all @t @b;
+    -ms-transition: all @t @b;
+}
+//
+.unbg {
+    background: transparent;
+}
+.unbdr {
+    border-radius: 0;
+}
+.unbd {
+    border: none;
+}
+.unbs {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -ms-box-shadow: none;
+}
+.unst {
+    padding-left: 0;
+    list-style: none;
+}
+.unl{
+    text-decoration: none;
+}
+//
+.round {
+    border-radius: 50%;
+}
+.ohd {
+    overflow: hidden;
+}
+//
+.text-justify {
+    text-align: justify;
+}
+.tac{
+    text-align: center;
+}
+.tal{
+    text-align: left;
+}
+.tar{
+    text-align: right;
+}
+.taj{
+    text-align: justify;
+}
+//flex center
+.fc {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+}

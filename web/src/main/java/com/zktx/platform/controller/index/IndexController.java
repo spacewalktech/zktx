@@ -1,5 +1,6 @@
 package com.zktx.platform.controller.index;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -13,6 +14,7 @@ public class IndexController {
 	}
 
 	@RequestMapping("/initList")
+	//@RequiresPermissions("kuaidi100:view")
 	public String initList() {
 		System.out.println("initList------");
 		return "/initList";
