@@ -25,15 +25,16 @@ dev_path = {
 # 正式
 pro_path = {
     # 存储源文件的路径前缀
-    "prefix": "/opt/spacewalk/data/orgin_file/",
+    "prefix": "/data/spacewalk/origin_file/",
     # 存放parquet文件的地址
     "parquet_path": "hdfs://hadoop01:9000/spacewalk/hdfs/parquet_file/",
     # master 的地址
-    "spark_master_ip": "yarn",
-    # warehouse的位置
-    "spark_warehouse": "hdfs://spacewalk/spacewalk/hdfs/ware_house"
+    "spark_master_ip": "yarn"
 }
-LOGGING_DIR = "../logs"
-LOGGING_STDOUT = True
+logging_dir = "../logs"
+logging_stdout = True
 stage_scan_interval = 600
 task_queue_scan_interval = 600
+
+# es服务列表
+es_hosts = ["192.168.56.101:9200"]

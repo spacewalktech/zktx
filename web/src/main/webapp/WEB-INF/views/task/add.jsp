@@ -297,7 +297,7 @@
 	
 		if (null == bin_file_uri) {
 		    layer.msg("您还没上传需要执行的文件！")
-		    // return
+		    return
 		}
 		$("#firstDiv").hide();
 		$("#secondDiv").show();
@@ -338,7 +338,7 @@
 		priority = $("#priority").val()
 		if (null == priority || priority.length == 0) {
 		    layer.msg("优先级不能为空！")
-		    //return
+		    return
 		}
 	
 		has_derivative_table = $("input[name='has_derivative_table']:checked").val();

@@ -1,11 +1,12 @@
 package com.zktx.platform.entity.tb;
 
+import java.util.Date;
+
 public class User {
 	
 	public static final int STATUS_1 = 1;
 
 	public static final int STATUS_0 = 0;
-	
 	
 	private Integer id;
 
@@ -19,7 +20,11 @@ public class User {
 
 	private String salt;
 
-	private Byte status = 1;
+	private Byte status;
+
+	private String token;
+
+	private Date token_invalid_time;
 
 	public Integer getId() {
 		return id;
@@ -76,4 +81,21 @@ public class User {
 	public void setStatus(Byte status) {
 		this.status = status;
 	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public Date getToken_invalid_time() {
+		return token_invalid_time;
+	}
+
+	public void setToken_invalid_time(Date token_invalid_time) {
+		this.token_invalid_time = token_invalid_time;
+	}
+
 }

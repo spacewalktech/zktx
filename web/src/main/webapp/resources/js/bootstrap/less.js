@@ -725,10 +725,10 @@ module.exports = function(window, options) {
                     less.logger.info("rendered " + sheet.href + " successfully.");
                 }
                 browser.createCSS(window.document, css, sheet);
-                less.logger.info("css for " + sheet.href + " generated in " + (new Date() - endTime) + 'ms');
+                //less.logger.info("css for " + sheet.href + " generated in " + (new Date() - endTime) + 'ms');
                 if (webInfo.remaining === 0) {
                     totalMilliseconds = new Date() - startTime;
-                    less.logger.info("less has finished. css generated in " + totalMilliseconds + 'ms');
+                    //less.logger.info("less has finished. css generated in " + totalMilliseconds + 'ms');
                     resolve({
                         startTime: startTime,
                         endTime: endTime,

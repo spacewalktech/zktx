@@ -2,6 +2,7 @@ package com.zktx.platform.service.user;
 
 import java.util.List;
 import java.util.Set;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,4 +71,12 @@ public class UserServiceImpl implements UserService {
 		return userMapper.selectByPrimaryKey(id);
 	}
 
+	public void updateToken(Integer id, String token, Date date) {
+		userMapper.updateToken(id, token, date);
+	}
+
+	@Override
+	public User findByToken(String token) {
+		return userMapper.findByToken(token);
+	}
 }

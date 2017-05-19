@@ -19,20 +19,20 @@ def get_schema(table_id):
     return schema
 
 
-def get_create_sql(schema):
+def get_create_sql(schema, db_name, table_name):
     schema = json.loads(schema)
-    sql = 'create table if not exists ' + schema.get('db_name') + '.' + schema.get('table_name') + '_text ' + '('
+    sql = 'create table if not exists ' + db_name + '.' + table_name + '_text ' + '('
     array = []
     for i in schema.get("schema"):
         array.append(i.get("name") + ' string')
     sql += ', '.join(array) + ')'
-    sql += "row format serde 'org.apache.hive.hcatalog.data.JsonSerDe' location 'hdfs://hadoop01:9000/spacewalk/hdfs/parquet_file/" + schema.get('db_name') + "/" + schema.get('table_name') + ".json'"
+    sql += "row format serde 'org.apache.hive.hcatalog.data.JsonSerDe' location 'hdfs://hadoop01:9000/spacewalk/hdfs/parquet_file/" + db_name + "/" + table_name + ".json'"
     return sql
 
 
-def get_parquet_sql(schema):
+def get_parquet_sql(schema, db_name, table_name):
     schema = json.loads(schema)
-    sql = 'create table if not exists ' + schema.get('db_name') + '.' + schema.get('table_name') + ' stored as parquetfile as select * from ' + schema.get('db_name') + '.' + schema.get('table_name') + '_text '
+    sql = 'create table if not exists ' + db_name + '.' + table_name + ' stored as parquetfile as select * from ' + db_name + '.' + table_name + '_text '
     return sql
 
 
@@ -41,7 +41,7 @@ def thrift_server(table_id, db_name, table_name):
         # 获取schema
         schema = get_schema(table_id)
         # 获取建表语句
-        sql = get_create_sql(schema.schema)
+        sql = get_create_sql(schema.schema, db_name, table_name)
         # 获取连接
         cur = get_cursor()
         # 需要创建数据库
@@ -53,8 +53,15 @@ def thrift_server(table_id, db_name, table_name):
         # 移除以前的parquet表
         cur.execute('drop table if exists ' + db_name + '.' + table_name)
         # 获取parquet表语句
-        sql = get_parquet_sql(schema.schema)
+        sql = get_parquet_sql(schema.schema, db_name, table_name)
         # 创建parquet表
         cur.execute(sql)
+        # 移除text表
+        cur.execute('drop table if exists ' + db_name + '.' + table_name + '_text')
     except Exception, e:
         print e
+
+def load():
+    thrift_server(1, 'spark', 'utiisales')
+
+#load()
