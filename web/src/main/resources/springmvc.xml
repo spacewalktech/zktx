@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context" xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
@@ -12,45 +8,51 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd
 		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd">
 
-	<!-- 启动对@AspectJ注解的支持 -->
-	<aop:aspectj-autoproxy />
-	<!--通知spring使用cglib而不是jdk的来生成代理方法 AOP可以拦截到Controller -->
-	<aop:aspectj-autoproxy proxy-target-class="true"></aop:aspectj-autoproxy>
-	<!-- 节点中proxy-target-class="true"不为true时。 * 当登录的时候会报这个异常java.lang.NoSuchMethodException: 
-		$Proxy54.login()， -->
-	<aop:config proxy-target-class="true"></aop:config>
-
 	<!-- 启用注解 -->
-	<context:component-scan base-package="com.zktx.platform" />
+	<context:component-scan base-package="com.zktx.platform"/>
 
 	<!-- 注解驱动 -->
 	<mvc:annotation-driven />
-
-
+	
 	<!-- 对静态资源文件的访问 -->
 	<mvc:resources mapping="/resources/**" location="/resources/" />
+	
+	<!-- 自定义拦截器 -->
+	<!-- 
+	<mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean id="loginInterceptor" class="com.zktx.platform.intercepter.LoginInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors> 
+    -->
+    
+    <!-- 扫描代理 -->
+    <aop:config proxy-target-class="true"/>
 
 	<!-- 定义JSP文件的位置 -->
-	<bean
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/views/" />
 		<property name="suffix" value=".jsp" />
-		<property name="viewClass"
-			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 	</bean>
-
+	
+	<!-- 定义无Controller的path<->view直接映射 -->
+	<mvc:view-controller path="/" view-name="redirect:/index.html"/>
+	
+	<!-- 容器默认的DefaultServletHandler处理 所有静态内容与无RequestMapping处理的URL-->
+	<mvc:default-servlet-handler/>
+	
 	<!-- beanFactory -->
 	<bean id="beanFactory" class="com.zktx.platform.util.spring.BeanFactory"></bean>
 
 	<!-- 引入配置文件 -->
-	<bean id="propertyConfigurer"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location" value="classpath:jdbc.properties" />
 	</bean>
 
 	<!-- 数据源 -->
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
-		destroy-method="close">
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="${url}" />
 		<property name="username" value="${username}" />
@@ -71,25 +73,40 @@
 	</bean>
 
 	<!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
-	<bean id="transactionManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
 	<!-- 文件大小控制 10M=10*1024*1024(B)=10485760 -->
-	<bean id="multipartResolver"
-		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<property name="maxUploadSize" value="104857600" />
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">  
+    	<property name="maxUploadSize" value="104857600" />  
 	</bean>
-
-
-
-	<!-- shiro ================================================================================= -->
-
 	
+	 <!-- 全局异常配置 使用shiro注解是须配置 start -->  
+     <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">  
+         <property name="exceptionMappings">  
+             <props>
+				 <prop key="org.apache.shiro.authz.UnauthorizedException">error/403</prop>      
+                 <prop key="java.lang.Throwable">error/500</prop>
+             </props>  
+         </property>  
+         <property name="statusCodes">  
+             <props>  
+                 <prop key="500">500</prop>  
+                 <prop key="404">404</prop>
+                 <prop key="403">403</prop>  
+             </props>  
+         </property>  
+         <!-- 设置日志输出级别，不定义则默认不输出警告等错误日志信息 -->  
+         <property name="warnLogCategory" value="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"/>  
+         <!-- 默认错误页面，当找不到上面mappings中指定的异常对应视图时，使用本默认配置 -->  
+         <property name="defaultErrorView" value="error/500"/>  
+         <!-- 默认HTTP状态码 ，返回错误默认设置的状态码-->  
+         <property name="defaultStatusCode" value="200"/>  
+     </bean>  
+     <!-- 全局异常配置 使用shiro注解是须配置 end -->
 
-	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"></bean>
-	
+	<!-- 支持 Shiro对Controller的方法级AOP安全控制 也就是注解 begin-->
 	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
 		<property name="proxyTargetClass" value="true" />
 	</bean>
@@ -97,75 +114,6 @@
 	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
     	<property name="securityManager" ref="securityManager"/>
 	</bean>
-	<!-- 数据库保存的密码是使用MD5算法加密的，所以这里需要配置一个密码匹配对象 -->
-	<bean id="credentialsMatcher"
-		class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
-		<property name="hashAlgorithmName" value="MD5" />
-		<!-- 迭代1次 -->
-		<property name="hashIterations" value="1" />
-	</bean>
-
+	<!-- 支持 Shiro对Controller的方法级AOP安全控制 也就是注解 end  -->  
 	
-	
-	<bean id="jdbcRealm" class="com.zktx.platform.shiro.ShiroRealm">
-		<property name="activeRoot" value="true"></property>
-	</bean>
-
-	<!-- 缓存管理器开始 -->  
-	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">  
-	        <property name="cacheManager" ref="ehCacheManager"/>  
-	</bean>  
-	<bean id="ehCacheManager" class ="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">  
-	    <property name="configLocation" value="classpath:ehcache-shiro.xml" />  
-	    <property name="shared" value="true"></property>  
-	</bean> 
-	<!-- Shiro安全管理器 -->
-	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-		<property name="realm" ref="jdbcRealm"></property>
-		<!-- 注入缓存管理器-->  
-	    <property name="cacheManager" ref="cacheManager" />  
-	    <!-- 注入session管理器 -->  
-	  
-	</bean>
-	
-	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
-		<property name="securityManager" ref="securityManager"></property>
-		<property name="loginUrl" value="/toLoginPage"></property>
-		<property name="successUrl" value="/action/index"></property>
-		<property name="filterChainDefinitions">
-			<value>
-				/resources/** = anon
-				/login = anon
-				/logout = logout
-				/annotation/**=authc 
-				/inlineIdentify/**=authc 
-				/dataManage/**=authc 
-				/healthImg/**=authc 
-				/action/**=authc 
-				/log/**=authc 
-				/stage/**=authc 
-				/sysSet/**=authc 
-				/dataMonitor/**=authc
-				/tableSchema/**=authc 
-				/mrTask/**=authc
-				/uploadBatRecord/**=authc 
-				/user/**=authc 
-				/action/noRoleOr=anon
-			</value>
-		</property>
-	</bean>
-	
-	<!-- shiro为集成springMvc 拦截异常
- <bean
-  class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
-  <property name="exceptionMappings">
-   <props>
-    <prop key="org.apache.shiro.authz.UnauthorizedException">redirect:/action/noRoleOr</prop>
-    <prop key="org.apache.shiro.authz.UnauthenticatedException">redirect:/action/noRoleOr</prop>
-    <prop key="java.lang.IllegalArgumentException">/error.jsp</prop> 
-    <prop key="java.lang.Exception">/error.jsp</prop> 
-   </props>
-  </property>
- </bean>-->
-
 </beans>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd" 
+	default-lazy-init="true">
+
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="shiroDbRealm" />
+		<property name="cacheManager" ref="shiroEhcacheManager" />
+	</bean>
+
+	<bean id="shiroDbRealm" class="com.zktx.platform.shiro.ShiroDbRealm" />
+
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="/login.html" />
+		<property name="successUrl" value="/index.html" />
+		<property name="filters">
+			<map>
+				<entry key="authc" value-ref="captchaFormAuthenticationFilter" />
+				<entry key="user" value-ref="timeoutFilter"></entry>
+			</map>
+		</property>
+		<property name="filterChainDefinitions">
+			<value>
+				/resources/** = anon 
+				/login.html = authc
+				/logout = logout
+				/api/** = anon
+				/** = user
+			</value>
+		</property>
+	</bean>
+
+	<!-- 用户授权/认证信息Cache, 采用EhCache 缓存 -->
+	<bean id="shiroEhcacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManagerConfigFile" value="classpath:ehcache-shiro.xml" />
+	</bean>
+
+	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+	<bean id="captchaFormAuthenticationFilter" class="com.zktx.platform.shiro.CaptchaFormAuthenticationFilter" />
+	<bean id="timeoutFilter" class="com.zktx.platform.shiro.UserTimeoutFilter" />
+
+</beans>

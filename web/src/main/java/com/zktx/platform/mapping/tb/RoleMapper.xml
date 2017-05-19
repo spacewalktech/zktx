@@ -12,9 +12,15 @@
   <select id="queryList" parameterType="int" resultMap="BaseResultMap">
   	select * from tb_role;
   </select>
+  <select id="findByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+  	select * from tb_role a , tb_user_role b where a.id = b.role_id and b.user_id = #{uid} 
+  </select>
   <select id="findRolesByUserId" resultType="com.zktx.platform.entity.tb.Role">
   	select r.id,r.name,r.info
   	 from tb_user_role ur inner join tb_role r on ur.role_id=r.id where ur.user_id=#{userid,jdbcType=INTEGER}
+  </select>
+  <select id="findAll" resultMap="BaseResultMap">
+  	select * from tb_role
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 

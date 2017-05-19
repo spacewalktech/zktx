@@ -11,7 +11,7 @@ prefix = None
 env = util.get_param("env")
 
 if env == "pro":
-    prefix = "/opt/spacewalk/data/orgin_file/"
+    prefix = "/data/spacewalk/origin_file/"
 else:
     prefix = "/Users/lzf/data/"
 
@@ -30,16 +30,15 @@ def create_dir(db_name, table_name):
 # 查询出的是我们自己库和表的名称
 def get_table():
     ImportTable = import_tables.ImportTable
-    importtable = db.session.query(ImportTable.dbname, ImportTable.table_name).distinct().all()
+    importtable = db.session.query(ImportTable.dbname, ImportTable.table_name).filter(ImportTable.flag == 0).filter(ImportTable.active == 0).distinct().all()
     return importtable
 
 
 # 在每次import这个表的时候去查询和创建目录
 def load():
     for i in get_table():
-        src_db = i[0]
-        src_table = i[1]
-        create_dir(src_db, src_table)
-
+        dbname = i[0]
+        table_name = i[1]
+        create_dir(dbname, table_name)
 
 load()
