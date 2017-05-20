@@ -45,7 +45,7 @@ class Submitter(object):
                 cmd_exec = CommandExecutor(self.hive_submit_bin, "-f", active_task.bin_file_uri)
                 cmd_exec.execute()
             except Exception as e:
-                res = cmd_exec + "Error: " + str(e)
+                res = str(cmd_exec) + "Error: " + str(e)
                 self.set_task_history_status(task_history, 2, res)
                 raise e
 
@@ -118,15 +118,14 @@ class Submitter(object):
                     res = "Copying export files into input files Error: " + str(e)
                     self.set_task_history_status(task_history, 2, res)
                     raise e
-        return 0
+        self.set_task_history_status(task_history, 1, "Success")
 
     def set_task_history_status(self, task_history, result_status, result):
         cur_time = util.getCurrentDatetime()
         task_history.update_time = cur_time
         task_history.result_status = result_status
+        task_history.result = result
         if result_status == 1:
             task_history.end_time = cur_time
-        elif result_status == 2:
-            task_history.result = result
         sess.commit()
         sess.flush()

@@ -22,7 +22,7 @@ if __name__ == "__main__":
         atask, queued_id = tqc.dequeue_task()
         if atask:
             atask.begin_time = util.getCurrentDatetime()
-            task_history = tqc.move_task_to_history(atask, r)
+            task_history = tqc.move_task_to_history(atask)
             r = process_task(atask, task_history)
             atask.end_time = util.getCurrentDatetime()
             #tqc.move_task_to_history(atask, r)

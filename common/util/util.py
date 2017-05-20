@@ -142,7 +142,8 @@ def touch(file_path):
         os.utime(file_path, None)
 
 def getCurrentDatetime():
-    return datetime.datetime.now(tz=pytz.timezone("Asia/Shanghai"))
+    #return datetime.datetime.now(tz=pytz.timezone("Asia/Shanghai"))
+    return datetime.datetime.now()
 
 def getExportPath(db_name, table_name, is_full, export_dir_path, file_suffix):
     cur_timestamp = str(int(time.time()))
@@ -280,11 +281,12 @@ class CommandExecutor(object):
             cmd_with_args.append(arg)
         try:
             self.logger.debug("Try to execute command: (%s)" % cmd_with_args)
-            subprocess.call(cmd_with_args, env=local_env)
+            res = subprocess.call(cmd_with_args, env=local_env)
         except:
-            self.logger.info("exec cmd: %s Error", cmd_with_args)
+            self.logger.info("exec cmd: %s Error" % cmd_with_args)
             raise
-        return 0
+        if res != 0:
+            raise Exception("exec cmd: %s Exception" % cmd_with_args)
 
     def execute_output(self):
         cmd_with_args = [self.bin_file]
@@ -296,12 +298,12 @@ class CommandExecutor(object):
             self.logger.debug("Try to execute_output command: (%s)" % cmd_with_args)
             output = subprocess.check_output(cmd_with_args, env=local_env)
         except:
-            self.logger.info("exec cmd: %s Error", cmd_with_args)
+            self.logger.info("Error: ", self.__str__())
             raise
         return output
 
     def __str__(self):
-        return "CommandExecutor Error: [" + self.bin_file + " " + self.args + "]"
+        return "CommandExecutor: [" + self.bin_file + " " + str(self.args) + "]"
 
 def paddingTimeNum(num):
     if num < 10:

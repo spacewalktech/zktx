@@ -38,10 +38,10 @@ class TaskQueueScan(object):
         else:
             raise ValueError("Can not find the queued_id(" + queued_id + ") from task queue")
 
-    def move_task_to_history(self, atask, r):
+    def move_task_to_history(self, atask):
         stage_info = atask.get_stage_info()
         th = TaskHistory(mr_task_id = atask.id, table_stage_info = stage_info, create_time = atask.create_time,
-                         begin_time = atask.begin_time, end_time = atask.end_time, result_status = r)
+                         begin_time = atask.begin_time, end_time = atask.end_time)
         sess.add(th)
         sess.commit()
         sess.flush()

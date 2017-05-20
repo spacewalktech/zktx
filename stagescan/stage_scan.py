@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-:
 from sqlalchemy import desc
-
 from common.dao.mr_task import MRTask
 from common.dao.import_tables import Stage
 from common.dao.mr_task import TaskQueue
@@ -206,7 +205,7 @@ class StageScan(object):
             # time task not in task queue, we should enqueue the task
             if s.time_to_process():
                 tq = TaskQueue(mr_task_id = s.id)
-                tq.create_time = util.getCurrentDatetime()
+                tq.create_time = util.getCurrentDatetime().replace(tzinfo=None)
                 #s.update_time == tq.create_time
                 tq.has_processed = 0
                 sess.add(tq)
