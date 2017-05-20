@@ -224,7 +224,7 @@ class HDFSUtil(object):
         cmd_exec.execute()
 
     def deleteFileFromHDFS(self, file_path):
-        cmd_exec = CommandExecutor(self.hdfs_bin, "dfs", "-rm", file_path)
+        cmd_exec = CommandExecutor(self.hdfs_bin, "dfs", "-rm", "-r", file_path)
         cmd_exec.execute()
 
 class HiveUtil(object):
@@ -286,14 +286,15 @@ class CommandExecutor(object):
         local_env["SPARK_HOME"] = config.spark_home 
         for arg in self.args:
             cmd_with_args.append(arg)
+        ret_code = 0
         try:
             self.logger.debug("Try to execute command: (%s)" % cmd_with_args)
-            res = subprocess.call(cmd_with_args, env=local_env)
-        except:
-            self.logger.info("exec cmd: %s Error" % cmd_with_args)
+            ret_output = subprocess.check_output(cmd_with_args, env=local_env)
+        except subprocess.CalledProcessError as e:
+            ret_code, ret_output = e.returncode, e.message
             raise
-        if res != 0:
-            raise Exception("exec cmd: %s Exception" % cmd_with_args)
+        if ret_code != 0:
+            raise Exception("exec cmd: %s Exception(%s)" % (cmd_with_args, ret_output))
 
     def execute_output(self):
         cmd_with_args = [self.bin_file]
