@@ -19,18 +19,19 @@ class StageScan(object):
     def _get_lastest_stages(self):
         self.logger.info("Begin to execute _get_latest_stages")
         stages = []
-        # Get not-processed stages from the bottom of the table
-        sq = sess.query(Stage).order_by(desc(Stage.id)).filter(Stage.process_status == 0)
+        # Get not-processed stages
+        sq = sess.query(Stage).order_by(Stage.id).filter(Stage.process_status == 0)
         for s in sq:
             stages.append(s)
         # Get normal ordered stages
         self.logger.info("Success to execute _get_latest_stages")
-        return stages[::-1]
+        # return stages[::-1]
+        return stages
 
     def _get_mr_tasks(self):
         self.logger.info("Begin to execute _get_mr_tasks")
         mr_task_list = []  # MRTask list
-        sq = sess.query(MRTask)
+        sq = sess.query(MRTask).filter(MRTask.type < 2)
         for s in sq:
             mr_task_list.append(s)
         self.logger.info("Success to execute _get_mr_tasks")
@@ -169,18 +170,15 @@ class StageScan(object):
         # Get task from tb_task_queue
         for active_task in new_queued_tasks:
             self.logger.info("Begin to update task(id=%s) in tb_task_queue" % active_task.id)
-            sq = sess.query(TaskQueue).filter(TaskQueue.mr_task_id == active_task.id)
-            queued_task = sq.first()
+            # sq = sess.query(TaskQueue).filter(TaskQueue.mr_task_id == active_task.id, TaskQueue.has_processed == 0)
+            # queued_task = sq.first()
             if active_task.table_stage_list:
-                if not queued_task:
-                    self.logger.debug("Insert ActiveTask(%s) to queue" % active_task)
-                    encoded_table_stage = util.encode_table_stage(active_task.table_stage_list)
-                    tq = TaskQueue(mr_task_id = active_task.id, table_stage_info=encoded_table_stage)
-                    sess.add(tq)
-                else:
-                    self.logger.debug("Update ActiveTask(%s) to queue" % active_task)
-                    queued_task.table_stage_info = util.encode_table_stage(active_task.table_stage_list)
-		    queued_task.has_processed = 0
+                self.logger.debug("Insert ActiveTask(%s) to queue" % active_task)
+                encoded_table_stage = util.encode_table_stage(active_task.table_stage_list)
+                tq = TaskQueue(mr_task_id = active_task.id, table_stage_info=encoded_table_stage)
+                tq.create_time = util.getCurrentDatetime()
+                sess.add(tq)
+		    # queued_task.has_processed = 0
         sess.commit()
         sess.flush()
         self._update_stage_to_processed()
@@ -199,5 +197,19 @@ class StageScan(object):
         sess.commit()
         sess.flush()
 
-
+    def enqueue_time_task(self):
+        self.logger.info("Begin to enque_time_task")
+        sq_task = sess.query(MRTask).filter(MRTask.type > 1)
+        for s in sq_task:
+            #sq2_queue = sess.query(TaskQueue).filter(TaskQueue.mr_task_id == s.id)
+            #qtask = sq2_queue.first()
+            # time task not in task queue, we should enqueue the task
+            if s.time_to_process():
+                tq = TaskQueue(mr_task_id = s.id)
+                tq.create_time = util.getCurrentDatetime()
+                #s.update_time == tq.create_time
+                tq.has_processed = 0
+                sess.add(tq)
+        sess.commit()
+        sess.flush()
 
