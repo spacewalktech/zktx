@@ -13,6 +13,34 @@ from common.entity.stage_to_process import StageToProcess
 from common.config import config
 from common.util.logger import Logger
 
+
+# 获取文件大小
+def get_file_size(file_path):
+    if file_path is None:
+        return 0
+    size = os.path.getsize(file_path)
+    return formatSize(size)
+
+
+# 转换文件大小单位
+def formatSize(bytes):
+    try:
+        bytes = float(bytes)
+        kb = bytes / 1024
+    except:
+        print("传入的字节格式不对")
+        return "Error"
+
+    if kb >= 1024:
+        M = kb / 1024
+        if M >= 1024:
+            G = M / 1024
+            return "%fG" % (G)
+        else:
+            return "%fM" % (M)
+    else:
+        return "%fkb" % (kb)
+
 def get_param(param_name=None):
     if (param_name == None):
         return None
@@ -92,6 +120,8 @@ def splitString(input_str, separator):
     return ret_arr
 
 def convertCSV2PipeDelimited(data_file_path):
+    if os.path.getsize(data_file_path) == 0:
+        return
     new_data_file_path = rreplace(data_file_path, ".csv", ".txt", 1)
     with open(data_file_path, 'rt') as fin, \
             open(new_data_file_path, 'wt') as fout:
