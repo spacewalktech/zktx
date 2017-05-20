@@ -270,6 +270,9 @@ class CommandExecutor(object):
             raise
         return output
 
+    def __str__(self):
+        return "CommandExecutor Error: [" + self.bin_file + " " + self.args + "]"
+
 def paddingTimeNum(num):
     if num < 10:
         return "0" + str(num)

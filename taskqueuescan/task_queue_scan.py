@@ -36,7 +36,7 @@ class TaskQueueScan(object):
             sess.commit()
             sess.flush()
         else:
-            raise ValueError("Can not find the task_id(" + task_id + ") from task queue")
+            raise ValueError("Can not find the queued_id(" + queued_id + ") from task queue")
 
     def move_task_to_history(self, atask, r):
         stage_info = atask.get_stage_info()
@@ -45,6 +45,7 @@ class TaskQueueScan(object):
         sess.add(th)
         sess.commit()
         sess.flush()
+        return th
 
 
     def delete_queued_task(self, queued_id):
