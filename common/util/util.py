@@ -127,8 +127,11 @@ def convertCSV2PipeDelimited(data_file_path):
             open(new_data_file_path, 'wt') as fout:
         reader = csv.DictReader(fin)
         writer = csv.DictWriter(fout, reader.fieldnames, delimiter='|', lineterminator = '\n')
-        writer.writeheader()
-        writer.writerows(reader)
+        try:
+            writer.writeheader()
+            writer.writerows(reader)
+        except Exception as e:
+            raise Exception("convertCSV2PipeDelimited Error: " + str(e))
         fin.close()
         fout.close()
     os.remove(data_file_path)
@@ -218,6 +221,10 @@ class HDFSUtil(object):
 
     def downloadFileFromHDFS(self, local_path, remote_path):
         cmd_exec = CommandExecutor(self.hdfs_bin, "dfs", "-get", local_path, remote_path)
+        cmd_exec.execute()
+
+    def deleteFileFromHDFS(self, file_path):
+        cmd_exec = CommandExecutor(self.hdfs_bin, "dfs", "-rm", file_path)
         cmd_exec.execute()
 
 class HiveUtil(object):
