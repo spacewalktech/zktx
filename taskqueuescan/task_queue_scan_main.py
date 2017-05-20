@@ -11,8 +11,10 @@ def process_task(active_task, task_history):
     # print(active_task)
     logger.info("Begin to submit ActiveTask(%s)" % active_task)
     sb = Submitter()
-    result = sb.submit(active_task, task_history)
-    return result
+    try:
+        sb.submit(active_task, task_history)
+    except Exception as e:
+        logger.error("submit task(%s) exception(%s)" % (active_task, str(e)))
 
 
 
@@ -23,7 +25,7 @@ if __name__ == "__main__":
         if atask:
             atask.begin_time = util.getCurrentDatetime()
             task_history = tqc.move_task_to_history(atask)
-            r = process_task(atask, task_history)
+            process_task(atask, task_history)
             atask.end_time = util.getCurrentDatetime()
             #tqc.move_task_to_history(atask, r)
             #tqc.set_task_processed(queued_id)

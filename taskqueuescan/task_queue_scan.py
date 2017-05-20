@@ -3,7 +3,6 @@ from common.db.db_config import session as sess
 from common.dao.mr_task import TaskQueue, MRTask, TaskHistory
 from common.entity.active_task import ActiveTask
 from common.util import util
-import common.db.db_config as db
 from common.util.logger import Logger
 
 class TaskQueueScan(object):

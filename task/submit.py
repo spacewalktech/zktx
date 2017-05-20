@@ -81,15 +81,20 @@ class Submitter(object):
                 db_tb = util.splitDBAndTable(tab)
                 d, t = db_tb[0], db_tb[1]
                 tables_in_file.append(d + "--" + t)
-            export_files = hdfsUtil.extractFilesFromDir(active_task.export_dir_uri, *tables_in_file)
-            self.logger.debug("Files generated in (%s) are (%s)" % (active_task.export_dir_uri, export_files))
-            #data_files = hdfsUtil.getFilesBySuffix(export_files, ".parquet")
-            data_files = hdfsUtil.getFilesBySuffix(export_files, ".csv")
-            data_files.sort()
-            self.logger.debug("Data files are (%s)" % data_files)
-            schema_files = hdfsUtil.getFilesBySuffix(export_files, "schema.sql")
-            schema_files.sort()
-            self.logger.debug("Schema files are (%s)" % schema_files)
+            try:
+                export_files = hdfsUtil.extractFilesFromDir(active_task.export_dir_uri, *tables_in_file)
+                self.logger.debug("Files generated in (%s) are (%s)" % (active_task.export_dir_uri, export_files))
+                #data_files = hdfsUtil.getFilesBySuffix(export_files, ".parquet")
+                data_files = hdfsUtil.getFilesBySuffix(export_files, ".csv")
+                data_files.sort()
+                self.logger.debug("Data files are (%s)" % data_files)
+                schema_files = hdfsUtil.getFilesBySuffix(export_files, "schema.sql")
+                schema_files.sort()
+                self.logger.debug("Schema files are (%s)" % schema_files)
+            except Exception as e:
+                res = "Extract exported files Error: " + str(e)
+                self.set_task_history_status(task_history, 2, res)
+                raise e
             for data_file in data_files:
                 # data_file = data_files[i]
                 try:
@@ -111,9 +116,13 @@ class Submitter(object):
                     schema_file_dest = dest_dir + "/" + "schema.sql"
                     hdfsUtil.copyMRResults2Local(data_file, data_file_dest)
                     hdfsUtil.copyMRResults2Local(schema_file, schema_file_dest)
+
                     util.convertCSV2PipeDelimited(data_file_dest)
                     done_indicator_file = dest_dir + "/" + "upload_completed"
                     util.touch(done_indicator_file)
+
+                    hdfsUtil.deleteFileFromHDFS(data_file)
+                    hdfsUtil.deleteFileFromHDFS(schema_file)
                 except Exception as e:
                     res = "Copying export files into input files Error: " + str(e)
                     self.set_task_history_status(task_history, 2, res)
