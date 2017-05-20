@@ -207,6 +207,7 @@ class StageScan(object):
             if s.time_to_process():
                 tq = TaskQueue(mr_task_id = s.id)
                 tq.create_time = util.getCurrentDatetime()
+                #s.update_time == tq.create_time
                 tq.has_processed = 0
                 sess.add(tq)
         sess.commit()

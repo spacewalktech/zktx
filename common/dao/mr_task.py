@@ -114,6 +114,10 @@ class MRTask(Base):
         cur_day_in_month = cur_datetime.day
         cur_hour = cur_datetime.hour
         cur_minute = cur_datetime.minute
+        if self.update_time and self.update_time.minute == cur_minute and self.update_time.hour == cur_hour and \
+            self.update_time.day == cur_day_in_month and self.update_time.month == cur_month and \
+            self.update_time.weekday() == cur_day_in_week:
+            return False
         self.logger.debug("task schedule_cron is: %s, current time is:{minutes(%s), hour(%s),"
                         " day_in_month(%s), month(%s), day_in_week(%s)}" % \
                         (self.schedule_cron, cur_minute, cur_hour, cur_day_in_month, cur_month, cur_day_in_week))
@@ -123,6 +127,8 @@ class MRTask(Base):
             cur_day_in_month in self.schedule_cron.days_in_month and \
             cur_hour in self.schedule_cron.hours and \
             cur_minute in self.schedule_cron.minutes:
+            self.update_time = cur_datetime
+            self.logger.info("enqueue the time sheduled task(task_id=%s)" % self.id)
             return True
         return False
 

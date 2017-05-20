@@ -37,8 +37,9 @@ class Submitter(object):
     def submit(self, active_task):
         if TASK_TYPE[active_task.type] == "HIVE" or TASK_TYPE[active_task.type] == "TIME_HIVE":
             hiveUtil = HiveUtil()
-            for tab in active_task.export_table_list:
-                hiveUtil.dropTable(tab)
+            #for tab in active_task.export_table_list:
+                #hiveUtil.dropTable(tab)
+		#print '--->not drop table<---'
             cmd_exec = CommandExecutor(self.hive_submit_bin, "-f", active_task.bin_file_uri)
             cmd_exec.execute()
             self.logger.debug("Export export_table_list: (%s)", active_task.export_table_list)
