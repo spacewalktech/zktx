@@ -13,6 +13,34 @@ from common.entity.stage_to_process import StageToProcess
 from common.config import config
 from common.util.logger import Logger
 
+
+# 获取文件大小
+def get_file_size(file_path):
+    if file_path is None:
+        return 0
+    size = os.path.getsize(file_path)
+    return formatSize(size)
+
+
+# 转换文件大小单位
+def formatSize(bytes):
+    try:
+        bytes = float(bytes)
+        kb = bytes / 1024
+    except:
+        print("传入的字节格式不对")
+        return "Error"
+
+    if kb >= 1024:
+        M = kb / 1024
+        if M >= 1024:
+            G = M / 1024
+            return "%fG" % (G)
+        else:
+            return "%fM" % (M)
+    else:
+        return "%fkb" % (kb)
+
 def get_param(param_name=None):
     if (param_name == None):
         return None
@@ -92,6 +120,8 @@ def splitString(input_str, separator):
     return ret_arr
 
 def convertCSV2PipeDelimited(data_file_path):
+    if os.path.getsize(data_file_path) == 0:
+        return
     new_data_file_path = rreplace(data_file_path, ".csv", ".txt", 1)
     with open(data_file_path, 'rt') as fin, \
             open(new_data_file_path, 'wt') as fout:
@@ -112,7 +142,8 @@ def touch(file_path):
         os.utime(file_path, None)
 
 def getCurrentDatetime():
-    return datetime.datetime.now(tz=pytz.timezone("Asia/Shanghai"))
+    #return datetime.datetime.now(tz=pytz.timezone("Asia/Shanghai"))
+    return datetime.datetime.now()
 
 def getExportPath(db_name, table_name, is_full, export_dir_path, file_suffix):
     cur_timestamp = str(int(time.time()))
@@ -250,11 +281,12 @@ class CommandExecutor(object):
             cmd_with_args.append(arg)
         try:
             self.logger.debug("Try to execute command: (%s)" % cmd_with_args)
-            subprocess.call(cmd_with_args, env=local_env)
+            res = subprocess.call(cmd_with_args, env=local_env)
         except:
-            self.logger.info("exec cmd: %s Error", cmd_with_args)
+            self.logger.info("exec cmd: %s Error" % cmd_with_args)
             raise
-        return 0
+        if res != 0:
+            raise Exception("exec cmd: %s Exception" % cmd_with_args)
 
     def execute_output(self):
         cmd_with_args = [self.bin_file]
@@ -266,9 +298,12 @@ class CommandExecutor(object):
             self.logger.debug("Try to execute_output command: (%s)" % cmd_with_args)
             output = subprocess.check_output(cmd_with_args, env=local_env)
         except:
-            self.logger.info("exec cmd: %s Error", cmd_with_args)
+            self.logger.info("Error: ", self.__str__())
             raise
         return output
+
+    def __str__(self):
+        return "CommandExecutor: [" + self.bin_file + " " + str(self.args) + "]"
 
 def paddingTimeNum(num):
     if num < 10:
