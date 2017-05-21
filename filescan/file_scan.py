@@ -12,6 +12,7 @@ import trigger_servers
 from sqlalchemy import desc
 import sys
 import common.util.schema_paser as schema_paser
+import traceback
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -72,18 +73,18 @@ def get_schema(json_str, table):
     json_dict['schema'] = json.loads(json_str)
     return json.dumps(json_dict)
 
-get_json_schema(schema_path + '/schema.json'):
+def get_json_schema(path):
     schema = open(path)
     lines = schema.readlines(100000)
     string = ''
     for line in lines:
         string += line
     string = string.lower()
-    json_str = json.dumps(string)
+    json_str = json.loads(string)
     array_origin = []
     array_spark = []
     array_name = []
-    for s in json_str:
+    for s in json_str.get("schema"):
 	dic = {}
 	diu = {}
 	name = s.get("name")
@@ -95,7 +96,7 @@ get_json_schema(schema_path + '/schema.json'):
 	diu["type"] = "string"
 	array_spark.append(diu)
 	array_name.append(name)
-    return {'origin_json': json.dumps(array_origin), 'spark_json': json.dumps(array_spark), 'name_array': name_array}
+    return {'origin_json': json.dumps(array_origin), 'spark_json': json.dumps(array_spark), 'name_array': array_name}
 
 # 处理schema
 def do_schema(schema_path, table):
@@ -196,8 +197,13 @@ def create_stage(table_id, import_type):
 
 # 更新数据的时候检查表的schema信息是不是一致
 def do_check_schema(data_path, table, stage_id):
-    obj = schema_paser.get(data_path + '/schema.sql')
-    # 这里需要获取原有schema的json和转换后的schema的json, 原有json
+
+    obj = None
+    if os.path.exists(data_path + '/schema.json'):
+        obj = get_json_schema(data_path + '/schema.json')
+    else:
+        obj = schema_paser.get(data_path + '/schema.sql')
+
     json_origin = obj.get('origin_json')
     # 转换后的json
     name_array = obj.get('name_array')
@@ -262,17 +268,17 @@ def load():
                 # 更新schema文件
                 schema_str = do_schema(processing_path, table)
 		
-		print schema_str
                 # 先创建stage_id
                 stageid = create_stage(table.id, "full")
 
                 try:
                     # 全量更新
-                    count_info = merge.merge(processing_path, "full", table.dbname, table.table_name, keys_array, schema_str, stageid)
+                    count_info = merge.merge(processing_path, "full", table.dbname, table.table_name, keys_array, schema_str, stageid, table.id)
                     # 更新此次录入的数据信息,只插入count的信息就行了
                     do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), record_num=count_info.get("record_num"))
                 except Exception, e:
-                    update_stage_fail(stageid, e)
+		    print 'exception: ' + traceback.print_exc()
+                    update_stage_fail(stageid, traceback.print_exc())
 
                 # 将 processing 目录下面的东西移动到 processed目录下
                 shutil.move(processing_path, processed_path)
@@ -310,7 +316,7 @@ def load():
                     break
                 try:
                     # 增量更新
-                    count_info = merge.merge(processing_path, "incremental", table.dbname, table.table_name, keys_array, flag, stageid)
+                    count_info = merge.merge(processing_path, "incremental", table.dbname, table.table_name, keys_array, flag, stageid, table.id)
                     # 更新此次录入的数据信息,只插入count的信息就行了
                     do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), updated_num=count_info.get("updated_num"), deleted_num=count_info.get("deleted_num"), record_num=count_info.get("record_num"))
                 except Exception, e:
