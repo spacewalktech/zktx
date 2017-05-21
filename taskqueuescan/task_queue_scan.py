@@ -4,6 +4,7 @@ from common.dao.mr_task import TaskQueue, MRTask, TaskHistory
 from common.entity.active_task import ActiveTask
 from common.util import util
 from common.util.logger import Logger
+from task.submit import Submitter
 
 class TaskQueueScan(object):
     def __init__(self):
@@ -53,4 +54,13 @@ class TaskQueueScan(object):
         sess.delete(tq)
         sess.commit()
         sess.flush()
+
+    def process_task(self, active_task, task_history):
+        # print(active_task)
+        self.logger.info("Begin to submit ActiveTask(%s)" % active_task)
+        sb = Submitter()
+        try:
+            sb.submit(active_task, task_history)
+        except Exception as e:
+            self.logger.error("submit task(%s) exception(%s)" % (active_task, str(e)))
 

@@ -13,7 +13,6 @@ from common.entity.stage_to_process import StageToProcess
 from common.config import config
 from common.util.logger import Logger
 
-
 # 获取文件大小
 def get_file_size(file_path):
     if file_path is None:
@@ -169,6 +168,13 @@ def getFileFromTimestamp(files, timestamp):
 def splitDBAndTable(table_with_db):
     li = table_with_db.split(".")
     return li[0], li[1]
+
+def convertParam2List(params):
+    ret_list = []
+    kvs = params.split(",")
+    for kv in kvs:
+        ret_list.append(kv)
+    return ret_list
 
 class HDFSUtil(object):
     def __init__(self, hdfs_bin=None):
