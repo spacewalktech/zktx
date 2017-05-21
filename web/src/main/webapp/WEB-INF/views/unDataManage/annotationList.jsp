@@ -108,7 +108,7 @@ $(document).ready(function(){
 			<div id="ribbon">
 				<!-- breadcrumb -->
 				<ol class="breadcrumb">
-					<li>首页</li><li>非机构化数据管理</li><li>已识别图像列表</li>
+					<li>首页</li><li>运行监控</li><li>搜索监控</li>
 				</ol>
 			</div>
 			<!-- END RIBBON -->

@@ -60,7 +60,7 @@
     }
     
     function tableHistory(id){
-	$("#content_").load('stage/toHistoryInfo?tbid=' + id);
+		$("#content_").load('stage/toHistoryInfo?tbid=' + id);
     }
     
     $("#add_table").bind("click", function() {
@@ -186,7 +186,7 @@
 					},
 					{
 					    field : 'update_time',
-					    title : '更新时间',
+					    title : '最近更新时间',
 					    formatter : function(value, row, index) {
 						return null != value ? new Date(value).format('yyyy-MM-dd hh:mm:ss')
 							: null;

@@ -205,7 +205,7 @@ public class MrTaskServiceImple implements MrTaskService {
 	}
 
 	@Override
-	public List<TaskQueue> queryRunningTaskList(Integer offset, Integer limit) {
+	public List<TaskQueue> queryTask(Integer offset, Integer limit) {
 
 		return taskQueueMapper.queryRunningTaskList(offset, limit);
 	}

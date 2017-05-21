@@ -45,7 +45,7 @@ public interface MrTaskService {
 
 	List<ImportTables> findAllTables();
 
-	List<TaskQueue> queryRunningTaskList(@Param("offset") Integer offset, @Param("limit") Integer limit);
+	List<TaskQueue> queryTask(@Param("offset") Integer offset, @Param("limit") Integer limit);
 
 	int queryCountRunnngTask();
 

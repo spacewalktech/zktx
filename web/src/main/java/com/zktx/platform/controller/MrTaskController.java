@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,8 +19,10 @@ import com.alibaba.fastjson.JSON;
 import com.zktx.platform.entity.tb.ImportTables;
 import com.zktx.platform.entity.tb.ImportTablesWithBLOBs;
 import com.zktx.platform.entity.tb.MrTaskWithBLOBs;
+import com.zktx.platform.entity.tb.TaskHistoryWithBLOBs;
 import com.zktx.platform.entity.tb.TaskQueue;
 import com.zktx.platform.service.importtable.MrTaskService;
+import com.zktx.platform.service.importtable.TaskHistoryService;
 
 /**
  * 任务管理
@@ -37,6 +38,9 @@ public class MrTaskController {
 	@Autowired
 	MrTaskService mrTaskService;
 
+	@Autowired
+	TaskHistoryService taskHistory;
+
 	@RequestMapping("/index")
 	public String toTaskPage() {
 		return "task/task_list";
@@ -44,7 +48,6 @@ public class MrTaskController {
 
 	@RequestMapping("/addPage")
 	public String addPage(HttpServletRequest request) {
-
 		// 查询出数据库与表
 		List<String> list = mrTaskService.findDistintDBType();
 		request.setAttribute("srcdbs", list);
@@ -143,16 +146,19 @@ public class MrTaskController {
 	public String upload(MultipartFile file, HttpServletRequest request) {
 		try {
 			String org_name = file.getOriginalFilename();
-			String upload_name = UUID.randomUUID().toString().replace("-", "");
-			String suffix = org_name.substring(org_name.lastIndexOf("."), org_name.length());
-			String uploadFileName = upload_name + suffix;
+			// String upload_name = UUID.randomUUID().toString().replace("-",
+			// "");
+			// String suffix = org_name.substring(org_name.lastIndexOf("."),
+			// org_name.length());
+			// String uploadFileName = org_name + suffix;
 			String path = request.getSession().getServletContext().getRealPath("upload");
-			File targetFile = new File(path, uploadFileName);
+			String file_name = org_name + "_" + new Date().getTime();
+			File targetFile = new File(path, file_name);
 			if (!targetFile.exists()) {
 				targetFile.mkdirs();
 			}
 			file.transferTo(targetFile);
-			return path + "/" + uploadFileName;
+			return path + "/" + file_name;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "error";
@@ -191,7 +197,7 @@ public class MrTaskController {
 	@RequestMapping("/insertSelective")
 	@ResponseBody
 	public String insertSelective(MrTaskWithBLOBs record) {
-		long starttime = System.currentTimeMillis();
+		// long starttime = System.currentTimeMillis();
 		try {
 			record.setCreate_time(new Date());
 			record.setUpdate_time(new Date());
@@ -200,7 +206,8 @@ public class MrTaskController {
 			e.printStackTrace();
 			return "error";
 		}
-		System.out.println("插入时间：" + (System.currentTimeMillis() - starttime));
+		// System.out.println("插入时间：" + (System.currentTimeMillis() -
+		// starttime));
 		return "success";
 	}
 
@@ -254,19 +261,43 @@ public class MrTaskController {
 	}
 
 	// 任务监控列表
-	@RequestMapping("/queryRunningTaskList")
-	public @ResponseBody Map<String, Object> queryRunningTaskList(Integer offset, Integer limit) {
+	@RequestMapping("/queryTask")
+	public @ResponseBody Map<String, Object> queryTask(Integer offset, Integer limit, Integer type) {
 		try {
-			List<TaskQueue> list = mrTaskService.queryRunningTaskList(offset, limit);
-			int count = mrTaskService.queryCountRunnngTask();
-			Map<String, Object> map = new HashMap<>();
-			map.put("total", count);
-			map.put("rows", list);
-			return map;
+			if (type == 4) { // 未运行
+				List<TaskQueue> list = mrTaskService.queryTask(offset, limit);
+				int count = mrTaskService.queryCountRunnngTask();
+				Map<String, Object> map = new HashMap<>();
+				map.put("total", count);
+				map.put("rows", list);
+				return map;
+			} else if (type == 0) { // 成功
+				List<TaskHistoryWithBLOBs> list = taskHistory.queryByPage(offset, limit, 1);
+				int count = taskHistory.queryCountByPage(offset, limit, 1);
+				Map<String, Object> map = new HashMap<>();
+				map.put("total", count);
+				map.put("rows", list);
+				return map;
+			} else if (type == 1) { // 运行中
+				List<TaskHistoryWithBLOBs> list = taskHistory.queryByPage(offset, limit, 0);
+				int count = taskHistory.queryCountByPage(offset, limit, 0);
+				Map<String, Object> map = new HashMap<>();
+				map.put("total", count);
+				map.put("rows", list);
+				return map;
+			} else if (type == 2) { // 运行失败
+				List<TaskHistoryWithBLOBs> list = taskHistory.queryByPage(offset, limit, 2);
+				int count = taskHistory.queryCountByPage(offset, limit, 2);
+				Map<String, Object> map = new HashMap<>();
+				map.put("total", count);
+				map.put("rows", list);
+				return map;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
+		return null;
 	}
 
 	@RequestMapping("/taskViewViz")

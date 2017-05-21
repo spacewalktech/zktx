@@ -74,6 +74,11 @@
     ,
     <include refid="Blob_Column_List" />
     from tb_stage
+    <where>
+    	<if test="tbid != null">
+    	import_table_id = #{tbid}
+    	</if>
+    </where>
     order by id desc
     limit #{offset,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
   </select>

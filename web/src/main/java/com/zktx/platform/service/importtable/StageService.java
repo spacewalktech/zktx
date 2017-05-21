@@ -2,8 +2,6 @@ package com.zktx.platform.service.importtable;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
-
 import com.zktx.platform.entity.tb.Stage;
 
 public interface StageService {
@@ -22,7 +20,7 @@ public interface StageService {
 
 	public Integer queryCountByTableId(Integer import_table_id);
 
-	public List<Stage> queryStageList(@Param("offset") Integer offset, @Param("limit") Integer limit);
+	public List<Stage> queryStageList(Integer offset, Integer limit, Integer tbid);
 
 	public int queryCount();
 

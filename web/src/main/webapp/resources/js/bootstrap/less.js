@@ -401,13 +401,13 @@ module.exports = function(options, logger) {
     };
     FileManager.prototype.doXHR = function doXHR(url, type, callback, errback) {
 
-        var xhr = getXMLHttpRequest();
+        var xhr = new XMLHttpRequest();//getXMLHttpRequest();
         var async = options.isFileProtocol ? options.fileAsync : options.async;
 
         if (typeof xhr.overrideMimeType === 'function') {
             xhr.overrideMimeType('text/css');
         }
-        logger.debug("XHR: Getting '" + url + "'");
+        //logger.debug("XHR: Getting '" + url + "'");
         xhr.open('GET', url, async);
         xhr.setRequestHeader('Accept', type || 'text/x-less, text/css; q=0.9, */*; q=0.5');
         xhr.send(null);
@@ -772,7 +772,7 @@ module.exports = function(less, options) {
             },
             info: function(msg) {
                 if (options.logLevel >= logLevel_info) {
-                    console.log(msg);
+                    //console.log(msg);
                 }
             },
             warn: function(msg) {

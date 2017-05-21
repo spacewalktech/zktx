@@ -1,6 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -64,16 +63,15 @@
 	}
 	
 	function canclepage(){
-		
 		var index = parent.layer.getFrameIndex(window.name);
 		parent.layer.close(index);
 	}
 </script>
 </head>
 <body style='width: 99.5%'>
-		<div id="content">
+		<div id="content" style="background-color: white;">
                     <form class="form-horizontal" id="smartForm">
-						<input id="creator_id" name="creator_id" value="${sessionScope.user.id }" type="text">
+						<input id="creator_id" name="creator_id" value="${sessionScope.user.id }" type="hidden">
                      <fieldset>
 		                <legend>库名/表名</legend>
                         <div class="form-group">
@@ -182,7 +180,7 @@
 									    </div>
 									</div>
 								<div class="col-sm-8 control-label text-left">
-										<a href="">高级定义？</a>
+<!-- 										<a href="">高级定义？</a> -->
 									</div>
 						   </div>
 		                	<div class="form-group">
@@ -201,7 +199,7 @@
 									    </div>
 									</div>
 								<div class="col-sm-8 control-label text-left">
-										<a href="">高级定义？</a>
+<!-- 										<a href="">高级定义？</a> -->
 									</div>
 						   </div>
 		                	<div class="form-group">
@@ -220,15 +218,26 @@
 									    </div>
 									</div>
 									<div class="col-sm-8 control-label text-left">
-										<a href="">高级定义？</a>
+<!-- 										<a href="">高级定义？</a> -->
 									</div>
 						   </div>
 		                </fieldset>
 		                <div class="text-center">
 							<button type="button" class="btn btn-primary"  onclick="doSubmit()">提交</button>
 							<button type="button" class="btn btn-default" onclick="canclepage()">取消</button>
+
 						</div>
-                    </form>
-                </div>       
+					</div>
+					<div class="col-sm-8 control-label text-left">
+<!-- 						<a href="">高级定义？</a> -->
+					</div>
+				</div>
+			</fieldset>
+			<div class="text-center">
+				<button type="button" class="btn btn-primary" onclick="doSubmit()">提交</button>
+				<button type="button" class="btn btn-default" onclick="canclepage()">取消</button>
+			</div>
+		</form>
+	</div>
 </body>
 </html>

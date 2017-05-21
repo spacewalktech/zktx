@@ -17,7 +17,6 @@ import com.zktx.platform.entity.tb.ImportTablesPo;
 import com.zktx.platform.entity.tb.ImportTablesWithBLOBs;
 import com.zktx.platform.log2.SystemControllerLog;
 import com.zktx.platform.service.importtable.ImportTableService;
-import com.zktx.platform.service.importtable.StageService;
 
 @Controller
 @RequestMapping("/dataManage")
@@ -25,8 +24,8 @@ public class ImportTablesController {
 	@Autowired
 	ImportTableService tableService;
 
-	@Autowired
-	private StageService stageService;
+	// @Autowired
+	// private StageService stageService;
 
 	private static Log log = LogFactory.getLog(ImportTablesController.class);
 
@@ -71,6 +70,7 @@ public class ImportTablesController {
 	public @ResponseBody String insertSelective(ImportTablesWithBLOBs record) {
 		try {
 			record.setCreate_time(new Date());
+			record.setUpdate_time(new Date());
 			tableService.insertSelective(record);
 		} catch (Exception e) {
 			e.printStackTrace();
