@@ -165,7 +165,21 @@ public class MrTaskController {
 		System.out.println("uri:" + uri);
 		String context = mrTaskService.dowLoadFile(uri);
 		map.put("context", context);
+		map.put("uri", uri);
 		return "task/showfileCode";
+	}
+
+	@RequestMapping("/updateFileContext")
+	public @ResponseBody String updateFileContext(String fileContext, String uri) {
+		try {
+			System.out.println("uri:" + uri + ",,,fileContext:" + fileContext);
+			mrTaskService.updateFile(uri, fileContext);
+			return "success";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "error";
+		}
+
 	}
 
 	@RequestMapping("/getFileContent")

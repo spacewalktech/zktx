@@ -2,6 +2,7 @@ package com.zktx.platform.service.importtable.impl;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -94,7 +95,6 @@ public class MrTaskServiceImple implements MrTaskService {
 				mapper.updateByPrimaryKeySelective(bloBs);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return 0;
@@ -114,6 +114,7 @@ public class MrTaskServiceImple implements MrTaskService {
 			fs.mkdirs(new Path(targetdir + "/" + id));
 		}
 		FSDataOutputStream out = fs.create(new Path(target));
+
 		IOUtils.copyBytes(in, out, 4096, true);
 		// fs.copyFromLocalFile(new Path(srcfile), new Path(target));
 		System.out.println("文件上传：" + (System.currentTimeMillis() - starttime));
@@ -233,13 +234,35 @@ public class MrTaskServiceImple implements MrTaskService {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(inStream));
 				String context = null;
 				while ((context = reader.readLine()) != null) {
-					sb.append(context);
+					sb.append(context).append("\r\n");
 				}
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return sb.toString();
+	}
+
+	@Override
+	public String updateFile(String uri, String fileContext) {
+		Configuration conf = new Configuration();
+		try {
+			FileSystem fs = FileSystem.get(URI.create(uri), conf);
+			Path path = new Path(URI.create(uri));
+			if (fs.exists(path)) {
+				fs.delete(path, true);
+			}
+			InputStream in = new BufferedInputStream(new ByteArrayInputStream(fileContext.getBytes("UTF-8")));
+			// String suffix = uri.substring(uri.lastIndexOf("."),
+			// uri.length());
+			// String targetdir = uri.substring(0, uri.lastIndexOf("/"));
+			// String filename = "/" + System.currentTimeMillis() + suffix;
+			// String target = targetdir + filename;
+			FSDataOutputStream out = fs.create(new Path(uri));
+			IOUtils.copyBytes(in, out, 4096, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

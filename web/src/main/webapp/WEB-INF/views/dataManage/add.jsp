@@ -73,7 +73,7 @@
 <body style='width: 99.5%'>
 		<div id="content">
                     <form class="form-horizontal" id="smartForm">
-						<input id="creator_id" name="creator_id" value="${sessionScope.user.id }" type="hidden">
+						<input id="creator_id" name="creator_id" value="${sessionScope.user.id }" type="text">
                      <fieldset>
 		                <legend>库名/表名</legend>
                         <div class="form-group">

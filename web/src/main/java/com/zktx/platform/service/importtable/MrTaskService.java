@@ -52,4 +52,6 @@ public interface MrTaskService {
 	List<MrTaskWithBLOBs> taskViewViz();
 
 	String dowLoadFile(String uri);
+
+	String updateFile(String uri, String fileContext);
 }

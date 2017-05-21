@@ -5,26 +5,64 @@
 <head>
     <meta charset="UTF-8">
     <title>ueditor demo</title>
-  	<script type="text/javascript" src="${root }/resources/js/syntaxhighlighter_3.0.83/scripts/shCore.js"></script>
-  	<script type="text/javascript" src="${root }/resources/js/syntaxhighlighter_3.0.83/scripts/shBrushSql.js"></script>
-  	<script type="text/javascript" src="${root }/resources/js/syntaxhighlighter_3.0.83/scripts/shBrushJava.js"></script>
- 	<link type="text/css" rel="stylesheet" href="${root }/resources/js/syntaxhighlighter_3.0.83/styles/shCore.css"/>
- 	<link type="text/css" rel="Stylesheet" href="${root }/resources/js/syntaxhighlighter_3.0.83/styles/shThemeDefault.css" /> 
- 	<script type="text/javascript">SyntaxHighlighter.all();</script> 
+    <%@ include file="../header.jsp"%>
+<%--   	<script type="text/javascript" src="${root }/resources/js/syntaxhighlighter_3.0.83/scripts/shCore.js"></script> --%>
+<%--   	<script type="text/javascript" src="${root }/resources/js/syntaxhighlighter_3.0.83/scripts/shBrushSql.js"></script> --%>
+<%--   	<script type="text/javascript" src="${root }/resources/js/syntaxhighlighter_3.0.83/scripts/shBrushJava.js"></script> --%>
+<%--  	<link type="text/css" rel="stylesheet" href="${root }/resources/js/syntaxhighlighter_3.0.83/styles/shCore.css"/> --%>
+<%--  	<link type="text/css" rel="Stylesheet" href="${root }/resources/js/syntaxhighlighter_3.0.83/styles/shThemeDefault.css" />  --%>
+<!--  	<script type="text/javascript">SyntaxHighlighter.all();</script>  -->
+	
+	<link type="text/css" rel="stylesheet" href="${root }/resources/js/SyntaxHighlighter_1.5.1/Styles/SyntaxHighlighter.css"></link>
  	<script type="text/javascript">
+ 	$(function(){
+ 		$("#edit_div").hide();
+ 	})
  	  function getContent() {
- 	        var arr = [];
- 	        arr.push(UE.getEditor('editor').getContent());
- 	        alert(arr.join("\n"));
- 	    }
+	      var contq= UE.getEditor('container').getContentTxt();
+	      $("#context_div_show").val(contq);
+	      console.log(contq);
+	        $("#show_div").show();
+			$("#edit_div").hide();
+	    }
+	function editFile(){
+		var cont = $("#context_div_show").html();
+		UE.getEditor('container').setContent(cont);
+		dp.SyntaxHighlighter.HighlightAll();
+		$("#show_div").hide();
+		$("#edit_div").show();
+		
+	}
+	
+	function doSubmit(){
+		var cont = $("#context_div_show").html();
+		var uri =$("#uri").val();
+		$.post("updateFileContext",{fileContext:cont,uri:uri},function(res){
+			if("success"==res){
+			layer.msg('修改成功！', {
+				  icon: 1
+				},function(){
+					var index = parent.layer.getFrameIndex(window.name);
+					parent.$('#task_list').bootstrapTable('refresh')
+					parent.layer.close(index);
+				})
+		}else{
+			layer.msg('修改失败！', {
+				  icon: 2
+				})
+		}
+			
+		});
+	}
+
  	</script>
 </head>
 
 <body>
-
-	 <div style="width:99%"> 
+	<div id="content">
+	<input id="uri" type="hidden" name="uri" value="${uri }">
+	 <div style="width:99%" id="edit_div"> 
             <form action="" method="post"> 
-               	 标题：<input type="text" name="title" style="width:90%"/><br/> 
              	   内容： 
                		 <textarea id="container" name="content" type="text/plain">
 							
@@ -32,23 +70,16 @@
                		 <input type="button" onclick="getContent()" value="预览" /> 
             </form> 
         </div> 
-        <div>
-	        <script type="syntaxhighlighter" class="brush: java;">
-				class  Persson extends Object{private int i=1;  protected final static int AGE=10 
-			   		public   void  sum(int a,int b) { 
-			      	return a+b; 
-			   		} 
-			   		public  static  void main(string []  s){ 
-			   		} 
-				} 
-			</script>
-			 <input type="submit" value="编辑" /> 
-			 <input type="submit" value="提交" /> 
+        <div id="show_div">
+
+			<textarea name="code" class="sql" style="line-height: 30" rows="30" cols="100" id="context_div_show">
+				${context }
+			</textarea> 
+			 <input type="button" onclick="editFile()" value="编辑" /> 
+			 <input type="button" onclick="doSubmit()" value="提交" /> 
         </div>
-    <!-- 加载编辑器的容器 -->
-    <script id="editor" class="brush: sql" name="editor" type="text/plain">
-      
-    </script>
+        
+    </div>
     <!-- 配置文件 -->
     <script type="text/javascript" src="${root }/resources/js/ueditor1_4/ueditor.config.js"></script>
     <!-- 编辑器源码文件 -->
@@ -152,6 +183,23 @@
         ] 
     ]}); 
 </script> 
-</body>
 
+</body>
+<script class="javascript" src="${root }/resources/js/SyntaxHighlighter_1.5.1/Scripts/shCore.js"></script>
+<script class="javascript" src="${root }/resources/js/SyntaxHighlighter_1.5.1/Scripts/shBrushCSharp.js"></script>
+<script class="javascript" src="${root }/resources/js/SyntaxHighlighter_1.5.1/Scripts/shBrushPhp.js"></script>
+<script class="javascript" src="${root }/resources/js/SyntaxHighlighter_1.5.1/Scripts/shBrushJScript.js"></script>
+<script class="javascript" src="${root }/resources/js/SyntaxHighlighter_1.5.1/Scripts/shBrushJava.js"></script>
+<script class="javascript" src="${root }/resources/js/SyntaxHighlighter_1.5.1/Scripts/shBrushVb.js"></script>
+<script class="javascript" src="${root }/resources/js/SyntaxHighlighter_1.5.1/Scripts/shBrushSql.js"></script>
+<script class="javascript" src="${root }/resources/js/SyntaxHighlighter_1.5.1/Scripts/shBrushXml.js"></script>
+<script class="javascript" src="${root }/resources/js/SyntaxHighlighter_1.5.1/Scripts/shBrushDelphi.js"></script>
+<script class="javascript" src="${root }/resources/js/SyntaxHighlighter_1.5.1/Scripts/shBrushPython.js"></script>
+<script class="javascript" src="${root }/resources/js/SyntaxHighlighter_1.5.1/Scripts/shBrushRuby.js"></script>
+<script class="javascript" src="${root }/resources/js/SyntaxHighlighter_1.5.1/Scripts/shBrushCss.js"></script>
+<script class="javascript" src="${root }/resources/js/SyntaxHighlighter_1.5.1/Scripts/shBrushCpp.js"></script>
+<script class="javascript">
+dp.SyntaxHighlighter.ClipboardSwf ='${root }/resources/js/SyntaxHighlighter_1.5.1/Scripts/clipboard.swf';
+dp.SyntaxHighlighter.HighlightAll('code');
+</script>  
 </html>

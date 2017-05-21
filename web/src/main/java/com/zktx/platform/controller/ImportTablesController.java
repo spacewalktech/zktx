@@ -88,7 +88,7 @@ public class ImportTablesController {
 		map.put("dbList", dbList);
 		map.put("src_dbList", src_dbList);
 		map.put("bloBs", bloBs);
-		return "dataManage/update";
+		return "dataManage/update_";
 	}
 
 	// 更新

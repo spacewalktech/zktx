@@ -9,7 +9,7 @@ public class Test {
 
 		System.out.println(salt1);
 
-		byte[] hashPassword = Digests.sha1("123456".getBytes(), salt, 1024);
+		byte[] hashPassword = Digests.sha1("sky".getBytes(), salt, 1024);
 		String password = Encodes.encodeHex(hashPassword);
 
 		System.out.println(password);
