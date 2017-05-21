@@ -40,6 +40,9 @@ class ImportTable(db.Base):
     process_info = Column(TEXT)
     create_time = Column(DateTime)
     update_time = Column(DateTime)
+    size = Column(String(50))
+    data_count = Column(Integer)	
+
 
     children = relationship("Stage", back_populates="parent")
 
