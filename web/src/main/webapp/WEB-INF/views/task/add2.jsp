@@ -376,6 +376,14 @@
     })
 </script>
 <body style='width: 99.5%'>
+
+	<span class="btn btn-success fileinput-button">
+        <i class="glyphicon glyphicon-plus"></i>
+        <span>Add files...</span>
+        <!-- The file input field used as target for the file upload widget -->
+        <input id="fileupload" type="file" name="files[]" multiple>
+    </span>
+
 	<div id="ribbon">
 		<ol class="breadcrumb">
 			<li>首页</li>

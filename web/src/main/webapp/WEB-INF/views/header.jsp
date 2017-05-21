@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <link href="${root }/resources/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="${root }/resources/js/bootstrap-table/bootstrap-table.css">
 <link href="${root }/resources/css/home.css" rel="stylesheet">
@@ -72,7 +73,7 @@
 
 <script src="${root }/resources/js/app.config.js"></script>
 <script src="${root }/resources/js/smartwidgets/jarvis.widget.min.js"></script>
-<script src="${root }/resources/js/demo.min.js"></script>
+<%-- <script src="${root }/resources/js/demo.min.js"></script> --%>
 <script src="${root }/resources/js/app.min.js"></script>
 <script src="${root }/resources/js/except.js"></script>	
 <script src="${root}/resources/layer/layer.js"></script>
@@ -112,4 +113,20 @@ Date.prototype.format =function(format){
 	("00"+ o[k]).substr((""+ o[k]).length));
 	return format;
 }
+
+$.ajaxSetup({
+	contentType : "application/x-www-form-urlencoded;charset=utf-8",
+	complete : function(XMLHttpRequest, textStatus) {
+		var sessionstatus = XMLHttpRequest.getResponseHeader("sessionstatus");
+		if (sessionstatus == "timeout") {
+			layer.alert("您的登陆已经超时，请重新登陆！", {
+				icon : 7
+			}, function() {
+				window.location.href = '${root}' + "/login.html";
+			});
+		}
+	}
+});
+
+
 </script>

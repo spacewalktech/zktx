@@ -54,8 +54,8 @@ public class StageServiceImpl implements StageService {
 	}
 
 	@Override
-	public List<Stage> queryStageList(Integer offset, Integer limit) {
-		return mapper.queryStageList(offset, limit);
+	public List<Stage> queryStageList(Integer offset, Integer limit, Integer tbid) {
+		return mapper.queryStageList(offset, limit, tbid);
 	}
 
 	@Override

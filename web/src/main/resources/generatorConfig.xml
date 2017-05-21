@@ -25,13 +25,7 @@
 		<javaClientGenerator type="XMLMAPPER" targetPackage="com.zktx.platform.dao.tb" targetProject="platform"/>
 
 		<!--对应数据库表 mysql可以加入主键自增 字段命名 忽略某字段等 -->
-		<table tableName="jkx_annotation" domainObjectName="Annotation" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
-			<property name="useActualColumnNames" value="true" />
-		</table>
-		<table tableName="jkx_health_img" domainObjectName="Health_mg" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
-			<property name="useActualColumnNames" value="true" />
-		</table>
-		<table tableName="jkx_uploadBat_record" domainObjectName="UploadBat_record" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+		<table tableName="tb_task_history" domainObjectName="TaskHistory" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
 			<property name="useActualColumnNames" value="true" />
 		</table>
 		

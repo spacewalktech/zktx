@@ -14,6 +14,8 @@ public class MrTask {
 
 	private String bin_file_uri;
 
+	private String parameter;
+
 	private Boolean type;
 
 	private String export_dir_uri;
@@ -202,6 +204,14 @@ public class MrTask {
 
 	public void setCreate_user(User create_user) {
 		this.create_user = create_user;
+	}
+
+	public String getParameter() {
+		return parameter;
+	}
+
+	public void setParameter(String parameter) {
+		this.parameter = parameter;
 	}
 
 }
