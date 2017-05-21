@@ -91,7 +91,6 @@ public class MrTaskServiceImple implements MrTaskService {
 				mapper.updateByPrimaryKeySelective(bloBs);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return 0;
@@ -201,7 +200,7 @@ public class MrTaskServiceImple implements MrTaskService {
 	}
 
 	@Override
-	public List<TaskQueue> queryRunningTaskList(Integer offset, Integer limit) {
+	public List<TaskQueue> queryTask(Integer offset, Integer limit) {
 
 		return taskQueueMapper.queryRunningTaskList(offset, limit);
 	}

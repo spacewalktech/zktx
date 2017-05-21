@@ -4,14 +4,7 @@
 <html lang="en-us">
 <head>
 <meta charset="utf-8">
-<title>健康医疗保险大数据</title>
-<meta name="description" content="">
-<meta name="author" content="">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link rel="shortcut icon" href="${root }/resources/img/logo_title.ico" type="image/x-icon">
-<link rel="icon" href="${root }/resources/img/logo_title.ico" type="image/x-icon">
+<title>INFINIDATA</title>
 <style>
 html, body {
 	margin: 0;

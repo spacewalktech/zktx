@@ -4,6 +4,7 @@
 	<resultMap id="BaseResultMap" type="com.zktx.platform.entity.tb.MrTask">
 		<id column="id" jdbcType="INTEGER" property="id" />
 		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="parameter" jdbcType="VARCHAR" property="parameter" />
 		<result column="information" jdbcType="VARCHAR" property="information" />
 		<result column="bin_file_uri" jdbcType="VARCHAR" property="bin_file_uri" />
 		<result column="type" jdbcType="BIT" property="type" />
@@ -188,6 +189,9 @@
 			<if test="bin_file_uri != null">
 				bin_file_uri,
 			</if>
+			<if test="parameter != null">
+				parameter,
+			</if>
 			<if test="type != null">
 				type,
 			</if>
@@ -258,6 +262,9 @@
 			</if>
 			<if test="bin_file_uri != null">
 				#{bin_file_uri,jdbcType=VARCHAR},
+			</if>
+			<if test="parameter != null">
+				#{parameter},
 			</if>
 			<if test="type != null">
 				#{type,jdbcType=BIT},

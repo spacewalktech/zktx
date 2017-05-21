@@ -30,7 +30,7 @@ public interface StageMapper {
 
 	public Integer queryCountByTableId(@Param("import_table_id") Integer import_table_id);
 
-	public List<Stage> queryStageList(@Param("offset") Integer offset, @Param("limit") Integer limit);
+	public List<Stage> queryStageList(@Param("offset") Integer offset, @Param("limit") Integer limit, @Param("tbid") Integer tbid);
 
 	public int queryCount();
 }

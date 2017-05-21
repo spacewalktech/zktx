@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -53,16 +55,22 @@ public class StageController {
 	// 查看历史表
 	// @SystemControllerLog(description = "查看历史表")
 	@RequestMapping("/toHistoryInfo")
-	public String toHistoryInfo() {
+	public String toHistoryInfo(HttpServletRequest request, Integer tbid) {
+		request.setAttribute("tbid", tbid);
 		return "/dataManage/querHistoryInfo";
 	}
 
 	@SystemControllerLog(description = "导入轨迹表")
 	@RequestMapping("/querHistoryInfo")
-	public @ResponseBody Map<String, Object> querHistoryInfo(Integer limit, Integer offset) {
+	public @ResponseBody Map<String, Object> querHistoryInfo(Integer limit, Integer offset, Integer tbid) {
 		try {
-			int count = stageService.queryCount();
-			List<Stage> list = stageService.queryStageList(offset, limit);
+			int count = 0;
+			List<Stage> list = stageService.queryStageList(offset, limit, tbid);
+			if (null != tbid) {
+				count = stageService.queryCountByTableId(tbid);
+			} else {
+				count = stageService.queryCount();
+			}
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("total", count);
 			map.put("rows", list);

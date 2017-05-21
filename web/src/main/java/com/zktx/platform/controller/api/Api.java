@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mysql.fabric.xmlrpc.base.Array;
 import com.zktx.platform.entity.tb.User;
 import com.zktx.platform.service.user.UserService;
 

@@ -8,7 +8,7 @@ var TableInit = function() {
 		//初始化Table
 		oTableInit.Init = function() {
 			$('#table').bootstrapTable({
-				url : 'mrTask/queryRunningTaskList', //请求后台的URL（*）
+				url : 'mrTask/queryTask', //请求后台的URL（*）
 				method : 'get', //请求方式（*）
 				toolbar : '#toolbar', //工具按钮用哪个容器
 				striped : true, //是否显示行间隔色
@@ -105,24 +105,18 @@ function getColums(){
     
     // type 为 1 需要加上 状态条；2需要加上是失败原因；
     var type = $("#type").val()
-    if(type == 0 || type == 4){
+    if(type == 0){
 		
 	    var colums = [{
 			field : 'id',
 			title : 'ID',
 			width : '50'
 		}, {
-			field : 'taskWithBLOBs',
-			title : '流程名称',
-			formatter : function (value, row, index){
-		    	return value.name;
-		    }
+			field : 'name',
+			title : '流程名称'
 		},  {
-			field : 'taskWithBLOBs',
-			title : '类型',
-			formatter : function (value, row, index){
-		    	return value.task_type;
-		    }
+			field : 'type',
+			title : '类型'
 		}, {
 			field : 'create_time',
 			title : '触发时间',
@@ -151,23 +145,61 @@ function getColums(){
 	
 	    return colums;
 	    
+    }else if (type == 4){
+			var colums = [{
+				field : 'id',
+				title : 'ID',
+				width : '50'
+			}, {
+				field : 'taskWithBLOBs',
+				title : '流程名称',
+				formatter : function (value, row, index){
+				    return value.name
+				}
+			},  {
+				field : 'taskWithBLOBs',
+				title : '类型',
+				formatter : function (value, row, index){
+				    return value.task_type
+				}
+			}, {
+				field : 'create_time',
+				title : '触发时间',
+				formatter : function (value, row, index){
+			    	return value == null ? null : new Date(value).format('yyyy-MM-dd hh:mm:ss');
+			    }
+			}, {
+				field : 'begin_time',
+				title : '开始时间',
+				formatter : function (value, row, index){
+			    	return value == null ? null : new Date(value).format('yyyy-MM-dd hh:mm:ss');
+			    }
+			}, {
+				field : 'end_time',
+				title : '结束时间',
+				formatter : function (value, row, index){
+			    	return value == null ? null : new Date(value).format('yyyy-MM-dd hh:mm:ss');
+			    }
+			}, {
+				field : 'taskWithBLOBs',
+				title : '状态',
+				formatter : function (value, row, index){
+			    	return value.latest_running_status;
+			    }
+			}]
+		
+		return colums;
     }else if (type == 1){
 		var colums = [{
 			field : 'id',
 			title : 'ID',
 			width : '50'
 		}, {
-			field : 'taskWithBLOBs',
-			title : '流程名称',
-			formatter : function (value, row, index){
-		    	return value.name;
-		    }
+			field : 'name',
+			title : '流程名称'
 		},  {
-			field : 'taskWithBLOBs',
-			title : '类型',
-			formatter : function (value, row, index){
-		    	return value.task_type;
-		    }
+			field : 'type',
+			title : '类型'
 		}, {
 			field : 'create_time',
 			title : '触发时间',
@@ -198,17 +230,11 @@ function getColums(){
 			title : 'ID',
 			width : '50px'
 		}, {
-			field : 'taskWithBLOBs',
-			title : '流程名称',
-			formatter : function (value, row, index){
-		    	return value.name;
-		    }
+			field : 'name',
+			title : '流程名称'
 		},  {
-			field : 'taskWithBLOBs',
-			title : '类型',
-			formatter : function (value, row, index){
-		    	return value.task_type;
-		    }
+			field : 'type',
+			title : '类型'
 		}, {
 			field : 'create_time',
 			title : '触发时间',
@@ -234,7 +260,7 @@ function getColums(){
 			field : 'reason',
 			title : '原因',
 			formatter : function (value, row, index){
-		    	return "";
+		    	return "<a onclick='showError(\"" + row.result + "\")' data-toggle='modal' data-target='#myModal'>查看错误信息</a>"
 		    }
 		}]
 	
@@ -243,6 +269,11 @@ function getColums(){
     
 }
 
+function showError(msg){
+	$('#myModal').on('show.bs.modal', function () {
+		$("#show_div").html(msg);
+	})
+}
 
 </script>
 </head>
@@ -282,5 +313,30 @@ function getColums(){
 			<input type='hidden' id='type' value="0"/>
 		</div>
 	</div>
+	
+	
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" 
+							aria-hidden="true">×
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						数据展示
+					</h4>
+				</div>
+				<div class="modal-body" id="show_div">
+					...
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" 
+							data-dismiss="modal">关闭
+					</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div>
+	
 </body>
 </html>

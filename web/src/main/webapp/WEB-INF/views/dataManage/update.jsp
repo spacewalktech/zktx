@@ -216,9 +216,5 @@
 		<button type="reset" class="btn btn-default">重置</button>
 		</footer>
 	</form>
-	<script type="text/javascript">
-	
-	</script>
-	
 </body>
 </html>
