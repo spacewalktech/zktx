@@ -13,7 +13,6 @@ from common.entity.stage_to_process import StageToProcess
 from common.config import config
 from common.util.logger import Logger
 
-
 # 获取文件大小
 def get_file_size(file_path):
     if file_path is None:
