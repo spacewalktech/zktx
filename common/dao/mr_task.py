@@ -58,6 +58,7 @@ class MRTask(Base):
     export_tables = Column('export_tables', LONGTEXT)
     active = Column('active', TINYINT(1))
     task_schedule = Column('task_schedule', VARCHAR(500))
+    hive_params = Column('hive_params', LONGTEXT)
     latest_running_time = Column('latest_running_time', DATETIME())
     latest_running_status = Column('latest_running_status', TINYINT(1))
     latest_running_info = Column('latest_running_info', TEXT())
@@ -101,6 +102,14 @@ class MRTask(Base):
             cron = util.CronUtil()
             cron.parseLinuxCron(self.task_schedule)
             return cron
+        else:
+            return None
+
+    @hybrid_property
+    def hive_params_list(self):
+        if self.hive_params:
+            hive_params_list = util.convertParam2List(self.hive_params)
+            return hive_params_list
         else:
             return None
 

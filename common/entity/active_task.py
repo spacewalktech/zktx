@@ -19,6 +19,7 @@ class ActiveTask(object):
             self.triggle_cond_list = mr_task.triggle_cond_list
             self.export_table_list = mr_task.export_table_list
             self.schedule_cron = mr_task.schedule_cron
+            self.hive_params_list = mr_task.hive_params_list
             self.create_time = mr_task.create_time
             self.begin_time = None
             self.end_time = None
@@ -36,6 +37,7 @@ class ActiveTask(object):
             self.triggle_cond_list = None
             self.export_table_list = None
             self.schedule_cron = None
+            self.hive_params_list = None
             self.create_time = None
             self.begin_time = None
             self.end_time = None

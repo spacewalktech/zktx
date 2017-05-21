@@ -41,8 +41,13 @@ class Submitter(object):
             #for tab in active_task.export_table_list:
                 #hiveUtil.dropTable(tab)
 		#print '--->not drop table<---'
+            hiveconf_params = []
+            if active_task.hive_params_list:
+                for param in active_task.hive_params_list:
+                    hiveconf_params.append("-hiveconf")
+                    hiveconf_params.append(param)
             try:
-                cmd_exec = CommandExecutor(self.hive_submit_bin, "-f", active_task.bin_file_uri)
+                cmd_exec = CommandExecutor(self.hive_submit_bin, "-f", active_task.bin_file_uri, *hiveconf_params)
                 cmd_exec.execute()
             except Exception as e:
                 res = str(cmd_exec) + "Error: " + str(e)
@@ -61,7 +66,7 @@ class Submitter(object):
                     self.set_task_history_status(task_history, 2, res)
                     raise e
 
-        elif TASK_TYPE[active_task.type] == "SPARK" or TASK_TYPE[active_task.type] == "TIME_HIVE":
+        elif TASK_TYPE[active_task.type] == "SPARK" or TASK_TYPE[active_task.type] == "TIME_SPARK":
             hdfsUtil = HDFSUtil()
             local_bin_file = "/tmp/" + util.getPathFlat(active_task.bin_file_uri)
             hdfsUtil.downloadFileFromHDFS(local_bin_file, active_task.bin_file_uri)
