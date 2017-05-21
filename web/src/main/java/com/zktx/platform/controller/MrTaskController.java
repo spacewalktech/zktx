@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -164,10 +165,33 @@ public class MrTaskController {
 		}
 	}
 
+	// 转向代码展示页面
 	@RequestMapping("/dowloadfile")
-	public String dowLoadFile(String uri) {
+	public String dowLoadFile(String uri, ModelMap map) {
 		System.out.println("uri:" + uri);
-		return "";
+		String context = mrTaskService.dowLoadFile(uri);
+		map.put("context", context);
+		map.put("uri", uri);
+		return "task/showfileCode";
+	}
+
+	@RequestMapping("/updateFileContext")
+	public @ResponseBody String updateFileContext(String fileContext, String uri) {
+		try {
+			System.out.println("uri:" + uri + ",,,fileContext:" + fileContext);
+			mrTaskService.updateFile(uri, fileContext);
+			return "success";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "error";
+		}
+
+	}
+
+	@RequestMapping("/getFileContent")
+	public @ResponseBody String getFileContent() {
+		String content = "我是一只小强";
+		return content;
 	}
 
 	@RequestMapping("/insertSelective")

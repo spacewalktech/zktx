@@ -27,6 +27,7 @@ public class CommFilter implements Filter {
 		String path = request.getContextPath();
 		int port = request.getServerPort();
 		String website = request.getScheme() + "://" + request.getServerName() + (port == 80 ? "" : (":" + port)) + path;
+		System.out.println("website:" + website);
 		request.setAttribute("root", website);
 		filterChain.doFilter(request, response);
 

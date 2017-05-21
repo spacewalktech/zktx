@@ -209,7 +209,6 @@
 					    var table_name = result[i].table_name
 					    str += '<option value="'+tb_id+'">' + table_name + '</option>'
 					}
-					console.log(str)
 					
 					$("#trigger_table" + id).html(str)
 					$("#trigger_table"+id).val(index_);
