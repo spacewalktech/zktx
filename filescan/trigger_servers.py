@@ -10,7 +10,7 @@ from impala.dbapi import connect
 from es.es_client import ESClient
 from sqlalchemy import desc
 
-env = common_util.get_param("env")
+env = common_util.getParam("env")
 
 if env == "pro":
     setting = common_config.pro_path

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-:
 import time
-from common.util import util
+from common.util.util import CommonUtil
 from taskqueuescan.task_queue_scan import TaskQueueScan
 from common.config.config import task_queue_scan_interval
 
@@ -9,10 +9,10 @@ if __name__ == "__main__":
         tqc = TaskQueueScan()
         atask, queued_id = tqc.dequeue_task()
         if atask:
-            atask.begin_time = util.getCurrentDatetime()
+            atask.begin_time = CommonUtil.getCurrentDatetime()
             task_history = tqc.move_task_to_history(atask)
             tqc.process_task(atask, task_history)
-            atask.end_time = util.getCurrentDatetime()
+            atask.end_time = CommonUtil.getCurrentDatetime()
             #tqc.move_task_to_history(atask, r)
             #tqc.set_task_processed(queued_id)
             tqc.delete_queued_task(queued_id)

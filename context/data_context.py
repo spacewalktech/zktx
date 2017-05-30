@@ -3,9 +3,8 @@ import sys
 import json
 import time
 from common.config import config
-from common.util.util import HDFSUtil
+from common.util.util import HDFSUtil,CommonUtil
 from common.util.logger import Logger
-from common.util import util
 from pyspark.sql import SparkSession
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -28,7 +27,7 @@ class DataContext(object):
         if len(sys.argv) < 2:
             raise Exception("Export destination path should be given as an argument")
         export_dir_path = sys.argv[1]
-        export_data_path, export_schema_path = util.getExportPath(db_name, table_name, is_full, export_dir_path, "csv")
+        export_data_path, export_schema_path = CommonUtil.getExportPath(db_name, table_name, is_full, export_dir_path, "csv")
         try:
             df.write.csv(export_data_path)
         except:

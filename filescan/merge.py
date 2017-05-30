@@ -3,7 +3,7 @@
 
 import os
 import time
-import common.config.config as common_config, common.util.util as common_util
+import common.config.config as common_config, common.util.util.CommonUtil as common_util
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
 from hdfs import *
@@ -13,7 +13,7 @@ from common.util.util import CommandExecutor
 
 setting = None
 
-env = common_util.get_param("env")
+env = common_util.getParam("env")
 
 if env == "pro":
     setting = common_config.pro_path
@@ -100,13 +100,13 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
             print '--->开始上传源文件到hdfs目录'
             client.upload(hdfs_path, data_path)
             print '--->上传完成'
-        except Exception, e:
+        except Exception as e:
        	    print '--->上传异常，开始采用覆盖模式'
             client.upload(hdfs_path, data_path, overwrite=True)
         # 读取数据
         print '--->开始读取hdfs上源文件'
         df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(hdfs_path + data_path.split('processing')[1] + "/data_full." + suffix)
-	#file_size = common_util.get_file_size( data_path + "/data_full." + suffix);
+	#file_size = common_util.getFileSize( data_path + "/data_full." + suffix);
 	file_size = get_hdfs_file_size(hdfs_path + data_path.split('processing')[1] + "/data_full." + suffix)
 	print '--->文件大小为 : ' + file_size
         count = df.count()

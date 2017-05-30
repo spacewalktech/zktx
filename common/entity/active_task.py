@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-:
 import json
-from common.util import util
+from common.util.util import CommonUtil
 from common.util.logger import Logger
 
 class ActiveTask(object):
@@ -68,7 +68,7 @@ class ActiveTask(object):
     def should_process(self):
         if self.type < 2:
             return True
-        cur_datetime = util.getCurrentDatetime()
+        cur_datetime = CommonUtil.getCurrentDatetime()
         cur_year = cur_datetime.year
         cur_day_in_week = cur_datetime.weekday()
         cur_month = cur_datetime.month
@@ -88,4 +88,4 @@ class ActiveTask(object):
         return False
 
     def get_stage_info(self):
-        return util.encode_table_stage(self.table_stage_list)
+        return CommonUtil.encodeTableStage(self.table_stage_list)

@@ -6,7 +6,7 @@ import common.dao.table_schema as tb_table_schema
 import common.db.db_config as db
 from common.dao.import_tables import Stage
 import os, re, shutil, json, time
-import merge, common.config.config as config, common.util.util as util
+import merge, common.config.config as config, common.util.util.CommonUtil as util
 import create_dir
 import trigger_servers
 from sqlalchemy import desc
@@ -19,7 +19,7 @@ sys.setdefaultencoding("utf-8")
 
 setting = None
 
-env = util.get_param("env")
+env = util.getParam("env")
 
 if env == "pro":
     setting = config.pro_path
