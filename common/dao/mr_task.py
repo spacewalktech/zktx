@@ -58,7 +58,7 @@ class MRTask(Base):
     export_tables = Column('export_tables', LONGTEXT)
     active = Column('active', TINYINT(1))
     task_schedule = Column('task_schedule', VARCHAR(500))
-    hive_params = Column('hive_params', LONGTEXT)
+    hive_params = Column('parameter', LONGTEXT)
     latest_running_time = Column('latest_running_time', DATETIME())
     latest_running_status = Column('latest_running_status', TINYINT(1))
     latest_running_info = Column('latest_running_info', TEXT())

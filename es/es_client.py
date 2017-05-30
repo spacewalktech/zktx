@@ -19,7 +19,7 @@ class ESClient(object):
 
         self.es_conf = {}
         if id_field:
-            self.es_conf["es.mapping.id"] = id_field + "i_am_id"
+            self.es_conf["es.mapping.id"] = id_field
         if not nodes:
             self.es_conf["es.nodes"] = convertArrayToFlatString(config.es_hosts)
             self.nodes = config.es_hosts

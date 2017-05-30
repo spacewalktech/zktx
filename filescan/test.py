@@ -34,7 +34,16 @@ from common.util.util import CommandExecutor, HDFSUtil, HiveUtil
 # cur.execute('show databases')
 # print cur.fetchall()
 
-cmd_exec = CommandExecutor('/opt/spacewalk/hadoop/bin/hdfs', "dfs", "-du", "-h",'/bank.csv')
-output = cmd_exec.execute_output()
-outputs = output.split("\n")
-print outputs[0].split("  ")[0].replace(' ','')
+conn = connect(host='hadoop01', port=10001, auth_mechanism='PLAIN', user='hadoop', password='hadoop')
+cur = conn.cursor()
+cur.execute('show columns in ahpicc.prplwideclaim_1')
+
+data = cur.fetchall()
+
+for i in data:
+    print str(i).replace('(','').replace(')','').replace(',','').replace('\'','')
+
+#cmd_exec = CommandExecutor('/opt/spacewalk/hadoop/bin/hdfs', "dfs", "-du", "-h",'/bank.csv')
+#output = cmd_exec.execute_output()
+#outputs = output.split("\n")
+#print outputs[0].split("  ")[0].replace(' ','')

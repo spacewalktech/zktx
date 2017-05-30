@@ -233,6 +233,19 @@ class HDFSUtil(object):
         cmd_exec = CommandExecutor(self.hdfs_bin, "dfs", "-rm", "-r", file_path)
         cmd_exec.execute()
 
+from impala.dbapi import connect
+
+def get_clean_schema(db_name, table_name):
+    conn = connect(host='hadoop01', port=10001, auth_mechanism='PLAIN', user='hadoop', password='hadoop')
+    cur = conn.cursor()
+    cur.execute('show columns in '+ db_name +'.' + table_name)
+    data = cur.fetchall()
+    clean_str = []
+    for i in data:
+        clo = str(i).replace('(','').replace(')','').replace(',','').replace('\'','')
+	clean_str.append('case when ' + clo + ' is null then "" else ' + clo  + ' end ' + clo)
+    return ','.join(clean_str)
+
 class HiveUtil(object):
     def __init__(self, hive_bin=None):
         self.logger = Logger(self.__class__.__name__).get()
@@ -261,8 +274,16 @@ class HiveUtil(object):
             export_statement = "set hive.exec.compress.output=true;"
         else:
             export_statement = "set hive.exec.compress.output=false;"
-        export_statement += "INSERT OVERWRITE DIRECTORY '" + export_data_path +  """' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' """
-        export_statement += "select * from " + db_name + "." + table_name
+        export_statement += "INSERT OVERWRITE DIRECTORY '" + export_data_path +  """' ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' STORED AS TEXTFILE """
+
+	clean_schema = get_clean_schema(db_name, table_name)
+
+	print get_clean_schema
+
+        export_statement += "select " + clean_schema  + "  from " + db_name + "." + table_name
+
+	print export_statement	
+
         cmd_exec = CommandExecutor(self.hive_bin, "-e", export_statement)
         cmd_exec.execute()
 

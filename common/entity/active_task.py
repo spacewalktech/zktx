@@ -18,7 +18,7 @@ class ActiveTask(object):
             self.table_stage_list = mr_task.table_stage_list
             self.triggle_cond_list = mr_task.triggle_cond_list
             self.export_table_list = mr_task.export_table_list
-            self.schedule_cron = mr_task.schedule_cron
+            self.schedule_cron = mr_task.task_schedule
             self.hive_params_list = mr_task.hive_params_list
             self.create_time = mr_task.create_time
             self.begin_time = None

@@ -163,6 +163,8 @@ def update_stage_fail(stage_id, e):
     StagePoJo = Stage
     table_stage = db.session.query(StagePoJo).filter_by(id=stage_id).first()
     table_stage.process_status = -2
+    table_stage.fail_info = str(e)
+    table_stage.end_time = get_time_format()
     db.session.commit()
 
 
@@ -237,6 +239,8 @@ def load():
         if src_keys.endswith(";"):
             src_keys = str[0:(len(src_keys) - 1)]
 
+	src_keys = ''.join(src_keys.split(" "))
+
         # 主键列,可能是多个列合并成主键列
         keys_array = src_keys.split(";")
 
@@ -276,9 +280,9 @@ def load():
                     count_info = merge.merge(processing_path, "full", table.dbname, table.table_name, keys_array, schema_str, stageid, table.id)
                     # 更新此次录入的数据信息,只插入count的信息就行了
                     do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), record_num=count_info.get("record_num"))
-                except Exception, e:
-		    print 'exception: ' + traceback.print_exc()
-                    update_stage_fail(stageid, traceback.print_exc())
+                except Exception as e:
+		    print 'exception: ' + str(e)
+                    update_stage_fail(stageid, str(e))
 
                 # 将 processing 目录下面的东西移动到 processed目录下
                 shutil.move(processing_path, processed_path)
