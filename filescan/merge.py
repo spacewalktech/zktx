@@ -3,7 +3,7 @@
 
 import os
 import time
-import common.config.config as common_config, common.util.util as common_util
+import common.config.config as common_config, common.util.util.CommonUtil as common_util
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
 from hdfs import *
@@ -13,7 +13,7 @@ from common.util.util import CommandExecutor
 
 setting = None
 
-env = common_util.get_param("env")
+env = common_util.getParam("env")
 
 if env == "pro":
     setting = common_config.pro_path
@@ -42,7 +42,7 @@ def get_time_format():
 
 #获取hdfs上文件的大小
 def get_hdfs_file_size(file_path):
-    cmd_exec = CommandExecutor('/opt/spacewalk/hadoop/bin/hdfs', "dfs", "-du", "-h",'/bank.csv')
+    cmd_exec = CommandExecutor('/opt/spacewalk/hadoop/bin/hdfs', "dfs", "-du", "-h", file_path)
     output = cmd_exec.execute_output()
     outputs = output.split("\n")
     return outputs[0].split("  ")[0].replace(' ','')
@@ -58,6 +58,9 @@ def update_table_size(file_size, data_count, table_id):
 
 # 更新parquet文件
 def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage_id, table_id):
+
+    print schema_str
+
     # 多个键位的联合主键
     union_key = "concat(" + ",_,".join(keys_array) + ") as union_key ,"
     print '--->table union_key is : ' + union_key
@@ -85,14 +88,17 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
 
         # 对文件后缀的兼容
         file_names = os.listdir(data_path)
+	print data_path
         suffix = ''
         for t in file_names:
-            if 'data_full' in t:
+	    print t
+            if 'data_full' in t and t.startswith('.') is False:
                 suffix = t[t.rfind('.')+1: len(t)]
                 break
 
         # 将文件加载到hdfs上   /opt/spacewalk/data/orgin_file/test_db/test_table/processing/20170901_12_09_30
         hdfs_path = '/spacewalk/hdfs/orgin_file/' + src_db + '/' + src_table
+	print suffix
         # 修改path，开始读取
         try:
             print '--->开始创建hdfs文件夹'
@@ -100,13 +106,13 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
             print '--->开始上传源文件到hdfs目录'
             client.upload(hdfs_path, data_path)
             print '--->上传完成'
-        except Exception, e:
+        except Exception as e:
        	    print '--->上传异常，开始采用覆盖模式'
             client.upload(hdfs_path, data_path, overwrite=True)
         # 读取数据
         print '--->开始读取hdfs上源文件'
         df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(hdfs_path + data_path.split('processing')[1] + "/data_full." + suffix)
-	#file_size = common_util.get_file_size( data_path + "/data_full." + suffix);
+	#file_size = common_util.getFileSize( data_path + "/data_full." + suffix);
 	file_size = get_hdfs_file_size(hdfs_path + data_path.split('processing')[1] + "/data_full." + suffix)
 	print '--->文件大小为 : ' + file_size
         count = df.count()

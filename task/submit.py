@@ -2,8 +2,7 @@
 
 import os
 import datetime
-from common.util import util
-from common.util.util import CommandExecutor, HDFSUtil, HiveUtil
+from common.util.util import CommandExecutor, HDFSUtil, HiveUtil, CommonUtil
 from common.config import config
 from common.util.logger import Logger
 from common.db.db_config import session as sess
@@ -58,7 +57,7 @@ class Submitter(object):
             for tab in active_task.export_table_list:
                 # export hive table (data & schema) to hdfs similar to spark task
                 #export_sub_dir = active_task.export_dir_uri + "/" + active_task.db_name + "." + tab
-                db_name, table_name = util.splitDBAndTable(tab)
+                db_name, table_name = CommonUtil.splitDBAndTable(tab)
                 try:
                     hiveUtil.exportTable(db_name, table_name, True, active_task.export_dir_uri)
                 except Exception as e:
@@ -68,7 +67,7 @@ class Submitter(object):
 
         elif TASK_TYPE[active_task.type] == "SPARK" or TASK_TYPE[active_task.type] == "TIME_SPARK":
             hdfsUtil = HDFSUtil()
-            local_bin_file = "/tmp/" + util.getPathFlat(active_task.bin_file_uri)
+            local_bin_file = "/tmp/" + CommonUtil.getPathFlat(active_task.bin_file_uri)
             hdfsUtil.downloadFileFromHDFS(local_bin_file, active_task.bin_file_uri)
             try:
                 cmd_exec = CommandExecutor(self.spark_submit_bin, local_bin_file, active_task.export_dir_uri)
@@ -78,12 +77,12 @@ class Submitter(object):
                 self.set_task_history_status(task_history, 2, res)
                 raise e
             if os.path.exists(local_bin_file):
-                util.removeLocalFile(local_bin_file)
+                CommonUtil.removeLocalFile(local_bin_file)
         if active_task.has_derivative_table:
             hdfsUtil = HDFSUtil()
             tables_in_file = []
             for tab in active_task.export_table_list:
-                db_tb = util.splitDBAndTable(tab)
+                db_tb = CommonUtil.splitDBAndTable(tab)
                 d, t = db_tb[0], db_tb[1]
                 tables_in_file.append(d + "--" + t)
             try:
@@ -104,14 +103,14 @@ class Submitter(object):
                 # data_file = data_files[i]
                 try:
                     db_name, tb_name, timestamp, is_full = hdfsUtil.getExportProperties(data_file)
-                    schema_file = util.getFileFromTimestamp(schema_files, timestamp)
+                    schema_file = CommonUtil.getFileFromTimestamp(schema_files, timestamp)
                     if is_full:
                         full_str = "full"
                     else:
                         full_str = "incremental"
                     cur_time = datetime.datetime.now()
-                    date_str = util.paddingTimeNum(cur_time.year) + util.paddingTimeNum(cur_time.month) + util.paddingTimeNum(cur_time.day) + "_" \
-                               + util.paddingTimeNum(cur_time.hour) + "_" + util.paddingTimeNum(cur_time.minute) + "_" + util.paddingTimeNum(cur_time.second)
+                    date_str = CommonUtil.paddingTimeNum(cur_time.year) + CommonUtil.paddingTimeNum(cur_time.month) + CommonUtil.paddingTimeNum(cur_time.day) + "_" \
+                               + CommonUtil.paddingTimeNum(cur_time.hour) + "_" + CommonUtil.paddingTimeNum(cur_time.minute) + "_" + CommonUtil.paddingTimeNum(cur_time.second)
                     dest_dir = config.pro_path["prefix"] + "/" + db_name + "/" + tb_name + "/" + full_str + "/" + date_str
                     if is_full:
                         data_file_dest = dest_dir  + "/" + "data_full.csv"
@@ -122,9 +121,9 @@ class Submitter(object):
                     hdfsUtil.copyMRResults2Local(data_file, data_file_dest)
                     hdfsUtil.copyMRResults2Local(schema_file, schema_file_dest)
 
-                    util.convertCSV2PipeDelimited(data_file_dest)
+                    #CommonUtil.convertCSV2PipeDelimited(data_file_dest)
                     done_indicator_file = dest_dir + "/" + "upload_completed"
-                    util.touch(done_indicator_file)
+                    CommonUtil.touch(done_indicator_file)
 
                     hdfsUtil.deleteFileFromHDFS(data_file)
                     hdfsUtil.deleteFileFromHDFS(schema_file)
@@ -135,7 +134,7 @@ class Submitter(object):
         self.set_task_history_status(task_history, 1, "Success")
 
     def set_task_history_status(self, task_history, result_status, result):
-        cur_time = util.getCurrentDatetime()
+        cur_time = CommonUtil.getCurrentDatetime()
         task_history.update_time = cur_time
         task_history.result_status = result_status
         task_history.result = result

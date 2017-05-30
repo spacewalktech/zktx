@@ -21,6 +21,10 @@ def get_string(path):
 def get_cloumn(string):
     if string.startswith('create table') is False:
         string = string[string.index('create table'): len(string)]
+
+    if ");" in string:
+        string = string[0: string.index(');')]
+
     if '"' in string:
         string = string.replace('"', '')
     
@@ -63,6 +67,10 @@ def get(path):
         array = s.split()
         if len(array) >= 2:
             name = array[0]
+	    if name == 'check':
+		continue
+	    if name == 'default':
+                continue
             if name == 'primary':
                 m = s.index('(')+1
                 n = s.index(')')
@@ -94,6 +102,10 @@ def get(path):
             dic = {}
             diu = {}
             name = array[0]
+            if name == 'check':
+                continue
+            if name == 'default':
+                continue
             if name == 'primary':
                 continue
             if name == 'foreign':

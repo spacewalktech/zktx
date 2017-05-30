@@ -2,7 +2,7 @@
 from common.db.db_config import session as sess
 from common.dao.mr_task import TaskQueue, MRTask, TaskHistory
 from common.entity.active_task import ActiveTask
-from common.util import util
+from common.util.util import CommonUtil
 from common.util.logger import Logger
 from task.submit import Submitter
 
@@ -20,7 +20,7 @@ class TaskQueueScan(object):
             mr_task = sq2.first()
             atask = ActiveTask(mr_task)
             atask.table_stage_list = task.table_stage_list
-            atask.begin_time = util.getCurrentDatetime()
+            atask.begin_time = CommonUtil.getCurrentDatetime()
             res = (atask, task.id)
         else:
             res = (None,None)
@@ -32,7 +32,7 @@ class TaskQueueScan(object):
         queued_task = sess.query(TaskQueue).get(queued_id)
         if queued_task:
             queued_task.has_processed = 1
-            queued_task.end_time = util.getCurrentDatetime().replace(tzinfo=None)
+            queued_task.end_time = CommonUtil.getCurrentDatetime().replace(tzinfo=None)
             sess.commit()
             sess.flush()
         else:

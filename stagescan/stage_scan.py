@@ -6,7 +6,7 @@ from common.dao.mr_task import TaskQueue
 from common.db.db_config import session as sess
 from common.entity.active_task import ActiveTask
 from common.entity.stage_to_process import StageToProcess
-from common.util import util
+from common.util.util import CommonUtil
 from common.util.logger import Logger
 
 class StageScan(object):
@@ -121,10 +121,10 @@ class StageScan(object):
     def _merge_atask_staged_to_queued(self):
         staged_active_tasks = self._get_staged_active_tasks()
         self.logger.debug("_merge_atask_staged_to_queued: Before, staged_active_tasks(%s)" %
-                          util.object_list_to_str(staged_active_tasks))
+                          CommonUtil.objectList2Str(staged_active_tasks))
         queued_active_tasks = self._get_queued_active_task()
         self.logger.debug("_merge_atask_staged_to_queued: Before, queued_active_tasks(%s)" %
-                          util.object_list_to_str(queued_active_tasks))
+                          CommonUtil.objectList2Str(queued_active_tasks))
         atask_dict = {} # task_id: active_task
         for atask in queued_active_tasks:
             atask_dict[atask.id] = atask
@@ -137,7 +137,7 @@ class StageScan(object):
         for task_id in atask_dict:
             new_task_list.append(atask_dict[task_id])
         self.logger.debug("_merge_atask_staged_to_queued: After, new_task_list(%s)" %
-                          util.object_list_to_str(new_task_list))
+                          CommonUtil.objectList2Str(new_task_list))
         return new_task_list
 
     # merge the same task in staged and queued
@@ -173,9 +173,9 @@ class StageScan(object):
             # queued_task = sq.first()
             if active_task.table_stage_list:
                 self.logger.debug("Insert ActiveTask(%s) to queue" % active_task)
-                encoded_table_stage = util.encode_table_stage(active_task.table_stage_list)
+                encoded_table_stage = CommonUtil.encodeTableStage(active_task.table_stage_list)
                 tq = TaskQueue(mr_task_id = active_task.id, table_stage_info=encoded_table_stage)
-                tq.create_time = util.getCurrentDatetime()
+                tq.create_time = CommonUtil.getCurrentDatetime()
                 sess.add(tq)
 		    # queued_task.has_processed = 0
         sess.commit()
@@ -205,7 +205,7 @@ class StageScan(object):
             # time task not in task queue, we should enqueue the task
             if s.time_to_process():
                 tq = TaskQueue(mr_task_id = s.id)
-                tq.create_time = util.getCurrentDatetime().replace(tzinfo=None)
+                tq.create_time = CommonUtil.getCurrentDatetime().replace(tzinfo=None)
                 #s.update_time == tq.create_time
                 tq.has_processed = 0
                 sess.add(tq)

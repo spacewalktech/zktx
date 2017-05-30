@@ -6,7 +6,7 @@ from sqlalchemy.dialects.mysql import TINYINT, INTEGER, LONGTEXT, VARCHAR, DATET
 from common.db.db_config import Base
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
-from common.util import util
+from common.util.util import CommonUtil, CronUtil
 from sqlalchemy.sql import func
 from sqlalchemy import orm
 from common.util.logger import Logger
@@ -58,7 +58,7 @@ class MRTask(Base):
     export_tables = Column('export_tables', LONGTEXT)
     active = Column('active', TINYINT(1))
     task_schedule = Column('task_schedule', VARCHAR(500))
-    hive_params = Column('hive_params', LONGTEXT)
+    hive_params = Column('parameter', LONGTEXT)
     latest_running_time = Column('latest_running_time', DATETIME())
     latest_running_status = Column('latest_running_status', TINYINT(1))
     latest_running_info = Column('latest_running_info', TEXT())
@@ -75,7 +75,7 @@ class MRTask(Base):
         # unmarsh the triggle_tables into python object
         # return TriggleCond list
         if self.triggle_tables:
-            return util.decode_triggle_conds(self.triggle_tables)
+            return CommonUtil.decodeTriggleConds(self.triggle_tables)
         else:
             return []
 
@@ -83,7 +83,7 @@ class MRTask(Base):
     def export_table_list(self):
         # get tables into table list
         if self.export_tables:
-            return util.splitString(self.export_tables, ",")
+            return CommonUtil.splitString(self.export_tables, ",")
         else:
             return []
 
@@ -92,14 +92,14 @@ class MRTask(Base):
         # unmarsh the table_stage_info into python object
         # return StageToProcess list
         if self.table_stage_info:
-            return util.decode_table_stage_info(self.table_stage_info)
+            return CommonUtil.decodeTableStageInfo(self.table_stage_info)
         else:
             return []
 
     @hybrid_property
     def schedule_cron(self):
         if self.task_schedule:
-            cron = util.CronUtil()
+            cron = CronUtil()
             cron.parseLinuxCron(self.task_schedule)
             return cron
         else:
@@ -108,7 +108,7 @@ class MRTask(Base):
     @hybrid_property
     def hive_params_list(self):
         if self.hive_params:
-            hive_params_list = util.convertParam2List(self.hive_params)
+            hive_params_list = CommonUtil.convertParam2List(self.hive_params)
             return hive_params_list
         else:
             return None
@@ -116,7 +116,7 @@ class MRTask(Base):
     def time_to_process(self):
         if self.type < 2:
             return True
-        cur_datetime = util.getCurrentDatetime()
+        cur_datetime = CommonUtil.getCurrentDatetime()
         cur_year = cur_datetime.year
         cur_day_in_week = cur_datetime.weekday()
         cur_month = cur_datetime.month
@@ -177,7 +177,7 @@ class TaskQueue(Base):
         # unmarsh the table_stage_info into python object
         # return StageToProcess list
         if self.table_stage_info:
-            return util.decode_table_stage_info(self.table_stage_info)
+            return CommonUtil.decodeTableStageInfo(self.table_stage_info)
         else:
             return []
 
@@ -219,7 +219,7 @@ class TaskHistory(Base):
         # unmarsh the table_stage_info into python object
         # return StageToProcess list
         if self.table_stage_info:
-            return util.decode_table_stage_info(self.table_stage_info)
+            return CommonUtil.decodeTableStageInfo(self.table_stage_info)
         else:
             return []
 

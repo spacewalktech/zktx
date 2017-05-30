@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-：
 from common import config
 from common.util.logger import Logger
+from common.util.util import CommonUtil
 from common.config import config
 from elasticsearch import Elasticsearch
 
@@ -19,7 +20,7 @@ class ESClient(object):
 
         self.es_conf = {}
         if id_field:
-            self.es_conf["es.mapping.id"] = id_field + "i_am_id"
+            self.es_conf["es.mapping.id"] = id_field
         if not nodes:
             self.es_conf["es.nodes"] = convertArrayToFlatString(config.es_hosts)
             self.nodes = config.es_hosts
@@ -47,6 +48,7 @@ class ESClient(object):
             raise
 
     def writeDF2ES(self, df):
+        self.createIndexFromDF(df)
         dfRDD = df.rdd.map(lambda row: (None, row.asDict()))
         self.writeRDD2ES(dfRDD)
 
@@ -55,8 +57,20 @@ class ESClient(object):
             raise Exception("The ESClient(%s) does not specify id_field, can not delete item" % self.es_conf)
         self.es.delete(self.index, self.type, id_value)
 
-    def createIndex(self):
-        pass
+    def createIndexFromDF(self, df):
+        mp_dict = {}
+        property_dict = {}
+        mp_dict["mappings"] = {}
+        mp_dict["mappings"][self.type] = {}
+        mp_dict["mappings"][self.type]["properties"] = property_dict
+        for col in df.schema:
+            f_dict = {}
+            property_dict[col.name] = f_dict
+            f_dict["type"] = CommonUtil.getESType(col.dataType.typeName())
+        self.logger.info("Put es mapping(%s)" % mp_dict)
+        #self.es.indices.put_mapping(self.type, body=mp_dict, index=self.index)
+        #self.es.create(self.index, self.type, self.id_field, mp_dict)
+        self.es.indices.create(self.index, mp_dict)
 
 def convertArrayToFlatString(array):
     s = ""

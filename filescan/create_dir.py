@@ -4,11 +4,11 @@
 import common.dao.import_tables as import_tables
 import common.db.db_config as db
 import os
-import common.util.util as util
+import common.util.util.CommonUtil as util
 
 prefix = None
 
-env = util.get_param("env")
+env = util.getParam("env")
 
 if env == "pro":
     prefix = "/data/spacewalk/origin_file/"

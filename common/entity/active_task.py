@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-:
 import json
-from common.util import util
+from common.util.util import CommonUtil
 from common.util.logger import Logger
 
 class ActiveTask(object):
@@ -18,7 +18,7 @@ class ActiveTask(object):
             self.table_stage_list = mr_task.table_stage_list
             self.triggle_cond_list = mr_task.triggle_cond_list
             self.export_table_list = mr_task.export_table_list
-            self.schedule_cron = mr_task.schedule_cron
+            self.schedule_cron = mr_task.task_schedule
             self.hive_params_list = mr_task.hive_params_list
             self.create_time = mr_task.create_time
             self.begin_time = None
@@ -68,7 +68,7 @@ class ActiveTask(object):
     def should_process(self):
         if self.type < 2:
             return True
-        cur_datetime = util.getCurrentDatetime()
+        cur_datetime = CommonUtil.getCurrentDatetime()
         cur_year = cur_datetime.year
         cur_day_in_week = cur_datetime.weekday()
         cur_month = cur_datetime.month
@@ -88,4 +88,4 @@ class ActiveTask(object):
         return False
 
     def get_stage_info(self):
-        return util.encode_table_stage(self.table_stage_list)
+        return CommonUtil.encodeTableStage(self.table_stage_list)
