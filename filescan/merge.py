@@ -42,7 +42,7 @@ def get_time_format():
 
 #获取hdfs上文件的大小
 def get_hdfs_file_size(file_path):
-    cmd_exec = CommandExecutor('/opt/spacewalk/hadoop/bin/hdfs', "dfs", "-du", "-h",'/bank.csv')
+    cmd_exec = CommandExecutor('/opt/spacewalk/hadoop/bin/hdfs', "dfs", "-du", "-h", file_path)
     output = cmd_exec.execute_output()
     outputs = output.split("\n")
     return outputs[0].split("  ")[0].replace(' ','')
@@ -58,6 +58,9 @@ def update_table_size(file_size, data_count, table_id):
 
 # 更新parquet文件
 def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage_id, table_id):
+
+    print schema_str
+
     # 多个键位的联合主键
     union_key = "concat(" + ",_,".join(keys_array) + ") as union_key ,"
     print '--->table union_key is : ' + union_key
@@ -85,14 +88,17 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
 
         # 对文件后缀的兼容
         file_names = os.listdir(data_path)
+	print data_path
         suffix = ''
         for t in file_names:
-            if 'data_full' in t:
+	    print t
+            if 'data_full' in t and t.startswith('.') is False:
                 suffix = t[t.rfind('.')+1: len(t)]
                 break
 
         # 将文件加载到hdfs上   /opt/spacewalk/data/orgin_file/test_db/test_table/processing/20170901_12_09_30
         hdfs_path = '/spacewalk/hdfs/orgin_file/' + src_db + '/' + src_table
+	print suffix
         # 修改path，开始读取
         try:
             print '--->开始创建hdfs文件夹'

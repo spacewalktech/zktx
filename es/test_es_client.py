@@ -3,7 +3,7 @@ from datetime import datetime
 import json
 from es.es_client import ESClient
 
-#spark = SparkSession.builder.master("yarn").appName("Simple App").getOrCreate()
+spark = SparkSession.builder.master("yarn").appName("Simple App").getOrCreate()
 # sc = SparkContext("local", "Simple App")
 #path = "file:///opt/spacewalk/spark-with-hive/examples/src/main/resources/people.json"
 #df = spark.read.json(path)
@@ -35,3 +35,4 @@ mapping = """
 """
 mp = json.loads(mapping)
 res = esClient.es.indices.put_mapping("test_tb_people2", body=mapping, index='test_db_people2')
+

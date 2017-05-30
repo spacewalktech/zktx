@@ -121,7 +121,7 @@ class Submitter(object):
                     hdfsUtil.copyMRResults2Local(data_file, data_file_dest)
                     hdfsUtil.copyMRResults2Local(schema_file, schema_file_dest)
 
-                    CommonUtil.convertCSV2PipeDelimited(data_file_dest)
+                    #CommonUtil.convertCSV2PipeDelimited(data_file_dest)
                     done_indicator_file = dest_dir + "/" + "upload_completed"
                     CommonUtil.touch(done_indicator_file)
 

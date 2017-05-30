@@ -6,7 +6,7 @@ mysql_db = {
     "port": 3306,
     "user": "root",
     "password": "passwd",
-    "db": "zktx_data_platform_test",
+    "db": "zktx_data_platform",
     "driver": "pymysql"
 }
 
