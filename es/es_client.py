@@ -67,7 +67,10 @@ class ESClient(object):
             f_dict = {}
             property_dict[col.name] = f_dict
             f_dict["type"] = CommonUtil.getESType(col.dataType.typeName())
-        self.es.indices.put_mapping(self.type, body=mp_dict, index=self.index)
+        self.logger.info("Put es mapping(%s)" % mp_dict)
+        #self.es.indices.put_mapping(self.type, body=mp_dict, index=self.index)
+        #self.es.create(self.index, self.type, self.id_field, mp_dict)
+        self.es.indices.create(self.index, mp_dict)
 
 def convertArrayToFlatString(array):
     s = ""

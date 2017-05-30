@@ -38,8 +38,7 @@ stage_scan_interval = 5
 task_queue_scan_interval = 5
 
 # es服务列表
-#es_hosts = ["hadoop01:9200", "hadoop02:9200", "hadoop03:9200", "hadoop04:9200"]
-es_hosts = ["localhost:9200"]
+es_hosts = ["hadoop01:9200", "hadoop02:9200", "hadoop03:9200", "hadoop04:9200"]
 
 spark_home = "/opt/spacewalk/spark-with-hive"
 hive_home = "/opt/spacewalk/apache-hive-2.3.0"
