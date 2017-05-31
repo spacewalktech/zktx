@@ -4,7 +4,8 @@
 import common.dao.import_tables as import_tables
 import common.db.db_config as db
 import os
-import common.util.util.CommonUtil as util
+#import common.util.util.CommonUtil as util
+from common.util.util import CommonUtil as util
 
 prefix = None
 

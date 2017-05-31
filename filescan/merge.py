@@ -3,13 +3,14 @@
 
 import os
 import time
-import common.config.config as common_config, common.util.util.CommonUtil as common_util
+import common.config.config as common_config
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
 from hdfs import *
 import common.dao.import_tables as import_tables
 import common.db.db_config as db
 from common.util.util import CommandExecutor
+from common.util.util import CommonUtil as common_util
 
 setting = None
 
