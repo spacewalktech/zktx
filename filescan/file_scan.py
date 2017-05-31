@@ -6,13 +6,14 @@ import common.dao.table_schema as tb_table_schema
 import common.db.db_config as db
 from common.dao.import_tables import Stage
 import os, re, shutil, json, time
-import merge, common.config.config as config, common.util.util.CommonUtil as util
+import merge, common.config.config as config
 import create_dir
 import trigger_servers
 from sqlalchemy import desc
 import sys
 import common.util.schema_paser as schema_paser
 import traceback
+from common.util.util import CommonUtil as util
 
 reload(sys)
 sys.setdefaultencoding("utf-8")

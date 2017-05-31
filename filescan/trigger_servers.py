@@ -5,7 +5,8 @@ import common.dao.table_schema as tb_table_schema
 import common.db.db_config as db
 from pyspark.sql import SparkSession
 import json
-import common.config.config as common_config, common.util.util as common_util
+import common.config.config as common_config
+from common.util.util import CommonUtil as common_util
 from impala.dbapi import connect
 from es.es_client import ESClient
 from sqlalchemy import desc
