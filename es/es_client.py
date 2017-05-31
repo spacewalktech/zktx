@@ -48,7 +48,7 @@ class ESClient(object):
             raise
 
     def writeDF2ES(self, df):
-        self.createIndexFromDF(df)
+        #self.createIndexFromDF(df)
         dfRDD = df.rdd.map(lambda row: (None, row.asDict()))
         self.writeRDD2ES(dfRDD)
 
