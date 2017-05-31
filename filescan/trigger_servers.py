@@ -45,8 +45,8 @@ def get_create_sql(schema, db_name, table_name):
     sql = 'create external table if not exists ' + db_name + '.' + table_name + '_text ' + '('
     array = []
     for i in schema.get("schema"):
-        array.append(i.get("name") + ' string')
-    array.append('resvd_flag string')
+        array.append(i.get("name") + ' ' + i.get("type"))
+    array.append('resvd_flag int')
     sql += ', '.join(array) + ')'
     sql += "row format serde 'org.openx.data.jsonserde.JsonSerDe' location 'hdfs://hadoop01:9000/spacewalk/hdfs/parquet_file/" + db_name + "/" + table_name + ".json'"
     return sql

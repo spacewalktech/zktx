@@ -4,6 +4,7 @@
 import os
 import time
 import common.config.config as common_config
+import common.dao.table_schema as tb_table_schema
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
 from hdfs import *
@@ -11,6 +12,8 @@ import common.dao.import_tables as import_tables
 import common.db.db_config as db
 from common.util.util import CommandExecutor
 from common.util.util import CommonUtil as common_util
+from sqlalchemy import desc
+import json
 
 setting = None
 
@@ -41,12 +44,14 @@ parquet_path = setting.get("parquet_path")
 def get_time_format():
     return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 
-#获取hdfs上文件的大小
+
+# 获取hdfs上文件的大小
 def get_hdfs_file_size(file_path):
     cmd_exec = CommandExecutor('/opt/spacewalk/hadoop/bin/hdfs', "dfs", "-du", "-h", file_path)
     output = cmd_exec.execute_output()
     outputs = output.split("\n")
-    return outputs[0].split("  ")[0].replace(' ','')
+    return outputs[0].split("  ")[0].replace(' ', '')
+
 
 # 修改文件大小和记录书
 def update_table_size(file_size, data_count, table_id):
@@ -57,9 +62,24 @@ def update_table_size(file_size, data_count, table_id):
     db.session.commit()
 
 
+# 将斜杠的日期转换为横杠的日期
+def get_create_df_schema(table_id):
+    TableSchema = tb_table_schema.TableSchema
+    schema = db.session.query(TableSchema).filter_by(table_id=table_id).order_by(desc(TableSchema.id)).first()
+    origin_schema = json.loads(schema.schema)
+    tem_ary = []
+    for s in origin_schema.get("schema"):
+        t = s.get("type")
+        if 'time' in t or 'date' in t:
+            r = 'replace(' + str(s.get("name")) + ', '/', '-') as ' + str(s.get("name"))
+            tem_ary.append(r)
+        else:
+            tem_ary.append(s.get("name"))
+    return ",".join(tem_ary)
+
+
 # 更新parquet文件
 def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage_id, table_id):
-
     print schema_str
 
     # 多个键位的联合主键
@@ -89,17 +109,17 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
 
         # 对文件后缀的兼容
         file_names = os.listdir(data_path)
-	print data_path
+        print data_path
         suffix = ''
         for t in file_names:
-	    print t
+            print t
             if 'data_full' in t and t.startswith('.') is False:
-                suffix = t[t.rfind('.')+1: len(t)]
+                suffix = t[t.rfind('.') + 1: len(t)]
                 break
 
         # 将文件加载到hdfs上   /opt/spacewalk/data/orgin_file/test_db/test_table/processing/20170901_12_09_30
         hdfs_path = '/spacewalk/hdfs/orgin_file/' + src_db + '/' + src_table
-	print suffix
+        print suffix
         # 修改path，开始读取
         try:
             print '--->开始创建hdfs文件夹'
@@ -108,17 +128,17 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
             client.upload(hdfs_path, data_path)
             print '--->上传完成'
         except Exception as e:
-       	    print '--->上传异常，开始采用覆盖模式'
+            print '--->上传异常，开始采用覆盖模式'
             client.upload(hdfs_path, data_path, overwrite=True)
         # 读取数据
         print '--->开始读取hdfs上源文件'
         df = spark.read.format('csv').schema(schema_df).option("delimiter", "|").load(hdfs_path + data_path.split('processing')[1] + "/data_full." + suffix)
-	#file_size = common_util.getFileSize( data_path + "/data_full." + suffix);
-	file_size = get_hdfs_file_size(hdfs_path + data_path.split('processing')[1] + "/data_full." + suffix)
-	print '--->文件大小为 : ' + file_size
+        # file_size = common_util.getFileSize( data_path + "/data_full." + suffix);
+        file_size = get_hdfs_file_size(hdfs_path + data_path.split('processing')[1] + "/data_full." + suffix)
+        print '--->文件大小为 : ' + file_size
         count = df.count()
         print '--->从hdfs上读取到的数据的记录数为 : ' + str(count)
-	update_table_size(file_size, count, table_id)
+        update_table_size(file_size, count, table_id)
         # 创建4个隐藏列
         print '--->开始创建隐藏列'
         hidden_cloum = [(stage_id, 0, get_time_format(), get_time_format())]
@@ -130,6 +150,12 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
 
         # 需要对列进行排序，不然会按照schema的字典顺序排列
         new_data.createOrReplaceTempView(src_db + "_" + src_table + "_temp")
+
+        # schema_string 在这里将 时间类型的字段加上replace,将斜杠替换为横杠
+        df_schema = get_create_df_schema(table_id)
+
+        print df_schema
+
         new_schema_org_df = spark.sql("select " + schema_string + " from " + src_db + "_" + src_table + "_temp")
 
         # 写成parquet文件
@@ -151,7 +177,7 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
         print '----------------开始进行增量更新-------------------' + get_time_format()
         # 加载原有parquet文件
         org_parquet_df = spark.read.load(parquet_path + src_db + "/" + src_table + ".parquet", format='parquet')
-	total_num = org_parquet_df.count()
+        total_num = org_parquet_df.count()
         print '--->源文件加载完毕,源文件记录数 ：' + str(org_parquet_df.count())
         # 创建表
         org_parquet_df.createOrReplaceTempView(src_db + "_" + src_table)
@@ -306,12 +332,12 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
         print '--->将temp文件命名为正式文件'
         client.rename('/spacewalk/hdfs/parquet_file/' + src_db + "/" + src_table + "_temp.parquet", '/spacewalk/hdfs/parquet_file/' + src_db + "/" + src_table + ".parquet")
 
-	file_size = get_hdfs_file_size('/spacewalk/hdfs/parquet_file/' + src_db + "/" + src_table + ".parquet")
+        file_size = get_hdfs_file_size('/spacewalk/hdfs/parquet_file/' + src_db + "/" + src_table + ".parquet")
         print '--->文件大小为 : ' + file_size
 
-	total_num = total_num + insert_count - delete_count
-		
-	update_table_size(file_size, total_num, table_id)
+        total_num = total_num + insert_count - delete_count
+
+        update_table_size(file_size, total_num, table_id)
 
         # 返回统计信息
         count_info["inserted_num"] = insert_count
@@ -320,4 +346,3 @@ def merge(data_path, data_type, src_db, src_table, keys_array, schema_str, stage
         count_info["record_num"] = insert_count + update_count + delete_count
 
         return count_info
-

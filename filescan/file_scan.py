@@ -74,6 +74,15 @@ def get_schema(json_str, table):
     json_dict['schema'] = json.loads(json_str)
     return json.dumps(json_dict)
 
+
+def get_type(o_type):
+    if 'decimal' in o_type:
+        return 'double'
+    if 'datetime' in o_type:
+        return 'timestamp'
+    return 'string'
+
+
 def get_json_schema(path):
     schema = open(path)
     lines = schema.readlines(100000)
@@ -86,25 +95,25 @@ def get_json_schema(path):
     array_spark = []
     array_name = []
     for s in json_str.get("schema"):
-	dic = {}
-	diu = {}
-	name = s.get("name")
-	type = s.get("type")
-	dic["name"] = name
-	dic["type"] = type
-	array_origin.append(dic)
-	diu["name"] = name
-	diu["type"] = "string"
-	array_spark.append(diu)
-	array_name.append(name)
+        dic = {}
+        diu = {}
+        name = s.get("name")
+        type = s.get("type")
+        dic["name"] = name
+        dic["type"] = type
+        array_origin.append(dic)
+        diu["name"] = name
+        diu["type"] = get_type(type)
+        array_spark.append(diu)
+        array_name.append(name)
     return {'origin_json': json.dumps(array_origin), 'spark_json': json.dumps(array_spark), 'name_array': array_name}
+
 
 # 处理schema
 def do_schema(schema_path, table):
-
     obj = None
     if os.path.exists(schema_path + '/schema.json'):
-	obj = get_json_schema(schema_path + '/schema.json')	
+        obj = get_json_schema(schema_path + '/schema.json')
     else:
         obj = schema_paser.get(schema_path + '/schema.sql')
 
@@ -200,7 +209,6 @@ def create_stage(table_id, import_type):
 
 # 更新数据的时候检查表的schema信息是不是一致
 def do_check_schema(data_path, table, stage_id):
-
     obj = None
     if os.path.exists(data_path + '/schema.json'):
         obj = get_json_schema(data_path + '/schema.json')
@@ -240,7 +248,7 @@ def load():
         if src_keys.endswith(";"):
             src_keys = str[0:(len(src_keys) - 1)]
 
-	src_keys = ''.join(src_keys.split(" "))
+        src_keys = ''.join(src_keys.split(" "))
 
         # 主键列,可能是多个列合并成主键列
         keys_array = src_keys.split(";")
@@ -272,7 +280,7 @@ def load():
 
                 # 更新schema文件
                 schema_str = do_schema(processing_path, table)
-		
+
                 # 先创建stage_id
                 stageid = create_stage(table.id, "full")
 
@@ -282,7 +290,7 @@ def load():
                     # 更新此次录入的数据信息,只插入count的信息就行了
                     do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), record_num=count_info.get("record_num"))
                 except Exception as e:
-		    print 'exception: ' + str(e)
+                    print 'exception: ' + str(e)
                     update_stage_fail(stageid, str(e))
 
                 # 将 processing 目录下面的东西移动到 processed目录下
@@ -325,7 +333,7 @@ def load():
                     # 更新此次录入的数据信息,只插入count的信息就行了
                     do_stage(stageid, table.id, inserted_num=count_info.get("inserted_num"), updated_num=count_info.get("updated_num"), deleted_num=count_info.get("deleted_num"), record_num=count_info.get("record_num"))
                 except Exception, e:
-		    print e
+                    print e
                     update_stage_fail(stageid, e)
 
                 # 将旧文件移除
@@ -339,17 +347,17 @@ def load():
                 shutil.move(processing_path, processed_path)
 
                 this_table_change = True
-	
-	if this_table_change is True:
-            print '--->begin export to hive  thrift server '
+
+        if this_table_change is True:
+            print '--->begin export to hive'
             trigger_servers.hive_server(table.id, table.dbname, table.table_name)
 
         if table.export_to_sql_warehouse == 1 and this_table_change is True:
-            print '--->begin export to spark thrift server '
+            print '--->begin export to spark'
             trigger_servers.thrift_server(table.id, table.dbname, table.table_name)
 
         if table.export_to_es_index_warehouse == 1 and this_table_change is True:
-            print "--->export_to_es_index_warehouse"
+            print "--->begin export to elasticsearch"
             trigger_servers.es_server(table.id, table.dbname, table.table_name)
 
 
@@ -359,4 +367,3 @@ while True:
     print '--->扫描完成 : ' + get_time_format()
     print ''
     time.sleep(2)
-
